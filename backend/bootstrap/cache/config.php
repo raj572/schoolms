@@ -163,8 +163,8 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\framework/cache/data',
-        'lock_path' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\framework/cache/data',
+        'path' => 'D:\\Projects\\school Management Software\\backend\\storage\\framework/cache/data',
+        'lock_path' => 'D:\\Projects\\school Management Software\\backend\\storage\\framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -337,7 +337,7 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\app/private',
+        'root' => 'D:\\Projects\\school Management Software\\backend\\storage\\app/private',
         'serve' => true,
         'throw' => false,
         'report' => false,
@@ -345,7 +345,7 @@
       'public' => 
       array (
         'driver' => 'local',
-        'root' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\app/public',
+        'root' => 'D:\\Projects\\school Management Software\\backend\\storage\\app/public',
         'url' => 'http://localhost:8000/storage',
         'visibility' => 'public',
         'throw' => false,
@@ -367,7 +367,7 @@
     ),
     'links' => 
     array (
-      'D:\\Projects\\School ERP\\erpapi2\\public\\storage' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\app/public',
+      'D:\\Projects\\school Management Software\\backend\\public\\storage' => 'D:\\Projects\\school Management Software\\backend\\storage\\app/public',
     ),
   ),
   'logging' => 
@@ -392,14 +392,14 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\logs/laravel.log',
+        'path' => 'D:\\Projects\\school Management Software\\backend\\storage\\logs/laravel.log',
         'level' => 'debug',
         'replace_placeholders' => true,
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\logs/laravel.log',
+        'path' => 'D:\\Projects\\school Management Software\\backend\\storage\\logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
         'replace_placeholders' => true,
@@ -464,7 +464,7 @@
       ),
       'emergency' => 
       array (
-        'path' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\logs/laravel.log',
+        'path' => 'D:\\Projects\\school Management Software\\backend\\storage\\logs/laravel.log',
       ),
     ),
   ),
@@ -542,7 +542,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => 'D:\\Projects\\School ERP\\erpapi2\\resources\\views/vendor/mail',
+        0 => 'D:\\Projects\\school Management Software\\backend\\resources\\views/vendor/mail',
       ),
     ),
   ),
@@ -666,7 +666,7 @@
     'lifetime' => 120,
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\framework/sessions',
+    'files' => 'D:\\Projects\\school Management Software\\backend\\storage\\framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -793,9 +793,9 @@
   array (
     'paths' => 
     array (
-      0 => 'D:\\Projects\\School ERP\\erpapi2\\resources\\views',
+      0 => 'D:\\Projects\\school Management Software\\backend\\resources\\views',
     ),
-    'compiled' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\framework\\views',
+    'compiled' => 'D:\\Projects\\school Management Software\\backend\\storage\\framework\\views',
   ),
   'dompdf' => 
   array (
@@ -804,10 +804,10 @@
     'convert_entities' => true,
     'options' => 
     array (
-      'font_dir' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\fonts',
-      'font_cache' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\fonts',
+      'font_dir' => 'D:\\Projects\\school Management Software\\backend\\storage\\fonts',
+      'font_cache' => 'D:\\Projects\\school Management Software\\backend\\storage\\fonts',
       'temp_dir' => 'C:\\Users\\KRISHN~1\\AppData\\Local\\Temp',
-      'chroot' => 'D:\\Projects\\School ERP\\erpapi2',
+      'chroot' => 'D:\\Projects\\school Management Software\\backend',
       'allowed_protocols' => 
       array (
         'data://' => 
@@ -965,7 +965,7 @@
     ),
     'temporary_files' => 
     array (
-      'local_path' => 'D:\\Projects\\School ERP\\erpapi2\\storage\\framework/cache/laravel-excel',
+      'local_path' => 'D:\\Projects\\school Management Software\\backend\\storage\\framework/cache/laravel-excel',
       'local_permissions' => 
       array (
       ),

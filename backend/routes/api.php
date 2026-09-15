@@ -647,7 +647,10 @@ Route::prefix('principal')->middleware(['jwt.auth', 'subscription'])->group(func
     Route::get('/issues/active/{school_id}', [\App\Http\Controllers\LibraryController::class, 'getActiveIssues']);
     Route::get('/issues/overdue/{school_id}', [\App\Http\Controllers\LibraryController::class, 'getOverdueIssues']);
     Route::get('/issues/borrower', [\App\Http\Controllers\LibraryController::class, 'getBorrowerIssues']);
-    Route::post('/issues/extend/{issue_id}', [\App\Http\Controllers\LibraryController::class, 'extendDueDate']);
+    // Digital Resources
+    Route::get('/digital-resources/{school_id}', [\App\Http\Controllers\LibraryController::class, 'getDigitalResources']);
+    Route::post('/digital-resources/create', [\App\Http\Controllers\LibraryController::class, 'createDigitalResource']);
+    Route::delete('/digital-resources/delete/{id}', [\App\Http\Controllers\LibraryController::class, 'deleteDigitalResource']);
   });
 
   // ---------------------- 🏨 Hostel Management ----------------------
@@ -886,6 +889,11 @@ Route::prefix('library')->middleware(['jwt.auth', 'subscription'])->group(functi
 
   // Statistics
   Route::get('/statistics/{school_id}', [\App\Http\Controllers\LibraryController::class, 'getStatistics']);
+
+  // Digital Resources
+  Route::get('/digital-resources/{school_id}', [\App\Http\Controllers\LibraryController::class, 'getDigitalResources']);
+  Route::post('/digital-resources/create', [\App\Http\Controllers\LibraryController::class, 'createDigitalResource']);
+  Route::delete('/digital-resources/delete/{id}', [\App\Http\Controllers\LibraryController::class, 'deleteDigitalResource']);
 });
 
 // ==================== STUDENT ROUTES ====================
@@ -907,6 +915,13 @@ Route::prefix('student')->middleware('jwt.auth')->group(function () {
     Route::get('/schedules/{student_id}/{exam_id}', [\App\Http\Controllers\StudentExamController::class, 'getStudentExamSchedules']);
     Route::get('/marks/{student_id}/{school_id}', [\App\Http\Controllers\StudentExamController::class, 'getStudentMarks']);
     Route::get('/report-card/{student_id}/{exam_id}', [\App\Http\Controllers\StudentExamController::class, 'getStudentReportCard']);
+  });
+
+  // Student Library
+  Route::prefix('library')->group(function () {
+    Route::get('/books/all/{school_id}', [\App\Http\Controllers\LibraryController::class, 'getAllBooks']);
+    Route::get('/issues/borrower', [\App\Http\Controllers\LibraryController::class, 'getBorrowerIssues']);
+    Route::get('/digital-resources/{school_id}', [\App\Http\Controllers\LibraryController::class, 'getDigitalResources']);
   });
 });
 

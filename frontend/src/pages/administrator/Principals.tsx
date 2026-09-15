@@ -16,8 +16,18 @@ import {
   Key,
   Building2,
   Link,
-  Unlink
+  Unlink,
+  LayoutGrid,
+  List,
+  Phone
 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,6 +66,7 @@ export default function Principals() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(false);
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
   
   // Dialog states
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -67,6 +78,19 @@ export default function Principals() {
   const [selectedPrincipal, setSelectedPrincipal] = useState<Principal | null>(null);
   const [principalToDelete, setPrincipalToDelete] = useState<Principal | null>(null);
   const [principalForSchoolAssignment, setPrincipalForSchoolAssignment] = useState<Principal | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setViewMode('card');
+      } else {
+        setViewMode('table');
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     fetchPrincipals();
@@ -286,11 +310,10 @@ export default function Principals() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-6 animate-fade-in w-full min-w-0">
       <Heading
         title="Principal Management"
         description="Manage principals, assign them to schools, and handle their credentials"
-        icon={UserCircle}
       />
 
       {/* Stats Overview */}
@@ -331,8 +354,8 @@ export default function Principals() {
       <Card>
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4 justify-between">
-            <div className="flex-1 flex gap-4">
-              <div className="relative flex-1 max-w-md">
+            <div className="flex-1 flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search principals by name, email, phone, or school..."
@@ -342,22 +365,44 @@ export default function Principals() {
                 />
               </div>
               
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-4 py-2 border rounded-md bg-background"
-                title="Filter by status"
-              >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             
-            <Button onClick={handleCreatePrincipal}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Principal
-            </Button>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center border rounded-md p-1 bg-muted/40">
+                <Button
+                  variant={viewMode === 'table' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('table')}
+                  className="h-8 px-3 hidden md:flex"
+                >
+                  <List className="h-4 w-4 mr-1.5" />
+                  Table
+                </Button>
+                <Button
+                  variant={viewMode === 'card' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('card')}
+                  className="h-8 px-3"
+                >
+                  <LayoutGrid className="h-4 w-4 mr-1.5" />
+                  Card
+                </Button>
+              </div>
+              <Button onClick={handleCreatePrincipal}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Principal
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -379,7 +424,7 @@ export default function Principals() {
                   : 'Get started by creating your first principal'}
               </p>
             </div>
-          ) : (
+          ) : viewMode === 'table' ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -482,6 +527,94 @@ export default function Principals() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredPrincipals.map((principal) => (
+                <Card key={principal.id} className="border border-border/60 hover:shadow-md transition-all">
+                  <CardContent className="p-5 space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <UserCircle className="h-10 w-10 text-primary bg-primary/10 rounded-full p-1" />
+                        <div>
+                          <h4 className="font-semibold text-base text-foreground leading-tight">{principal.full_name}</h4>
+                          <code className="text-xs bg-muted px-1.5 py-0.5 rounded text-muted-foreground">@{principal.username}</code>
+                        </div>
+                      </div>
+                      <Badge variant={principal.status === 'active' ? 'default' : 'secondary'}>
+                        {principal.status}
+                      </Badge>
+                    </div>
+
+                    <div className="space-y-2 text-sm text-muted-foreground border-t pt-3">
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-muted-foreground/75" />
+                        <span className="truncate">{principal.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-muted-foreground/75" />
+                        <span>{principal.phone}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-muted-foreground/75" />
+                        {principal.school ? (
+                          <div className="truncate">
+                            <span className="font-medium text-foreground">{principal.school.name}</span>
+                            <span className="text-xs text-muted-foreground block">Code: {principal.school.school_code}</span>
+                          </div>
+                        ) : (
+                          <span className="text-xs italic text-muted-foreground/60">Not Assigned</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 border-t pt-3">
+                      <Button variant="outline" size="sm" onClick={() => handleViewDetails(principal)}>
+                        <Eye className="h-3.5 w-3.5 mr-1" /> View
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem onClick={() => handleEditPrincipal(principal)}>
+                            <Edit className="mr-2 h-4 w-4" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {principal.school_id ? (
+                            <DropdownMenuItem onClick={() => handleUnassignSchool(principal)}>
+                              <Unlink className="mr-2 h-4 w-4" /> Unassign School
+                            </DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem onClick={() => handleAssignSchool(principal)}>
+                              <Link className="mr-2 h-4 w-4" /> Assign to School
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleResendCredentials(principal)}>
+                            <Mail className="mr-2 h-4 w-4" /> Resend Credentials
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleResetPassword(principal)}>
+                            <Key className="mr-2 h-4 w-4" /> Reset Password
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleToggleStatus(principal)}>
+                            {principal.status === 'active' ? 'Deactivate' : 'Activate'}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteClick(principal)}
+                            className="text-destructive"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           )}
         </CardContent>

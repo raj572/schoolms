@@ -209,12 +209,14 @@ const ExamReport = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="results" className="space-y-4">
-        <TabsList>
-          <TabsTrigger  value="results">Exam Results</TabsTrigger>
-          <TabsTrigger value="analysis">Subject Analysis</TabsTrigger>
-          <TabsTrigger value="toppers">Toppers List</TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="results" className="space-y-4 w-full">
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="flex min-w-max w-full bg-muted/60 p-1">
+            <TabsTrigger value="results">Exam Results</TabsTrigger>
+            <TabsTrigger value="analysis">Subject Analysis</TabsTrigger>
+            <TabsTrigger value="toppers">Toppers List</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="results" className="space-y-4">
           {/* Filters */}

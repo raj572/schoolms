@@ -133,27 +133,27 @@ const TeacherProfile = () => {
     : [];
 
   return (
-    <div className="space-y-6 my-12 ml-12 mr-12">
-      <div className="flex items-center justify-between">
+    <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-bold ">My Profile</h1>
-          <p className="text-gray-500 text-xs">View and manage your profile information</p>
+          <h1 className="text-xl md:text-2xl font-bold">My Profile</h1>
+          <p className="text-muted-foreground text-sm mt-1">View and manage your profile information</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Link to="/teacher/dashboard">
-            <Button variant="outline">
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>
           </Link>
           <Link to="/teacher/change-password">
-            <Button variant="outline">
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">
               <Lock className="w-4 h-4 mr-2" />
               Change Password
             </Button>
           </Link>
           <Link to="/teacher/edit-profile">
-            <Button>
+            <Button size="sm" className="w-full sm:w-auto">
               <Edit className="w-4 h-4 mr-2" />
               Edit Profile
             </Button>

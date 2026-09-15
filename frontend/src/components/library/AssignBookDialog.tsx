@@ -288,7 +288,7 @@ const AssignBookDialog = ({ open, onOpenChange, onSuccess, schoolId }: AssignBoo
                     </div>
                   ) : (
                     students.map((person) => (
-                      <SelectItem key={person.id || person.student_id} value={(person.id || person.student_id).toString()}>
+                      <SelectItem key={person.student_id || person.id} value={(person.student_id || person.id).toString()}>
                         {person.candidate_name || person.name || `${person.first_name || ''} ${person.last_name || ''}`.trim() || 'Unknown'}
                         {person.class ? ` - Class ${person.class}` : ""}
                       </SelectItem>

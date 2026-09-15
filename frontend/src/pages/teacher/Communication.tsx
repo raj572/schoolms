@@ -193,26 +193,26 @@ const TeacherCommunication = () => {
   const unreadCount = messages.filter(m => !m.read).length;
 
   return (
-    <div className="p-8 space-y-8 bg-gradient-subtle min-h-screen ml-9">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 bg-gradient-subtle min-h-screen ml-9">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-bold ">
+          <h1 className="text-lg font-bold">
             Teacher Communication
           </h1>
-          <p className="text-gray-500 text-xs mt-2">
+          <p className="text-gray-500 text-xs mt-1">
             Stay connected with your colleagues and administration
           </p>
         </div>
         
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <Dialog open={isComposeOpen} onOpenChange={setIsComposeOpen}>
             <DialogTrigger asChild>
-              <Button >
+              <Button>
                 <Send className="mr-2 h-4 w-4" />
                 Compose Message
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="w-[95%] sm:max-w-[500px]">
               <DialogHeader>
                 <DialogTitle className="text-center text-md">Compose New Message</DialogTitle>
                 
@@ -294,7 +294,7 @@ const TeacherCommunication = () => {
                 New Announcement
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="w-[95%] sm:max-w-[500px]">
               <DialogHeader>
                 <DialogTitle>Create Announcement</DialogTitle>
                 <DialogDescription>
@@ -372,7 +372,7 @@ const TeacherCommunication = () => {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Unread Messages</CardTitle>

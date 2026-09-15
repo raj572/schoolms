@@ -474,14 +474,16 @@ export const SchoolInfo = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="basic">Basic Info</TabsTrigger>
-          <TabsTrigger value="contact">Contact</TabsTrigger>
-          <TabsTrigger value="principal">Principal</TabsTrigger>
-          <TabsTrigger value="facilities">Facilities</TabsTrigger>
-          <TabsTrigger value="achievements">Achievements</TabsTrigger>
-          <TabsTrigger value="timings">Timings</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="flex min-w-max w-full grid-cols-6 bg-muted/60 p-1">
+            <TabsTrigger value="basic">Basic Info</TabsTrigger>
+            <TabsTrigger value="contact">Contact</TabsTrigger>
+            <TabsTrigger value="principal">Principal</TabsTrigger>
+            <TabsTrigger value="facilities">Facilities</TabsTrigger>
+            <TabsTrigger value="achievements">Achievements</TabsTrigger>
+            <TabsTrigger value="timings">Timings</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Basic Info Tab */}
         <TabsContent value="basic" className="space-y-4">

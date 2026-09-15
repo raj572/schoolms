@@ -159,62 +159,62 @@ const Transport = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
           <Card>
-            <CardHeader className="text-center">
+            <CardHeader className="text-center pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Total Buses</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex justify-center items-center pb-6">
               {loading ? (
-                <Skeleton className="h-8 w-16 ml-16" />
+                <Skeleton className="h-8 w-16" />
               ) : (
-                <div className="flex items-center space-x-2 ml-16">
-                  <Bus className="h-4 w-4 text-blue-600" />
-                  <div className="text-xl font-bold text-foreground">{statistics?.totalBuses || 0}</div>
+                <div className="flex items-center space-x-2">
+                  <Bus className="h-5 w-5 text-blue-500" />
+                  <div className="text-2xl font-bold text-foreground">{statistics?.totalBuses || 0}</div>
                 </div>
               )}
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className="text-center">
+            <CardHeader className="text-center pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Active Routes</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex justify-center items-center pb-6">
               {loading ? (
-                <Skeleton className="h-8 w-16 ml-14 -my-4" />
+                <Skeleton className="h-8 w-16" />
               ) : (
-                <div className="flex items-center space-x-2 ml-14 -my-4">
-                  <Route className="h-4 w-4 text-green-600" />
+                <div className="flex items-center space-x-2">
+                  <Route className="h-5 w-5 text-emerald-500" />
                   <div className="text-2xl font-bold text-foreground">{statistics?.activeRoutes || 0}</div>
                 </div>
               )}
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className="text-center">
+            <CardHeader className="text-center pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Students Using Transport</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex justify-center items-center pb-6">
               {loading ? (
-                <Skeleton className="h-8 w-16 ml-12 -my-2" />
+                <Skeleton className="h-8 w-16" />
               ) : (
-                <div className="flex items-center space-x-2 ml-12 -my-2">
-                  <Users className="h-4 w-4 text-purple-600" />
+                <div className="flex items-center space-x-2">
+                  <Users className="h-5 w-5 text-purple-500" />
                   <div className="text-2xl font-bold text-foreground">{statistics?.studentsUsingTransport || 0}</div>
                 </div>
               )}
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className="text-center">
+            <CardHeader className="text-center pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Total Capacity</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex justify-center items-center pb-6">
               {loading ? (
-                <Skeleton className="h-8 w-16 ml-14 -my-2" />
+                <Skeleton className="h-8 w-16" />
               ) : (
-                <div className="flex items-center space-x-2 ml-14 -my-2">
-                  <MapPin className="h-4 w-4 text-orange-600" />
+                <div className="flex items-center space-x-2">
+                  <MapPin className="h-5 w-5 text-amber-500" />
                   <div className="text-2xl font-bold text-foreground">{statistics?.totalCapacity || 0}</div>
                 </div>
               )}
@@ -222,13 +222,15 @@ const Transport = () => {
           </Card>
         </div>
 
-        <Card>
+        <Card className="border border-border/60 shadow-sm overflow-hidden">
           <CardContent className="p-0">
             <Tabs defaultValue="buses" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 m-6 mb-0">
-                <TabsTrigger value="buses">Bus Fleet</TabsTrigger>
-                <TabsTrigger value="assignments">Student Assignments</TabsTrigger>
-              </TabsList>
+              <div className="border-b border-border/60 px-6 pt-4">
+                <TabsList className="grid w-full grid-cols-2 bg-muted/60 p-1">
+                  <TabsTrigger value="buses">Bus Fleet</TabsTrigger>
+                  <TabsTrigger value="assignments">Student Assignments</TabsTrigger>
+                </TabsList>
+              </div>
 
               {/* Bus Fleet Tab */}
               <TabsContent value="buses" className="p-6 pt-4">

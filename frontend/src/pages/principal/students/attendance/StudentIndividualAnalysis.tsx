@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -233,17 +234,19 @@ const StudentIndividualAnalysis: React.FC = () => {
           <div className="flex items-center gap-4">
             <div className="space-y-2">
               <Label htmlFor="date-range">Date Range</Label>
-              <select
-                id="date-range"
+              <Select
                 value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
-                aria-label="Select date range"
+                onValueChange={(val) => setDateRange(val)}
               >
-                <option value="week">Last 7 Days</option>
-                <option value="month">This Month</option>
-                <option value="year">This Year</option>
-              </select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Date Range" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Last 7 Days</SelectItem>
+                  <SelectItem value="month">This Month</SelectItem>
+                  <SelectItem value="year">This Year</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="ml-auto">
               <Button variant="outline" size="sm">

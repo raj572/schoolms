@@ -164,12 +164,14 @@ const StudentDetails = () => {
 
         {/* Detailed Information Tabs */}
         <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="personal">Personal</TabsTrigger>
-            <TabsTrigger value="academic">Academic</TabsTrigger>
-            <TabsTrigger value="parent">Parent/Guardian</TabsTrigger>
-            <TabsTrigger value="attendance">Attendance</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto pb-2">
+            <TabsList className="flex min-w-max w-full grid-cols-4 bg-muted/60 p-1">
+              <TabsTrigger value="personal">Personal</TabsTrigger>
+              <TabsTrigger value="academic">Academic</TabsTrigger>
+              <TabsTrigger value="parent">Parent/Guardian</TabsTrigger>
+              <TabsTrigger value="attendance">Attendance</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="personal" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

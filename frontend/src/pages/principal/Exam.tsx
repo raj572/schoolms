@@ -421,13 +421,15 @@ export const Exam = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="schedule" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="schedule">Exam Schedule</TabsTrigger>
-          <TabsTrigger value="mark-entry">Marks Entry</TabsTrigger>
-          <TabsTrigger value="results">Results Overview</TabsTrigger>
-          <TabsTrigger value="students">Student Results</TabsTrigger>
-          <TabsTrigger value="reports">Report Cards</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="flex min-w-max w-full grid-cols-5 bg-muted/60 p-1">
+            <TabsTrigger value="schedule">Exam Schedule</TabsTrigger>
+            <TabsTrigger value="mark-entry">Marks Entry</TabsTrigger>
+            <TabsTrigger value="results">Results Overview</TabsTrigger>
+            <TabsTrigger value="students">Student Results</TabsTrigger>
+            <TabsTrigger value="reports">Report Cards</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Exam Schedule Tab */}
         <TabsContent value="schedule" className="space-y-4">

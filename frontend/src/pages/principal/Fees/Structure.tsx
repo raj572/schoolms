@@ -168,12 +168,14 @@ export const FeesManagement = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="structure" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="structure">Fee Structure</TabsTrigger>
-          <TabsTrigger value="payments">Payments</TabsTrigger>
-          <TabsTrigger value="dues">Outstanding Dues</TabsTrigger>
-          <TabsTrigger value="services">Fee Services</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="flex min-w-max w-full grid-cols-4 bg-muted/60 p-1">
+            <TabsTrigger value="structure">Fee Structure</TabsTrigger>
+            <TabsTrigger value="payments">Payments</TabsTrigger>
+            <TabsTrigger value="dues">Outstanding Dues</TabsTrigger>
+            <TabsTrigger value="services">Fee Services</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Fee Structure Tab */}
         <TabsContent value="structure" className="space-y-4">

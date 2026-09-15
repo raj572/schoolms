@@ -59,17 +59,44 @@ function LoginPage() {
   const [schools, setSchools] = useState<School[]>([])
 
   useEffect(() => {
-    const fetchSchools = async () => {
-      const schoolList = await getSchoolList()
+    const fetchSchoolsAndPrefill = async () => {
+      const schoolList = await getSchoolList();
 
       if (schoolList.length === 0) {
-        toast.error("Failed to fetch schools")
-      } else {
-        setSchools(schoolList)
+        toast.error("Failed to fetch schools");
+        return;
       }
-    }
-    fetchSchools()
-  }, [getSchoolList])
+
+      setSchools(schoolList);
+
+      // Read URL query parameters for pre-filling credentials
+      const searchParams = new URLSearchParams(window.location.search);
+      const emailParam = searchParams.get('email');
+      const roleParam = searchParams.get('role');
+      const schoolIdParam = searchParams.get('school_id');
+
+      if (emailParam || roleParam || schoolIdParam) {
+        // Find matching school by ID or fallback to the first school in the list
+        let matchedSchool = schoolList.find(
+          (s: School) => String(s.id) === String(schoolIdParam)
+        );
+
+        if (!matchedSchool && schoolList.length > 0) {
+          matchedSchool = schoolList[0];
+        }
+
+        setFormData(prev => ({
+          ...prev,
+          email: emailParam || prev.email,
+          role: roleParam || prev.role,
+          school_id: matchedSchool ? String(matchedSchool.id) : prev.school_id,
+          password: "password",
+        }));
+      }
+    };
+
+    fetchSchoolsAndPrefill();
+  }, [getSchoolList]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -201,19 +228,15 @@ function LoginPage() {
                   School
                 </Label>
                 <Select
-                value={formData.school_id ? String(formData.school_id) : ""}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, school_id:value })
-                }
-                disabled={isLoggingIn}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select School">
-                    {formData.school_id
-                      ? schools.find((s) => s.id === formData.school_id)?.name
-                      : "Select School"}
-                  </SelectValue>
-                </SelectTrigger>
+                  value={formData.school_id ? String(formData.school_id) : ""}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, school_id: value })
+                  }
+                  disabled={isLoggingIn}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select School" />
+                  </SelectTrigger>
 
                 <SelectContent>
                   {schools.map((school) => (

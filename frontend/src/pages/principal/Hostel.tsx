@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Plus, Building, Bed, Users, Home, TrendingUp, DollarSign, RefreshCw, Edit, Trash2 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -368,15 +369,16 @@ const Hostel = () => {
         </div>
         )}
 
-        {/* Main Content */}
-        <Card>
+        <Card className="border border-border/60 shadow-sm overflow-hidden">
           <CardContent className="p-0">
             <Tabs defaultValue="allocations" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 m-6 mb-0">
-                <TabsTrigger value="allocations">Room Allocations</TabsTrigger>
-                <TabsTrigger value="rooms">Room Management</TabsTrigger>
-                <TabsTrigger value="buildings">Buildings</TabsTrigger>
-              </TabsList>
+              <div className="border-b border-border/60 px-6 pt-4">
+                <TabsList className="grid w-full grid-cols-3 bg-muted/60 p-1">
+                  <TabsTrigger value="allocations">Room Allocations</TabsTrigger>
+                  <TabsTrigger value="rooms">Room Management</TabsTrigger>
+                  <TabsTrigger value="buildings">Buildings</TabsTrigger>
+                </TabsList>
+              </div>
 
               {/* Room Allocations Tab */}
               <TabsContent value="allocations" className="p-6 pt-4">
@@ -387,15 +389,19 @@ const Hostel = () => {
                       <Plus className="h-4 w-4 mr-2" />
                       Allocate Room
                     </Button>
-                    <select
+                    <Select
                       value={allocationFilter}
-                      onChange={(e) => setAllocationFilter(e.target.value as any)}
-                      className="border rounded-md px-3 py-2 text-sm"
+                      onValueChange={(val) => setAllocationFilter(val as any)}
                     >
-                      <option value="active">Active Only</option>
-                      <option value="vacated">Vacated</option>
-                      <option value="all">All</option>
-                    </select>
+                      <SelectTrigger className="w-[140px] text-sm">
+                        <SelectValue placeholder="Select Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Active Only</SelectItem>
+                        <SelectItem value="vacated">Vacated</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
+                      </SelectContent>
+                    </Select>
               <div className="relative w-64">
                 <Search className="h-4 w-4 absolute left-3 top-3 text-muted-foreground" />
                       <Input

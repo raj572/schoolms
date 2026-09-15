@@ -18,6 +18,13 @@ import {
   CreditCard
 } from 'lucide-react';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -269,16 +276,16 @@ export default function Schools() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <select
-              className="px-4 py-2 border rounded-md"
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              aria-label="Filter by status"
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-full md:w-48">
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex gap-4 mt-4">
@@ -308,16 +315,16 @@ export default function Schools() {
                     <Building2 className="h-8 w-8 text-primary" />
                   </div>
                   
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="text-xl font-semibold text-foreground">{school.name}</h3>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <h3 className="text-xl font-semibold text-foreground truncate">{school.name}</h3>
                         <p className="text-sm text-muted-foreground">{school.city}, {school.state}</p>
                         {school.school_code && (
-                          <p className="text-xs text-muted-foreground mt-1">Code: {school.school_code}</p>
+                          <p className="text-xs text-muted-foreground mt-1 font-mono">Code: {school.school_code}</p>
                         )}
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         {school.board && <Badge variant="outline">{school.board}</Badge>}
                         {getSubscriptionBadge(school.id)}
                         <Badge className={getStatusColor(school.status)}>
@@ -326,29 +333,29 @@ export default function Schools() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 bg-muted/30 p-3 rounded-lg border border-border/40">
                       {school.principal_name && (
-                      <div>
-                        <p className="text-xs text-gray-500">Principal</p>
-                        <p className="text-sm font-medium">{school.principal_name}</p>
-                      </div>
+                        <div className="min-w-0">
+                          <p className="text-xs text-muted-foreground font-medium">Principal</p>
+                          <p className="text-sm font-semibold text-foreground truncate">{school.principal_name}</p>
+                        </div>
                       )}
-                      <div>
-                        <p className="text-xs text-gray-500">Email</p>
-                        <p className="text-sm font-medium">{school.email}</p>
+                      <div className="min-w-0">
+                        <p className="text-xs text-muted-foreground font-medium">Email</p>
+                        <p className="text-sm font-semibold text-foreground truncate" title={school.email}>{school.email || 'N/A'}</p>
                       </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Phone</p>
-                        <p className="text-sm font-medium">{school.phone}</p>
+                      <div className="min-w-0">
+                        <p className="text-xs text-muted-foreground font-medium">Phone</p>
+                        <p className="text-sm font-semibold text-foreground truncate">{school.phone || 'N/A'}</p>
                       </div>
                     </div>
 
                     {school.created_at && (
-                    <div className="flex items-center gap-6 mt-4 text-xs text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
+                      <div className="flex items-center gap-6 mt-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5" />
                           <span>Created: {new Date(school.created_at).toLocaleDateString()}</span>
-                      </div>
+                        </div>
                       </div>
                     )}
                   </div>

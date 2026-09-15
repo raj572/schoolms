@@ -33,7 +33,11 @@ export interface School {
 // Subscription Assignment interface
 export interface SubscriptionAssignment {
   school_id: number;
-  subscription_plan_id: number;
+  subscription_plan_id?: number;
+  plan_code?: string;
+  billing_cycle?: 'monthly' | 'annual';
+  trial_days?: number;
+  user_id?: number;
   start_date?: string;
   end_date?: string;
 }
@@ -52,6 +56,8 @@ export interface Principal {
   administrator_id?: number;
   created_at?: string;
   updated_at?: string;
+  role?: string;
+  school?: School | null;
 }
 
 export interface PrincipalFormData {

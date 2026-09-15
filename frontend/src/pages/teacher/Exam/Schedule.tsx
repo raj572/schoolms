@@ -195,52 +195,65 @@ const ExamSchedule = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {exams.map((exam) => (
-                  <div key={exam.id} className="bg-gradient-muted p-4 rounded-lg border transition-smooth hover:shadow-card">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-md">{exam.subject}</h3>
-                          {getExamTypeBadge(exam.type)}
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
-                          <div className="flex items-center gap-2 text-xs">
-                            <CalendarIcon className="h-4 w-4 " />
-                            {exam.date}
-                          </div>
-                          <div className="flex text-xs items-center gap-2">
-                            <Clock className="h-4 w-4" />
-                            {exam.time}
-                          </div>
-                          <div className="flex items-center text-xs gap-2">
-                            <MapPin className="h-4 w-4" />
-                            {exam.room}
-                          </div>
-                          <div className="flex text-xs items-center gap-2">
-                            <Users className="h-4 w-4" />
-                            {exam.students} students
-                          </div>
-                        </div>
-                        
-                        <div className="mt-3">
-                          <span className="text-xs">
-                            <strong>Class:</strong> {exam.class} | <strong>Teacher:</strong> {exam.teacher}
-                          </span>
-                        </div>
+                {(() => {
+                  const todayStr = new Date().toISOString().split('T')[0];
+                  const upcomingExams = exams.filter(exam => exam.date >= todayStr);
+
+                  if (upcomingExams.length === 0) {
+                    return (
+                      <div className="text-center py-8 text-muted-foreground text-sm">
+                        No upcoming exams scheduled.
                       </div>
-                      
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Edit3 className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10"  onClick={() => handleDelete(exam.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                    );
+                  }
+
+                  return upcomingExams.map((exam) => (
+                    <div key={exam.id} className="bg-gradient-muted p-4 rounded-lg border transition-smooth hover:shadow-card">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="font-semibold text-md">{exam.subject}</h3>
+                            {getExamTypeBadge(exam.type)}
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-2 text-xs">
+                              <CalendarIcon className="h-4 w-4 " />
+                              {exam.date}
+                            </div>
+                            <div className="flex text-xs items-center gap-2">
+                              <Clock className="h-4 w-4" />
+                              {exam.time}
+                            </div>
+                            <div className="flex items-center text-xs gap-2">
+                              <MapPin className="h-4 w-4" />
+                              {exam.room}
+                            </div>
+                            <div className="flex text-xs items-center gap-2">
+                              <Users className="h-4 w-4" />
+                              {exam.students} students
+                            </div>
+                          </div>
+                          
+                          <div className="mt-3">
+                            <span className="text-xs">
+                              <strong>Class:</strong> {exam.class} | <strong>Teacher:</strong> {exam.teacher}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Edit3 className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10"  onClick={() => handleDelete(exam.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ));
+                })()}
               </div>
             </CardContent>
           </Card>

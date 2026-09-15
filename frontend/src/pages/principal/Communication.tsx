@@ -303,12 +303,14 @@ export const Communication = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="messages" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 shadow-md">
-          <TabsTrigger value="messages">Messages</TabsTrigger>
-          <TabsTrigger value="notices">Notices</TabsTrigger>
-          <TabsTrigger value="announcements">Announcements</TabsTrigger>
-          <TabsTrigger value="compose">Compose</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="flex min-w-max w-full grid-cols-4 bg-muted/60 p-1">
+            <TabsTrigger value="messages">Messages</TabsTrigger>
+            <TabsTrigger value="notices">Notices</TabsTrigger>
+            <TabsTrigger value="announcements">Announcements</TabsTrigger>
+            <TabsTrigger value="compose">Compose</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Messages Tab */}
         <TabsContent value="messages" className="space-y-4">

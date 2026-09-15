@@ -128,6 +128,8 @@ import SuperAdminPlans from "./pages/super-admin/SubscriptionPlans";
 import SuperAdminSchools from "./pages/super-admin/Schools";
 import SuperAdminEnquiries from "./pages/super-admin/Enquiries";
 import SuperAdminAllUsers from "./pages/super-admin/AllUsers";
+import SuperAdminSettings from "./pages/super-admin/Settings";
+import SuperAdminTestingUsers from "./pages/super-admin/TestingUsers";
 import SuperAdminLayout from "./components/SuperAdminLayout";
 import HomeLayout from "./pages/landing/HomeLayout";
 import About from "./pages/landing/About";
@@ -164,6 +166,8 @@ const App = () => (
             <Route path="enquiries" element={<SuperAdminEnquiries />} />
             <Route path="users" element={<SuperAdminAllUsers />} />
             <Route path="schools" element={<SuperAdminSchools />} />
+            <Route path="testing-users" element={<SuperAdminTestingUsers />} />
+            <Route path="settings" element={<SuperAdminSettings />} />
           </Route>
         </Route>
 

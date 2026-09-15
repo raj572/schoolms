@@ -18,6 +18,7 @@ interface SubscriptionPaymentButtonProps {
   billingCycle: 'monthly' | 'annual';
   amount: number;
   onSuccess: () => void;
+  onStartPayment?: () => void;
   disabled?: boolean;
   trialDays?: number;  // Optional trial days from the plan
 }
@@ -29,6 +30,7 @@ export default function SubscriptionPaymentButton({
   billingCycle,
   amount,
   onSuccess,
+  onStartPayment,
   disabled = false,
   trialDays = 0,
 }: SubscriptionPaymentButtonProps) {
@@ -68,6 +70,11 @@ export default function SubscriptionPaymentButton({
 
       const transaction = orderResponse.data;
       setIsLoading(false);
+
+      // Close the parent Radix Dialog modal so it doesn't intercept pointer events or focus
+      if (onStartPayment) {
+        onStartPayment();
+      }
 
       // Step 3: Open Razorpay checkout
       const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY;
@@ -142,9 +149,10 @@ export default function SubscriptionPaymentButton({
         // },
         theme: { 
           color: '#3b82f6',
-          backdrop_color: '#000000',
+          backdrop_color: 'rgba(0,0,0,0.7)',
         },
         modal: {
+          confirm_close: true,
           ondismiss: () => {
             console.log('Razorpay checkout dismissed');
             setIsLoading(false);

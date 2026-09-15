@@ -55,8 +55,29 @@ class LibraryBookIssueRepository
      */
     public function getByBorrower(int $borrowerId, string $borrowerType): Collection
     {
-        return LibraryBookIssue::where('borrower_id', $borrowerId)
-            ->where('borrower_type', $borrowerType)
+        // Resolve student_details_id if student user id was provided
+        $borrowerIds = [$borrowerId];
+        
+        if (str_contains(strtolower($borrowerType), 'student')) {
+            $studentDetail = DB::table('student_details')
+                ->where('student_id', $borrowerId)
+                ->orWhere('id', $borrowerId)
+                ->first();
+
+            if ($studentDetail) {
+                $borrowerIds[] = $studentDetail->id;
+                $borrowerIds[] = $studentDetail->student_id;
+            }
+        }
+
+        return LibraryBookIssue::whereIn('borrower_id', array_unique($borrowerIds))
+            ->where(function ($query) use ($borrowerType) {
+                if (str_contains(strtolower($borrowerType), 'student')) {
+                    $query->whereIn('borrower_type', ['student', 'App\\Models\\StudentDetails']);
+                } else {
+                    $query->where('borrower_type', $borrowerType);
+                }
+            })
             ->with(['book'])
             ->orderBy('issue_date', 'desc')
             ->get();

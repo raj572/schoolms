@@ -455,34 +455,34 @@ export default function SubscriptionAssignmentDialog({
 
           {/* Plan Details */}
           {selectedPlan && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 shadow-sm">
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 shadow-sm text-foreground">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h4 className="font-bold text-lg text-blue-900 mb-1">
+                  <h4 className="font-bold text-lg text-foreground mb-1">
                     {selectedPlan.name}
                   </h4>
-                  <p className="text-sm text-blue-800">{selectedPlan.description}</p>
+                  <p className="text-sm text-muted-foreground">{selectedPlan.description}</p>
                 </div>
                 {selectedPlan.is_trial && (
-                  <Badge className="bg-blue-600 text-white">Trial</Badge>
+                  <Badge className="bg-primary text-primary-foreground">Trial</Badge>
                 )}
               </div>
               
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="w-4 h-4 text-blue-600" />
-                  <span className="text-gray-700">{selectedPlan.duration_days} days</span>
+                  <Calendar className="w-4 h-4 text-primary" />
+                  <span className="text-foreground/90">{selectedPlan.duration_days} days</span>
                 </div>
                 {selectedPlan.max_students && (
                   <div className="flex items-center gap-2 text-sm">
-                    <Users className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-700">Up to {selectedPlan.max_students} students</span>
+                    <Users className="w-4 h-4 text-primary" />
+                    <span className="text-foreground/90">Up to {selectedPlan.max_students} students</span>
                   </div>
                 )}
                 {selectedPlan.max_users && (
                   <div className="flex items-center gap-2 text-sm">
-                    <Users className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-700">Up to {selectedPlan.max_users} users</span>
+                    <Users className="w-4 h-4 text-primary" />
+                    <span className="text-foreground/90">Up to {selectedPlan.max_users} users</span>
                   </div>
                 )}
               </div>
@@ -490,7 +490,7 @@ export default function SubscriptionAssignmentDialog({
               {/* Features */}
               {selectedPlan.features && (
                 <div>
-                  <h5 className="font-semibold text-sm text-blue-900 mb-2">Key Features</h5>
+                  <h5 className="font-semibold text-sm text-foreground mb-2">Key Features</h5>
                   <ul className="space-y-2 max-h-32 overflow-y-auto">
                     {(() => {
                       // Normalize features to array
@@ -510,8 +510,8 @@ export default function SubscriptionAssignmentDialog({
                       }
 
                       return featuresArray.slice(0, 3).map((feature, index) => (
-                        <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
-                          <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
                           <span>{typeof feature === 'string' ? feature : String(feature)}</span>
                         </li>
                       ));
@@ -599,44 +599,44 @@ export default function SubscriptionAssignmentDialog({
 
           {/* Pricing Summary */}
           {selectedPlan && (
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4 shadow-sm">
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4 shadow-sm text-foreground">
               <div className="flex items-center justify-between mb-3">
                 <span className="font-semibold text-base">Total Amount</span>
-                <span className="text-3xl font-bold text-green-700">
+                <span className="text-3xl font-bold text-emerald-500">
                   ₹{calculateAmount().toLocaleString()}
                 </span>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Billing Period</span>
-                  <span className="capitalize font-medium">{billingCycle}</span>
+                  <span className="text-muted-foreground">Billing Period</span>
+                  <span className="capitalize font-medium text-foreground">{billingCycle}</span>
                 </div>
                 {billingCycle === 'annual' && calculateSavings() > 0 && (
-                  <div className="flex justify-between text-sm text-green-600">
+                  <div className="flex justify-between text-sm text-emerald-500">
                     <span>You save</span>
                     <span className="font-semibold">₹{calculateSavings().toLocaleString()}</span>
                   </div>
                 )}
               </div>
               {trialDays && trialDays > 0 ? (
-                <div className="mt-3 pt-3 border-t border-green-300">
-                  <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
-                    <Calendar className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                <div className="mt-3 pt-3 border-t border-emerald-500/20">
+                  <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 px-3 py-2 rounded-lg">
+                    <Calendar className="w-5 h-5 text-primary flex-shrink-0" />
                     <div className="flex-1">
-                      <p className="text-sm text-blue-900 font-semibold">
+                      <p className="text-sm text-foreground font-semibold">
                         {trialDays} days free trial
                       </p>
-                      <p className="text-xs text-blue-700">
+                      <p className="text-xs text-muted-foreground">
                         Payment required after trial ends
                       </p>
                     </div>
                   </div>
                 </div>
               ) : selectedPlan && !selectedPlan.is_trial ? (
-                <div className="mt-3 pt-3 border-t border-green-300">
-                  <div className="flex items-center gap-2 bg-amber-50 px-3 py-2 rounded-lg">
-                    <CreditCard className="w-5 h-5 text-amber-600 flex-shrink-0" />
-                    <span className="text-sm text-amber-900 font-medium">Payment required immediately</span>
+                <div className="mt-3 pt-3 border-t border-emerald-500/20">
+                  <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-3 py-2 rounded-lg">
+                    <CreditCard className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                    <span className="text-sm text-amber-400 font-medium">Payment required immediately</span>
                   </div>
                 </div>
               ) : null}
@@ -645,36 +645,36 @@ export default function SubscriptionAssignmentDialog({
 
           {/* Renewal Warning */}
           {activeSubscription && showRenewalWarning && (
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-lg p-4 shadow-md">
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 shadow-sm text-foreground">
               <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center mt-0.5">
-                  <Calendar className="w-5 h-5 text-white" />
+                <div className="flex-shrink-0 w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center mt-0.5">
+                  <Calendar className="w-5 h-5 text-amber-500" />
                 </div>
                 <div className="flex-1">
-                  <h5 className="font-bold text-base text-amber-900 mb-1">
+                  <h5 className="font-bold text-base text-amber-400 mb-1">
                     Active Subscription Detected
                   </h5>
-                  <p className="text-sm text-amber-800 mb-2">
+                  <p className="text-sm text-muted-foreground mb-2">
                     This school already has an active subscription.
                   </p>
-                  <div className="bg-white/50 rounded-md p-3 space-y-1 text-sm">
+                  <div className="bg-background/60 rounded-md p-3 space-y-1 text-sm border border-border/50">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-700">Current Plan:</span>
-                      <Badge className="bg-amber-600">{activeSubscription.plan?.name || 'Active Plan'}</Badge>
+                      <span className="text-muted-foreground">Current Plan:</span>
+                      <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">{activeSubscription.plan?.name || 'Active Plan'}</Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-700">Current Status:</span>
+                      <span className="text-muted-foreground">Current Status:</span>
                       <Badge variant="secondary" className="capitalize">{activeSubscription.status}</Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-700">Ends On:</span>
-                      <span className="font-medium text-amber-900">
+                      <span className="text-muted-foreground">Ends On:</span>
+                      <span className="font-medium text-foreground">
                         {new Date(activeSubscription.end_date).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
-                  <div className="mt-3 p-3 bg-amber-100 rounded-lg border border-amber-200">
-                    <p className="text-sm font-semibold text-amber-900">
+                  <div className="mt-3 p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                    <p className="text-sm font-semibold text-amber-400">
                       ⚠️ Important:
                     </p>
                     <p className="text-sm text-amber-800 mt-1">
@@ -790,6 +790,10 @@ export default function SubscriptionAssignmentDialog({
                 billingCycle={billingCycle as 'monthly' | 'annual'}
                 amount={calculateAmount()}
                 trialDays={selectedPlan.trial_days || 0}
+                onStartPayment={() => {
+                  // Temporarily close dialog so Radix modal overlay does not trap clicks or pointer events
+                  onOpenChange(false);
+                }}
                 onSuccess={() => {
                   onSuccess();
                   onOpenChange(false);

@@ -194,12 +194,14 @@ const FeeReports = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4 ">
-        <TabsList className='shadow-md'>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="pending">Pending Payments</TabsTrigger>
-          <TabsTrigger value="overdue">Overdue</TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="overview" className="space-y-4 w-full">
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="flex min-w-max w-full bg-muted/60 p-1">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="pending">Pending Payments</TabsTrigger>
+            <TabsTrigger value="overdue">Overdue</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="overview" className="space-y-4">
           {/* Filters */}

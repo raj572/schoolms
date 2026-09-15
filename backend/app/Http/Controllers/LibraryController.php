@@ -57,7 +57,8 @@ class LibraryController extends Controller
         }
 
         try {
-            $result = $this->libraryService->searchBooks($schoolId, $request->query);
+            $query = (string) $request->input('query');
+            $result = $this->libraryService->searchBooks($schoolId, $query);
             return response()->json($result, $result['status'] ? 200 : 400);
         } catch (Exception $e) {
             Log::error("LibraryController::searchBooks - " . $e->getMessage());
@@ -290,6 +291,72 @@ class LibraryController extends Controller
             return response()->json($result, $result['status'] ? 200 : 400);
         } catch (Exception $e) {
             Log::error("LibraryController::getStatistics - " . $e->getMessage());
+            return response()->json(['status' => false, 'message' => 'Server error'], 500);
+        }
+    }
+
+    // ==================== Digital Resources ====================
+
+    public function getDigitalResources(int $schoolId)
+    {
+        try {
+            $resources = \App\Models\DigitalResource::where('school_id', $schoolId)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Digital resources fetched successfully',
+                'data' => $resources,
+            ]);
+        } catch (Exception $e) {
+            Log::error("LibraryController::getDigitalResources - " . $e->getMessage());
+            return response()->json(['status' => false, 'message' => 'Server error'], 500);
+        }
+    }
+
+    public function createDigitalResource(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'school_id' => 'required|integer',
+            'title' => 'required|string|max:255',
+            'resource_type' => 'required|string',
+            'file_size' => 'nullable|string',
+            'file_path_url' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $data = $validator->validated();
+            $data['file_size'] = $data['file_size'] ?? '2.5 MB';
+            $data['downloads'] = rand(10, 250);
+
+            $resource = \App\Models\DigitalResource::create($data);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Digital resource created successfully',
+                'data' => $resource,
+            ], 201);
+        } catch (Exception $e) {
+            Log::error("LibraryController::createDigitalResource - " . $e->getMessage());
+            return response()->json(['status' => false, 'message' => 'Server error'], 500);
+        }
+    }
+
+    public function deleteDigitalResource(int $id)
+    {
+        try {
+            \App\Models\DigitalResource::destroy($id);
+            return response()->json([
+                'status' => true,
+                'message' => 'Digital resource deleted successfully',
+            ]);
+        } catch (Exception $e) {
+            Log::error("LibraryController::deleteDigitalResource - " . $e->getMessage());
             return response()->json(['status' => false, 'message' => 'Server error'], 500);
         }
     }

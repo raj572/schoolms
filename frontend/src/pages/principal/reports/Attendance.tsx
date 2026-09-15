@@ -211,12 +211,14 @@ const AttendanceReport = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="student-wise" className="space-y-4">
-        <TabsList className='shadow-md'>
-          <TabsTrigger value="student-wise">Student-wise</TabsTrigger>
-          <TabsTrigger value="daily">Daily Report</TabsTrigger>
-          <TabsTrigger value="mark-attendance">Mark Attendance</TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="student-wise" className="space-y-4 w-full">
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="flex min-w-max w-full bg-muted/60 p-1">
+            <TabsTrigger value="student-wise">Student-wise</TabsTrigger>
+            <TabsTrigger value="daily">Daily Report</TabsTrigger>
+            <TabsTrigger value="mark-attendance">Mark Attendance</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="student-wise" className="space-y-4">
           {/* Filters */}

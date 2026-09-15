@@ -236,6 +236,35 @@ Make sure you have the following installed on your development system:
 
 ---
 
+## 🧪 Feature Verification & Testing Mode
+
+> [!NOTE]  
+> **Testing Credentials & Role Accounts**  
+> All 9 system roles are pre-seeded in the database to test role-based features.
+
+### Quick Testing Credentials
+
+All test accounts use the **universal password**: `password`
+
+| Role | Email | Target Path | Notes |
+| :--- | :--- | :--- | :--- |
+| **Super Admin** | `superadmin@school.com` | `/super-admin/dashboard` | Platform owner |
+| **Administrator** | `admin@school.com` | `/administrator/dashboard` | School Admin |
+| **Principal** | `principal@school.com` | `/principal/dashboard` | School Head |
+| **Teacher** | `teacher@school.com` | `/teacher/dashboard` | Faculty |
+| **Student** | `student@school.com` | `/student/dashboard` | Class 10A Student |
+| **Parent** | `parent@school.com` | `/parent/dashboard` | Student Parent |
+| **Accountant** | `accountant@school.com` | `/accountant/dashboard` | Finance Manager |
+| **Librarian** | `librarian@school.com` | `/librarian/dashboard` | Library Manager |
+| **Warden** | `warden@school.com` | `/warden/dashboard` | Hostel Warden |
+
+To refresh test data in backend:
+```bash
+php artisan db:seed --class=RoleSeeder
+```
+
+---
+
 ## 📜 License
 
 This project is proprietary software developed for educational institution management. All rights reserved.

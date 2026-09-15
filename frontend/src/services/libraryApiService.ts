@@ -101,8 +101,29 @@ export const getOverdueIssues = async (schoolId: number) => {
   return response.data;
 };
 
+export const getBorrowerIssues = async (borrowerId: number, borrowerType: string = 'App\\Models\\StudentDetails') => {
+  const response = await apiClient.get(`/library/issues/borrower?borrower_id=${borrowerId}&borrower_type=${encodeURIComponent(borrowerType)}`);
+  return response.data;
+};
+
 export const extendDueDate = async (issueId: number, days: number) => {
   const response = await apiClient.post(`/library/issues/extend/${issueId}`, { days });
+  return response.data;
+};
+
+// Digital Resources
+export const getDigitalResources = async (schoolId: number) => {
+  const response = await apiClient.get(`/library/digital-resources/${schoolId}`);
+  return response.data;
+};
+
+export const createDigitalResource = async (data: { school_id: number; title: string; resource_type: string; file_size?: string; file_path_url?: string }) => {
+  const response = await apiClient.post(`/library/digital-resources/create`, data);
+  return response.data;
+};
+
+export const deleteDigitalResource = async (id: number) => {
+  const response = await apiClient.delete(`/library/digital-resources/delete/${id}`);
   return response.data;
 };
 

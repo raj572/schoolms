@@ -7,6 +7,7 @@ import {
   Users,
   Building2,
   DollarSign,
+  IndianRupee,
   CreditCard,
   AlertCircle,
   CheckCircle,
@@ -30,7 +31,7 @@ import {
 } from 'recharts';
 import { getAdministratorDashboard } from '@/services/administratorApiService';
 import { useToast } from '@/hooks/use-toast';
-import { SetupProgressBanner } from '@/components/dashboard/SetupProgressBanner';
+import { SetupProgressBanner } from '@/components/Dashboard/SetupProgressBanner';
 import { Button } from '@/components/ui/button';
 
 interface DashboardStats {
@@ -99,6 +100,27 @@ export default function AdministratorDashboard() {
   const [topSchools, setTopSchools] = useState<TopSchool[]>([]);
   const [recentSchools, setRecentSchools] = useState<RecentSchool[]>([]);
 
+  // Dynamic currency configuration from system settings
+  const currentCurrency = localStorage.getItem('sa_currency') || 'INR';
+  const getCurrencySymbol = (curr: string) => {
+    switch (curr) {
+      case 'USD': return '$';
+      case 'EUR': return '€';
+      case 'GBP': return '£';
+      case 'AED': return 'AED ';
+      case 'INR':
+      default: return '₹';
+    }
+  };
+  const currencySymbol = getCurrencySymbol(currentCurrency);
+
+  const CurrencyIcon = ({ className }: { className?: string }) => {
+    if (currentCurrency === 'INR') {
+      return <IndianRupee className={className} />;
+    }
+    return <DollarSign className={className} />;
+  };
+
   useEffect(() => {
     console.log('Administrator dashboard mounted, fetching data...');
     fetchDashboardData();
@@ -131,12 +153,12 @@ export default function AdministratorDashboard() {
   const kpiCards = [
     {
       title: 'Monthly Recurring Revenue',
-      value: `₹${(stats.monthly_revenue / 100000).toFixed(2)}L`,
-      change: stats.total_revenue > 0 ? `₹${(stats.total_revenue / 100000).toFixed(2)}L total` : 'N/A',
+      value: `${currencySymbol}${(stats.monthly_revenue / 100000).toFixed(2)}L`,
+      change: stats.total_revenue > 0 ? `${currencySymbol}${(stats.total_revenue / 100000).toFixed(2)}L total` : 'N/A',
       trend: 'up',
-      icon: DollarSign,
+      icon: CurrencyIcon,
       color: 'text-green-600',
-      bgColor: 'bg-green-50',
+      bgColor: 'bg-green-50 dark:bg-green-950/30',
     },
     {
       title: 'Active Schools',
@@ -244,7 +266,7 @@ export default function AdministratorDashboard() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="revenue" fill="#8b5cf6" name="Revenue (₹)" />
+                <Bar dataKey="revenue" fill="#8b5cf6" name={`Revenue (${currencySymbol.trim()})`} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

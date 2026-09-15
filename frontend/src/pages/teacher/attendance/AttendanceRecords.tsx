@@ -74,8 +74,11 @@ const AttendanceRecords: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
   useEffect(() => {
-    fetchInitialData();
-  }, []);
+    if (authUser?.school_id) {
+      fetchInitialData();
+      fetchRecords();
+    }
+  }, [authUser?.school_id]);
 
   const fetchInitialData = async () => {
     if (!authUser?.school_id) return;

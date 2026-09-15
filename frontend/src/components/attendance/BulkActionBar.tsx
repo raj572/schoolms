@@ -58,7 +58,7 @@ export const BulkActionBar: React.FC<BulkActionBarProps> = ({
             variant="outline"
             onClick={onMarkAllPresent}
             disabled={isSaving}
-            className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200"
+            className="bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
           >
             <CheckCircle className="w-4 h-4 mr-1" />
             Mark All Present
@@ -69,7 +69,7 @@ export const BulkActionBar: React.FC<BulkActionBarProps> = ({
             variant="outline"
             onClick={onMarkAllAbsent}
             disabled={isSaving}
-            className="bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200"
+            className="bg-rose-50 dark:bg-rose-950/20 hover:bg-rose-100 dark:hover:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800"
           >
             <XCircle className="w-4 h-4 mr-1" />
             Mark All Absent

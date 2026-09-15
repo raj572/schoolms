@@ -12,7 +12,7 @@ class SubscriptionMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  \Closure  $next
      * @return mixed
      */
@@ -29,8 +29,19 @@ class SubscriptionMiddleware
             ], 401);
         }
 
-        // Convert array to User model for compatibility
-        $user = \App\Models\User::find($authUserArray['id']);
+        // Resolve the user model correctly based on role
+        $jwtPayload = $request->input('jwt_payload');
+        $role = $jwtPayload['role'] ?? null;
+
+        if ($role === 'teacher') {
+            $user = \App\Models\Teacher::find($authUserArray['id']);
+        } elseif ($role === 'student') {
+            $user = \App\Models\Student::find($authUserArray['id']);
+        } elseif ($role === 'parent') {
+            $user = \App\Models\ParentModel::find($authUserArray['id']);
+        } else {
+            $user = \App\Models\User::find($authUserArray['id']);
+        }
 
         if (!$user) {
             return response()->json([
@@ -40,8 +51,8 @@ class SubscriptionMiddleware
             ], 401);
         }
 
-        // Check 1: Email verification
-        if (!$user->email_verified) {
+        // Check 1: Email verification (only for User models / administrators/principals/etc. who have this field)
+        if (isset($user->email_verified) && !$user->email_verified) {
             return response()->json([
                 'status' => false,
                 'message' => 'Please verify your email first.',
@@ -50,8 +61,8 @@ class SubscriptionMiddleware
             ], 403);
         }
 
-        // Check 2: School setup
-        if (!$user->school_setup_completed) {
+        // Check 2: School setup (only for User models / administrators/principals/etc. who have this field)
+        if (isset($user->school_setup_completed) && !$user->school_setup_completed) {
             return response()->json([
                 'status' => false,
                 'message' => 'Please complete school setup first.',
@@ -70,11 +81,13 @@ class SubscriptionMiddleware
 
             if (!$subscription) {
                 // Subscription expired or not found
-                // Update user status to keep it in sync
-                $user->update([
-                    'subscription_active' => false,
-                    'registration_status' => 'suspended',
-                ]);
+                // Update user status if it's a model that has this field and method
+                if (isset($user->subscription_active) && method_exists($user, 'update')) {
+                    $user->update([
+                        'subscription_active' => false,
+                        'registration_status' => 'suspended',
+                    ]);
+                }
 
                 return response()->json([
                     'status' => false,
@@ -85,14 +98,16 @@ class SubscriptionMiddleware
             }
             
             // If subscription is active in DB but user flag is false, update it
-            if (!$user->subscription_active && $subscription) {
-                $user->update([
-                    'subscription_active' => true,
-                ]);
+            if (isset($user->subscription_active) && !$user->subscription_active && $subscription) {
+                if (method_exists($user, 'update')) {
+                    $user->update([
+                        'subscription_active' => true,
+                    ]);
+                }
             }
         } else {
             // No school assigned yet
-            if (!$user->subscription_active) {
+            if (isset($user->subscription_active) && !$user->subscription_active) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No active subscription. Please select a plan.',
@@ -104,7 +119,7 @@ class SubscriptionMiddleware
 
         // Check if trial has ended
         if ($subscription && $subscription->status === 'trial' && $subscription->trial_end_date) {
-            if ($subscription->trial_end_date->isPast()) {
+            if (\Carbon\Carbon::parse($subscription->trial_end_date)->isPast()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Your trial period has ended. Please subscribe to continue.',

@@ -1,7 +1,7 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import { Button } from "./ui/button";
-import { LogOut, LayoutDashboard, CreditCard, School, MessageSquare, Users } from "lucide-react";
+import { LogOut, LayoutDashboard, CreditCard, School, MessageSquare, Users, Settings, UserCheck } from "lucide-react";
 
 export default function SuperAdminLayout() {
   const { authUser, isCheckingAuth, logout } = useAuthStore();
@@ -75,7 +75,7 @@ export default function SuperAdminLayout() {
                 Enquiries
               </Button>
               <Button
-                variant={location.pathname.includes('users') ? 'default' : 'ghost'}
+                variant={location.pathname === '/super-admin/users' ? 'default' : 'ghost'}
                 className="w-full justify-start"
                 onClick={() => navigate('/super-admin/users')}
               >
@@ -89,6 +89,24 @@ export default function SuperAdminLayout() {
               >
                 <School className="mr-2 h-4 w-4" />
                 Schools
+              </Button>
+
+              <Button
+                variant={location.pathname.includes('testing-users') ? 'default' : 'ghost'}
+                className="w-full justify-start"
+                onClick={() => navigate('/super-admin/testing-users')}
+              >
+                <UserCheck className="mr-2 h-4 w-4" />
+                Testing Users
+              </Button>
+
+              <Button
+                variant={location.pathname.includes('settings') ? 'default' : 'ghost'}
+                className="w-full justify-start"
+                onClick={() => navigate('/super-admin/settings')}
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
               </Button>
             </nav>
           </div>

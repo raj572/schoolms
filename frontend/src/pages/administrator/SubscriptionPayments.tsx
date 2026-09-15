@@ -9,7 +9,9 @@ import {
   XCircle,
   Clock,
   Download,
-  Eye
+  Eye,
+  LayoutGrid,
+  List
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Heading from '@/components/common/Heading';
@@ -27,6 +29,20 @@ export default function SubscriptionPayments() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setViewMode('card');
+      } else {
+        setViewMode('table');
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -222,6 +238,26 @@ export default function SubscriptionPayments() {
                 Failed
               </Button>
             </div>
+            <div className="flex items-center gap-2 border rounded-md p-1 bg-muted/40 self-start md:self-auto">
+              <Button
+                variant={viewMode === 'table' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('table')}
+                className="h-8 px-3 hidden md:flex"
+              >
+                <List className="h-4 w-4 mr-1.5" />
+                Table
+              </Button>
+              <Button
+                variant={viewMode === 'card' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('card')}
+                className="h-8 px-3"
+              >
+                <LayoutGrid className="h-4 w-4 mr-1.5" />
+                Card
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -232,40 +268,38 @@ export default function SubscriptionPayments() {
           <CardTitle>Payment Transactions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Order ID</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">School</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Plan</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Amount</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Cycle</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Date</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Status</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTransactions.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
-                      No transactions found
-                    </td>
+          {filteredTransactions.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              No transactions found
+            </div>
+          ) : viewMode === 'table' ? (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border/60">
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Order ID</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">School</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Plan</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Amount</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Cycle</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Date</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Actions</th>
                   </tr>
-                ) : (
-                  filteredTransactions.map((transaction) => (
-                    <tr key={transaction.id} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-mono">
+                </thead>
+                <tbody>
+                  {filteredTransactions.map((transaction) => (
+                    <tr key={transaction.id} className="border-b border-border/40 hover:bg-muted/50 transition-colors">
+                      <td className="px-4 py-3 text-sm font-mono text-foreground">
                         {transaction.razorpay_order_id.substring(0, 20)}...
                       </td>
-                      <td className="px-4 py-3 text-sm">{transaction.school?.name || 'N/A'}</td>
-                      <td className="px-4 py-3 text-sm">{transaction.plan_name}</td>
-                      <td className="px-4 py-3 text-sm font-semibold">
+                      <td className="px-4 py-3 text-sm text-foreground">{transaction.school?.name || 'N/A'}</td>
+                      <td className="px-4 py-3 text-sm text-foreground">{transaction.plan_name}</td>
+                      <td className="px-4 py-3 text-sm font-semibold text-foreground">
                         {formatCurrency(transaction.order_amount)}
                       </td>
-                      <td className="px-4 py-3 text-sm capitalize">{transaction.billing_cycle}</td>
-                      <td className="px-4 py-3 text-sm">
+                      <td className="px-4 py-3 text-sm capitalize text-muted-foreground">{transaction.billing_cycle}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">
                         {formatDate(transaction.created_at)}
                       </td>
                       <td className="px-4 py-3 text-sm">
@@ -289,11 +323,61 @@ export default function SubscriptionPayments() {
                         </Button>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredTransactions.map((transaction) => (
+                <Card key={transaction.id} className="border border-border/60 hover:shadow-md transition-all">
+                  <CardContent className="p-5 space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className="min-w-0">
+                        <h4 className="font-semibold text-base text-foreground leading-tight truncate">{transaction.school?.name || 'N/A'}</h4>
+                        <span className="text-xs text-muted-foreground block font-mono mt-1 truncate" title={transaction.razorpay_order_id}>ID: {transaction.razorpay_order_id}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        {getStatusIcon(transaction.status)}
+                        {getStatusBadge(transaction.status)}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs bg-muted/30 p-2.5 rounded-lg border">
+                      <div>
+                        <p className="text-muted-foreground font-medium">Plan</p>
+                        <p className="font-semibold text-foreground mt-0.5">{transaction.plan_name}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground font-medium">Cycle</p>
+                        <p className="font-semibold text-foreground mt-0.5 capitalize">{transaction.billing_cycle}</p>
+                      </div>
+                      <div className="col-span-2 mt-1 border-t pt-1.5 flex justify-between items-center">
+                        <span className="text-muted-foreground font-medium">Amount:</span>
+                        <span className="font-bold text-foreground text-sm">{formatCurrency(transaction.order_amount)}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 border-t pt-3 text-xs text-muted-foreground">
+                      <span>Date: {formatDate(transaction.created_at)}</span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          toast({
+                            title: 'Transaction Details',
+                            description: `Order ID: ${transaction.razorpay_order_id}`,
+                          });
+                        }}
+                      >
+                        <Eye className="w-3.5 h-3.5 mr-1" /> Details
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

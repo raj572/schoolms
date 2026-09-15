@@ -226,23 +226,25 @@ export const getSchoolSubscription = async (schoolId: number) => {
   }
 };
 
-export const assignSubscription = async (assignment: SubscriptionAssignment) => {
+export const assignSubscription = async (assignment: SubscriptionAssignment | Record<string, any>) => {
   try {
     const token = localStorage.getItem('token');
     const response = await axios.post(`${API_BASE_URL}/administrator/subscriptions/assign`, {
-      school_id: assignment.school_id,
-      subscription_plan_id: assignment.subscription_plan_id,
-      start_date: assignment.start_date,
-      end_date: assignment.end_date,
+      ...assignment,
+      user_id: assignment.user_id || Number(localStorage.getItem('userId')) || Number(localStorage.getItem('user_id')) || 1,
+      billing_cycle: assignment.billing_cycle || 'monthly',
     }, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-  return response.data;
+    return response.data;
   } catch (error: any) {
     console.error('Error assigning subscription:', error);
+    if (error.response?.data) {
+      return error.response.data;
+    }
     toast.error('Failed to assign subscription');
     return { status: false, message: 'Failed to assign subscription' };
   }

@@ -201,6 +201,27 @@ class SubscriptionController extends Controller
     public function initiateSubscription(Request $request)
     {
         try {
+            // Auto-resolve plan_code if subscription_plan_id is passed instead
+            if (!$request->filled('plan_code') && $request->filled('subscription_plan_id')) {
+                $plan = \App\Models\SubscriptionPlan::find($request->subscription_plan_id);
+                if ($plan) {
+                    $request->merge(['plan_code' => $plan->code ?? 'PLAN_' . $plan->id]);
+                }
+            }
+
+            // Auto-resolve user_id if omitted
+            if (!$request->filled('user_id')) {
+                $authUser = $this->getAuthenticatedUser($request);
+                if ($authUser) {
+                    $request->merge(['user_id' => $authUser->id]);
+                }
+            }
+
+            // Default billing_cycle to monthly if omitted
+            if (!$request->filled('billing_cycle')) {
+                $request->merge(['billing_cycle' => 'monthly']);
+            }
+
             $validated = $request->validate([
                 'plan_code' => 'required|string',
                 'billing_cycle' => 'required|in:monthly,annual',

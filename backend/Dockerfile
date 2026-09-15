@@ -23,6 +23,9 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
+# Delete baked-in .env so Dokploy env injection works cleanly
+RUN rm -f .env .env.*
+
 # Remove committed local bootstrap cache files
 RUN rm -f bootstrap/cache/*.php
 

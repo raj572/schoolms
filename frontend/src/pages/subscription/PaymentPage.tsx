@@ -6,8 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 import { subscriptionApi, SubscriptionPlan } from '@/services/subscriptionApiService';
 import { createSubscriptionOrder, verifySubscriptionPayment } from '@/services/subscriptionPaymentApiService';
-import { Loader2, CreditCard, Shield, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Loader2, CreditCard, Shield, CheckCircle2, ArrowLeft, Banknote, Building2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { API_BASE_URL } from '@/lib/axios';
 
 // Razorpay types
 interface RazorpayOptions {
@@ -59,7 +62,59 @@ const PaymentPage: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>(initialBillingCycle || 'monthly');
   const [transactionId, setTransactionId] = useState<number | null>(null);
+  const [paymentOption, setPaymentOption] = useState<'online' | 'manual'>('online');
+  const [manualMethod, setManualMethod] = useState<string>('bank_transfer');
+  const [manualReference, setManualReference] = useState<string>('');
   const { authUser, getUser } = useAuthStore();
+
+  const handleManualPayment = async () => {
+    if (!plan) return;
+    setProcessing(true);
+
+    try {
+      const schoolId = authUser?.school_id || Number(localStorage.getItem('school_id')) || 1;
+      const userId = authUser?.id || Number(localStorage.getItem('userId')) || 1;
+      const planCode = plan.code || `PLAN_${plan.id}`;
+
+      const response = await fetch(`${API_BASE_URL}/subscriptions/assign`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({
+          school_id: schoolId,
+          plan_code: planCode,
+          subscription_plan_id: plan.id,
+          billing_cycle: billingCycle,
+          user_id: userId,
+          payment_method: manualMethod,
+          reference: manualReference || 'Manual Payment Entry',
+          is_manual: true,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.status) {
+        toast({
+          title: 'Subscription Activated!',
+          description: data.message || 'Manual payment submitted and subscription activated successfully!',
+        });
+        getUser();
+        navigate('/administrator/dashboard');
+      } else {
+        throw new Error(data.message || 'Manual payment activation failed');
+      }
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Payment Failed',
+        description: error.message || 'Failed to record manual payment.',
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
 
   useEffect(() => {
     if (!planId && !initialPlan) {
@@ -362,61 +417,144 @@ const PaymentPage: React.FC = () => {
           {/* Payment Details */}
           <Card>
             <CardHeader>
-              <CardTitle>Payment Details</CardTitle>
-              <CardDescription>Complete your subscription purchase</CardDescription>
+              <CardTitle>Payment Method</CardTitle>
+              <CardDescription>Choose how you want to pay</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-3">
-                <h4 className="font-semibold">Accepted Payment Methods:</h4>
-                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <li className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
-                    Credit & Debit Cards
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
-                    Net Banking
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
-                    UPI
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
-                    Digital Wallets
-                  </li>
-                </ul>
+              {/* Payment Mode Selector */}
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentOption('online')}
+                  className={`flex items-center justify-center gap-2 p-3 rounded-lg border text-sm font-medium transition-all ${
+                    paymentOption === 'online'
+                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-500 font-semibold shadow-sm'
+                      : 'border-border bg-background hover:bg-muted/50 text-muted-foreground'
+                  }`}
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span>Razorpay Online</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPaymentOption('manual')}
+                  className={`flex items-center justify-center gap-2 p-3 rounded-lg border text-sm font-medium transition-all ${
+                    paymentOption === 'manual'
+                      ? 'border-blue-500 bg-blue-500/10 text-blue-500 font-semibold shadow-sm'
+                      : 'border-border bg-background hover:bg-muted/50 text-muted-foreground'
+                  }`}
+                >
+                  <Banknote className="w-4 h-4" />
+                  <span>Manual / Offline</span>
+                </button>
               </div>
 
-              <div className="space-y-3 pt-4 border-t">
-                <Button
-                  className="w-full h-12 text-base font-semibold"
-                  size="lg"
-                  onClick={handlePayment}
-                  disabled={processing}
-                >
-                  {processing ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      Proceed to Payment
-                    </>
-                  )}
-                </Button>
+              {paymentOption === 'online' ? (
+                <>
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-sm">Accepted Online Methods:</h4>
+                    <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                      <li className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4" />
+                        Credit & Debit Cards
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4" />
+                        Net Banking & UPI
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4" />
+                        Digital Wallets
+                      </li>
+                    </ul>
+                  </div>
 
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => navigate('/choose-plan')}
-                  disabled={processing}
-                >
-                  Change Plan
-                </Button>
-              </div>
+                  <div className="space-y-3 pt-4 border-t">
+                    <Button
+                      className="w-full h-12 text-base font-semibold"
+                      size="lg"
+                      onClick={handlePayment}
+                      disabled={processing}
+                    >
+                      {processing ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Proceed with Razorpay
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-4">
+                    <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/40 rounded-lg p-3 text-xs text-blue-700 dark:text-blue-400 space-y-1">
+                      <p className="font-semibold flex items-center gap-1.5">
+                        <Building2 className="w-4 h-4" /> Direct Manual / Bank Transfer
+                      </p>
+                      <p>Transfer the amount via Bank / Cash / Offline UPI and enter your reference transaction ID below.</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs font-medium">Payment Mode</Label>
+                      <select
+                        className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                        value={manualMethod}
+                        onChange={(e) => setManualMethod(e.target.value)}
+                      >
+                        <option value="bank_transfer">Bank Transfer / NEFT / RTGS</option>
+                        <option value="cash">Cash Payment</option>
+                        <option value="cheque">Cheque</option>
+                        <option value="upi_offline">Offline UPI / QR</option>
+                        <option value="admin_override">Direct Manual Activation</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs font-medium">Reference / UTR / Receipt No. (Optional)</Label>
+                      <Input
+                        placeholder="e.g. UTR12345678 or Receipt #001"
+                        value={manualReference}
+                        onChange={(e) => setManualReference(e.target.value)}
+                      />
+                    </div>
+
+                    <Button
+                      className="w-full h-12 text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white"
+                      size="lg"
+                      onClick={handleManualPayment}
+                      disabled={processing}
+                    >
+                      {processing ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <Banknote className="w-4 h-4 mr-2" />
+                          Submit Manual Payment
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              )}
+
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate('/choose-plan')}
+                disabled={processing}
+              >
+                Change Plan
+              </Button>
 
               <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/40 rounded-lg p-4">
                 <div className="flex items-start gap-2">

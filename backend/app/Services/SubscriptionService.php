@@ -110,12 +110,14 @@ class SubscriptionService
                 $trialDays = 0;
             }
 
+            $isManual = (!empty($data['payment_method']) && in_array(strtolower($data['payment_method']), ['manual', 'cash', 'bank_transfer', 'cheque', 'admin_override', 'upi_offline'])) || !empty($data['is_manual']);
+
             // Determine status based on trial or payment completion
             $status = 'pending';
             if ($trialDays > 0) {
                 $status = 'trial';
-            } elseif ($transactionId) {
-                // If transaction_id is provided, payment is already completed
+            } elseif ($transactionId || $isManual) {
+                // If transaction_id or manual payment is provided, payment is completed
                 $status = 'active';
             }
 
@@ -146,8 +148,34 @@ class SubscriptionService
                 ];
             }
 
+            // Create manual transaction log if manual payment method selected
+            if ($isManual) {
+                try {
+                    \App\Models\SubscriptionTransaction::create([
+                        'school_id' => $data['school_id'],
+                        'subscription_plan_id' => $plan->id,
+                        'administrator_id' => $data['user_id'] ?? null,
+                        'razorpay_order_id' => 'MANUAL_' . strtoupper(uniqid()),
+                        'order_amount' => $amount,
+                        'order_currency' => $plan->currency ?? 'INR',
+                        'order_receipt' => 'manual_rcpt_' . uniqid(),
+                        'order_status' => 'paid',
+                        'status' => 'success',
+                        'plan_name' => $plan->name,
+                        'billing_cycle' => $billingCycle,
+                        'duration_months' => $billingCycle === 'annual' ? 12 : 1,
+                        'subscription_start_date' => $startDate,
+                        'subscription_end_date' => $endDate,
+                        'payment_method' => $data['payment_method'] ?? 'manual',
+                        'notes' => $data['reference'] ?? 'Manual Payment Entry',
+                    ]);
+                } catch (Exception $e) {
+                    Log::warning("Failed to create manual transaction record: " . $e->getMessage());
+                }
+            }
+
             // If trial or payment completed, activate immediately
-            if ($trialDays > 0 || $transactionId) {
+            if ($trialDays > 0 || $transactionId || $isManual) {
                 // Update user status
                 User::where('id', $data['user_id'])->update([
                     'subscription_active' => true,
@@ -165,18 +193,20 @@ class SubscriptionService
                     'subscription_id' => $subscription->id,
                     'school_id' => $data['school_id'],
                     'changed_by' => $data['user_id'],
-                    'action' => $transactionId ? 'subscription_activated' : 'trial_started',
+                    'action' => ($transactionId || $isManual) ? 'subscription_activated' : 'trial_started',
                     'new_plan_id' => $plan->id,
-                    'new_status' => $transactionId ? 'active' : 'trial',
-                    'notes' => $transactionId
-                        ? "Subscription activated after successful payment (Transaction: $transactionId)"
-                        : "$trialDays day trial started",
+                    'new_status' => ($transactionId || $isManual) ? 'active' : 'trial',
+                    'notes' => $isManual
+                        ? "Manual payment entered and subscription activated (" . ($data['reference'] ?? 'Manual Entry') . ")"
+                        : ($transactionId
+                            ? "Subscription activated after successful payment (Transaction: $transactionId)"
+                            : "$trialDays day trial started"),
                 ]);
 
                 DB::commit();
 
-                $message = $transactionId
-                    ? ($isRenewal ? 'Subscription renewed successfully! It will be activated after your current subscription ends.' : 'Subscription activated successfully after payment.')
+                $message = ($transactionId || $isManual)
+                    ? ($isRenewal ? 'Subscription renewed successfully! It will be activated after your current subscription ends.' : 'Subscription activated successfully.')
                     : ($isRenewal ? 'Subscription scheduled for renewal. It will be activated after your current subscription ends.' : 'Trial subscription activated successfully.');
 
                 return [

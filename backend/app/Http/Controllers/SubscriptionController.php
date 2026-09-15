@@ -206,6 +206,9 @@ class SubscriptionController extends Controller
                 'school_id' => 'required|exists:schools,id',
                 'user_id' => 'required|exists:users,id',
                 'trial_days' => 'sometimes|integer|min:0|max:30',
+                'payment_method' => 'nullable|string',
+                'reference' => 'nullable|string',
+                'is_manual' => 'nullable|boolean',
             ]);
 
             $result = $this->subscriptionService->initiateSubscription($validated);

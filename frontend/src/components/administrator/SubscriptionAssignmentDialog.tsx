@@ -78,6 +78,52 @@ export default function SubscriptionAssignmentDialog({
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const [activeSubscription, setActiveSubscription] = useState<ActiveSubscription | null>(null);
   const [showRenewalWarning, setShowRenewalWarning] = useState(false);
+  const [paymentMode, setPaymentMode] = useState<'online' | 'manual'>('online');
+  const [manualMethod, setManualMethod] = useState<string>('cash');
+  const [manualReference, setManualReference] = useState<string>('');
+
+  const handleManualActivation = async () => {
+    if (!selectedPlan) return;
+    setIsLoading(true);
+    try {
+      const userId = authUser?.id || Number(localStorage.getItem('userId')) || 1;
+      const planCode = selectedPlan.code || `PLAN_${selectedPlan.id}`;
+      const payload = {
+        school_id: schoolId,
+        plan_code: planCode,
+        subscription_plan_id: selectedPlan.id,
+        billing_cycle: billingCycle,
+        trial_days: 0,
+        user_id: userId,
+        payment_method: manualMethod,
+        reference: manualReference || 'Manual Entry',
+        is_manual: true,
+      };
+      const response = await assignSubscription(payload as any);
+      if (response.status) {
+        toast({
+          title: 'Subscription Activated',
+          description: response.message || 'Manual payment recorded and subscription activated successfully!',
+        });
+        onSuccess();
+        onOpenChange(false);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Activation Failed',
+          description: response.message || 'Failed to activate manual subscription',
+        });
+      }
+    } catch (err: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: err?.message || 'Manual subscription activation failed',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   const {
     register,
@@ -643,6 +689,69 @@ export default function SubscriptionAssignmentDialog({
               ) : null}
             </div>
           )}
+          {/* Payment Mode Selector for Non-Trial Subscriptions */}
+          {trialDays === 0 && selectedPlan && (
+            <div className="space-y-3 pt-3 border-t border-border">
+              <Label className="text-sm font-semibold">Payment Option</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMode('online')}
+                  className={`flex items-center justify-center gap-2 p-3 rounded-lg border text-sm font-medium transition-all ${
+                    paymentMode === 'online'
+                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-500 shadow-sm'
+                      : 'border-border bg-background hover:bg-muted/50 text-muted-foreground'
+                  }`}
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span>Razorpay Online</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPaymentMode('manual')}
+                  className={`flex items-center justify-center gap-2 p-3 rounded-lg border text-sm font-medium transition-all ${
+                    paymentMode === 'manual'
+                      ? 'border-blue-500 bg-blue-500/10 text-blue-500 shadow-sm'
+                      : 'border-border bg-background hover:bg-muted/50 text-muted-foreground'
+                  }`}
+                >
+                  <Package className="w-4 h-4" />
+                  <span>Manual Payment</span>
+                </button>
+              </div>
+
+              {paymentMode === 'manual' && (
+                <div className="p-3 bg-muted/40 rounded-lg border border-border space-y-3 mt-2">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Payment Method</Label>
+                    <Select value={manualMethod} onValueChange={setManualMethod}>
+                      <SelectTrigger className="h-9 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cash">Cash Payment</SelectItem>
+                        <SelectItem value="bank_transfer">Bank Transfer / NEFT / RTGS</SelectItem>
+                        <SelectItem value="cheque">Cheque</SelectItem>
+                        <SelectItem value="upi_offline">Offline UPI / QR</SelectItem>
+                        <SelectItem value="admin_override">Admin Manual Override</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label className="text-xs">Reference / Receipt / Txn ID (Optional)</Label>
+                    <Input
+                      className="h-9 text-xs"
+                      placeholder="e.g. UTR-987654 or CHQ-00123"
+                      value={manualReference}
+                      onChange={(e) => setManualReference(e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Renewal Warning */}
           {activeSubscription && showRenewalWarning && (
@@ -783,24 +892,36 @@ export default function SubscriptionAssignmentDialog({
             </Button>
             
             {trialDays === 0 && selectedPlan && planCode ? (
-              // Show payment button for paid subscriptions
-              <SubscriptionPaymentButton
-                schoolId={schoolId}
-                schoolName={schoolName}
-                planCode={planCode}
-                billingCycle={billingCycle as 'monthly' | 'annual'}
-                amount={calculateAmount()}
-                trialDays={selectedPlan.trial_days || 0}
-                onStartPayment={() => {
-                  // Temporarily close dialog so Radix modal overlay does not trap clicks or pointer events
-                  onOpenChange(false);
-                }}
-                onSuccess={() => {
-                  onSuccess();
-                  onOpenChange(false);
-                }}
-                disabled={isLoading}
-              />
+              paymentMode === 'manual' ? (
+                <Button
+                  type="button"
+                  onClick={handleManualActivation}
+                  disabled={isLoading}
+                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Activate Manual Subscription
+                </Button>
+              ) : (
+                // Show payment button for paid subscriptions (Razorpay)
+                <SubscriptionPaymentButton
+                  schoolId={schoolId}
+                  schoolName={schoolName}
+                  planCode={planCode}
+                  billingCycle={billingCycle as 'monthly' | 'annual'}
+                  amount={calculateAmount()}
+                  trialDays={selectedPlan.trial_days || 0}
+                  onStartPayment={() => {
+                    // Temporarily close dialog so Radix modal overlay does not trap clicks or pointer events
+                    onOpenChange(false);
+                  }}
+                  onSuccess={() => {
+                    onSuccess();
+                    onOpenChange(false);
+                  }}
+                  disabled={isLoading}
+                />
+              )
             ) : (
               // Show assign button for trial subscriptions
               <Button 

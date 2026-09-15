@@ -23,7 +23,10 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
-# Install dependencies
+# Remove committed local bootstrap cache files
+RUN rm -f bootstrap/cache/*.php
+
+# Install dependencies without dev packages
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Set permissions
@@ -32,5 +35,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 8000
 
-# Direct start without pre-command crash
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Clear old cache and start server
+CMD ["sh", "-c", "php artisan config:clear && php artisan package:discover --ansi && php artisan serve --host=0.0.0.0 --port=8000"]

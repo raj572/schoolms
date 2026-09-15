@@ -121,11 +121,20 @@ class SubscriptionService
                 $status = 'active';
             }
 
+            // Ensure subscribed_by user exists in users table (foreign key safety)
+            $userId = $data['user_id'] ?? null;
+            $subscribedBy = null;
+            if ($userId && User::where('id', $userId)->exists()) {
+                $subscribedBy = $userId;
+            } else {
+                $subscribedBy = User::query()->value('id') ?? 1;
+            }
+
             // Create subscription record
             $subscriptionData = [
                 'school_id' => $data['school_id'],
                 'plan_id' => $plan->id,
-                'subscribed_by' => $data['user_id'],
+                'subscribed_by' => $subscribedBy,
                 'billing_cycle' => $billingCycle,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
@@ -256,9 +265,8 @@ class SubscriptionService
             Log::error('Subscription initiation failed: ' . $e->getMessage());
             return [
                 'status' => false,
-                'message' => 'Failed to initiate subscription.',
+                'message' => 'Failed to create subscription: ' . $e->getMessage(),
                 'data' => null,
-                'error' => $e->getMessage(),
             ];
         }
     }

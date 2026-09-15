@@ -12,9 +12,9 @@ class SubscriptionRepository
     {
         try {
             return Subscription::create($data);
-        } catch (QueryException $e) {
-            Log::error('Error creating subscription: ' . $e->getMessage());
-            return null;
+        } catch (\Exception $e) {
+            Log::error('Error creating subscription: ' . $e->getMessage(), ['data' => $data]);
+            throw $e;
         }
     }
 

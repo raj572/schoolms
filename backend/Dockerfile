@@ -1,6 +1,6 @@
 FROM php:8.2-fpm-alpine
 
-# System dependencies
+# System dependencies (added libzip-dev)
 RUN apk add --no-cache \
     nginx \
     git \
@@ -9,10 +9,11 @@ RUN apk add --no-cache \
     libxml2-dev \
     zip \
     unzip \
+    libzip-dev \
     oniguruma-dev
 
-# PHP extensions for Laravel
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+# PHP extensions for Laravel (added zip)
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Get Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

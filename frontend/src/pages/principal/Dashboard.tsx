@@ -4,8 +4,8 @@ import { Users, Contact, BookOpen, GraduationCap, BookMarked, DollarSign, Indian
 import { useAuthStore } from '@/store/useAuthStore';
 import { Skeleton } from "@/components/ui/skeleton";
 import Heading from '@/components/common/Heading';
-import { SubscriptionStatusBanner } from '@/components/dashboard/SubscriptionStatusBanner';
-import { ContactAdministratorModal } from '@/components/dashboard/ContactAdministratorModal';
+import { SubscriptionStatusBanner } from '@/components/Dashboard/SubscriptionStatusBanner';
+import { ContactAdministratorModal } from '@/components/Dashboard/ContactAdministratorModal';
 import { Button } from '@/components/ui/button';
 
 const AdminDashboard = () => {

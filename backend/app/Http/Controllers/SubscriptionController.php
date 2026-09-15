@@ -458,7 +458,7 @@ class SubscriptionController extends Controller
             // Get authenticated user
             $authUser = $this->getAuthenticatedUser($request);
 
-            $query = \App\Models\Subscription::with(['school', 'plan', 'subscribedBy'])
+            $query = Subscription::with(['school', 'plan', 'subscribedBy'])
                 ->orderBy('created_at', 'desc');
 
             // Filter by administrator if user is an administrator

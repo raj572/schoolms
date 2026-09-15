@@ -71,7 +71,7 @@ class SubscriptionRepository
         }
     }
 
-    public function cancelSubscription(int $subscriptionId, string $reason = null): ?Subscription
+    public function cancelSubscription(int $subscriptionId, ?string $reason = null): ?Subscription
     {
         try {
             $subscription = Subscription::findOrFail($subscriptionId);

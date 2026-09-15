@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_BASE_URL as BASE_URL } from '@/lib/axios';
 
 // Super Admin uses a different API base URL than regular users
-const API_BASE_URL = import.meta.env.VITE_SUPER_ADMIN_API_URL || 'http://localhost:8000/api/super-admin';
+const API_BASE_URL = import.meta.env.VITE_SUPER_ADMIN_API_URL || `${BASE_URL}/super-admin`;
 
 // Get auth token from localStorage
 const getAuthToken = () => {

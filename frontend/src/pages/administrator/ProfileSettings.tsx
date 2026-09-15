@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { API_BASE_URL } from '@/lib/axios';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -106,7 +107,7 @@ export default function ProfileSettings() {
       const token = localStorage.getItem('token');
       const apiBasePath = getApiBasePath();
 
-      const response = await fetch(`http://localhost:8000/api/${apiBasePath}/profile/update`, {
+      const response = await fetch(`${API_BASE_URL}/${apiBasePath}/profile/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -193,7 +194,7 @@ export default function ProfileSettings() {
       const token = localStorage.getItem('token');
       const apiBasePath = getApiBasePath();
       
-      const passwordResponse = await fetch(`http://localhost:8000/api/${apiBasePath}/profile/change-password`, {
+      const passwordResponse = await fetch(`${API_BASE_URL}/${apiBasePath}/profile/change-password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

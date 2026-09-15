@@ -9,7 +9,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import axios from "axios";
 import { Eye, EyeOff, Loader2, School } from "lucide-react";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+import { API_BASE_URL } from '@/lib/axios';
 
 export const NewLoginPage = () => {
   const navigate = useNavigate();

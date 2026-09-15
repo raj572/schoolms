@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from '@/lib/axios';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -72,7 +73,7 @@ const EditBusDialog = ({ open, onOpenChange, onSuccess, bus }: EditBusDialogProp
     setLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/principal/transport/buses/update/${bus.id}`, {
+      const response = await fetch(`${API_BASE_URL}/principal/transport/buses/update/${bus.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

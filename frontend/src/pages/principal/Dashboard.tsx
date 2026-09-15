@@ -4,6 +4,7 @@ import { Users, Contact, BookOpen, GraduationCap, BookMarked, DollarSign, Indian
 import { useAuthStore } from '@/store/useAuthStore';
 import { Skeleton } from "@/components/ui/skeleton";
 import Heading from '@/components/common/Heading';
+import { API_BASE_URL } from '@/lib/axios';
 import { SubscriptionStatusBanner } from '@/components/Dashboard/SubscriptionStatusBanner';
 import { ContactAdministratorModal } from '@/components/Dashboard/ContactAdministratorModal';
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,7 @@ const AdminDashboard = () => {
       
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:8000/api/principal/subscription/status`, {
+        const response = await fetch(`${API_BASE_URL}/principal/subscription/status`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ const AdminDashboard = () => {
         
         // Fetch comprehensive dashboard data
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:8000/api/principal/dashboard/${authUser.school_id}`, {
+        const response = await fetch(`${API_BASE_URL}/principal/dashboard/${authUser.school_id}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Heading from '@/components/common/Heading';
 import { Badge } from "@/components/ui/badge";
+import { API_BASE_URL } from '@/lib/axios';
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -120,13 +122,13 @@ export const UserManagement = () => {
         
         // Fetch all user types in parallel
         const [usersResponse, teachersResponse] = await Promise.all([
-          fetch(`http://localhost:8000/api/principal/user/getall/${authUser.school_id}`, {
+          fetch(`${API_BASE_URL}/principal/user/getall/${authUser.school_id}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
           }),
-          fetch(`http://localhost:8000/api/principal/teacher/getall/${authUser.school_id}`, {
+          fetch(`${API_BASE_URL}/principal/teacher/getall/${authUser.school_id}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',

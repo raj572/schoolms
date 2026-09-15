@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { StudentDashboardResponse } from '@/types/student';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+import { API_BASE_URL } from '@/lib/axios';
 
 // Create axios instance with default config
 const apiClient = axios.create({

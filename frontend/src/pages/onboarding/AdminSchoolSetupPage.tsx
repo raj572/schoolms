@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { School, Loader2, Building, MapPin, Phone, Mail, Calendar, Globe } from "lucide-react";
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+import { API_BASE_URL } from '@/lib/axios';
 
 export const AdminSchoolSetupPage = () => {
   const navigate = useNavigate();

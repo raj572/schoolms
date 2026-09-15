@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from '@/lib/axios';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -56,7 +57,7 @@ const AssignStudentDialog = ({ open, onOpenChange, onSuccess, schoolId }: Assign
 
       // Fetch students
       const studentsResponse = await fetch(
-        `http://localhost:8000/api/principal/student/getstudents/${schoolId}`,
+        `${API_BASE_URL}/principal/student/getstudents/${schoolId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -71,7 +72,7 @@ const AssignStudentDialog = ({ open, onOpenChange, onSuccess, schoolId }: Assign
 
       // Fetch buses
       const busesResponse = await fetch(
-        `http://localhost:8000/api/principal/transport/buses/all/${schoolId}`,
+        `${API_BASE_URL}/principal/transport/buses/all/${schoolId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,7 +98,7 @@ const AssignStudentDialog = ({ open, onOpenChange, onSuccess, schoolId }: Assign
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/principal/transport/assignments/create`, {
+      const response = await fetch(`${API_BASE_URL}/principal/transport/assignments/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

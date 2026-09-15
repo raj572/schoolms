@@ -1,6 +1,6 @@
-import { useAuthStore } from '@/store/useAuthStore';
+import { API_BASE_URL as BASE_URL } from '@/lib/axios';
 
-const API_BASE_URL = 'http://localhost:8000/api/principal';
+const API_BASE_URL = `${BASE_URL}/principal`;
 
 export interface ReportData {
   summary: {

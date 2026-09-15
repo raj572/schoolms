@@ -4,7 +4,7 @@ import { Building2, Bed, Users, Utensils, Calendar, TrendingUp } from "lucide-re
 import { useAuthStore } from "@/store/useAuthStore";
 import Heading from "@/components/common/Heading";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+import { API_BASE_URL } from '@/lib/axios';
 
 interface DashboardStats {
   building: {

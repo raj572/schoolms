@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import Heading from '@/components/common/Heading';
+import { API_BASE_URL } from '@/lib/axios';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, Download, Eye, DollarSign, Calendar, Users, AlertCircle, Loader2 } from 'lucide-react';
@@ -43,7 +45,7 @@ const FeeReports = () => {
         const token = localStorage.getItem('token');
         
         // Fetch fee collection data
-        const response = await fetch(`http://localhost:8000/api/principal/reports/fee-collection/${authUser.school_id}`, {
+        const response = await fetch(`${API_BASE_URL}/principal/reports/fee-collection/${authUser.school_id}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',

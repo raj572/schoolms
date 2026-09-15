@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from '@/lib/axios';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -70,7 +71,7 @@ const AddRoomDialog = ({ open, onOpenChange, onSuccess, schoolId }: AddRoomDialo
     setLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/principal/hostel/rooms/create`, {
+      const response = await fetch(`${API_BASE_URL}/principal/hostel/rooms/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

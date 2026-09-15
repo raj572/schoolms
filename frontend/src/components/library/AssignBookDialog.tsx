@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { API_BASE_URL } from '@/lib/axios';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -77,7 +78,7 @@ const AssignBookDialog = ({ open, onOpenChange, onSuccess, schoolId }: AssignBoo
 
       // Fetch available books
       const booksResponse = await fetch(
-        `http://localhost:8000/api/principal/library/books/available/${schoolId}`,
+        `${API_BASE_URL}/principal/library/books/available/${schoolId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,7 +93,7 @@ const AssignBookDialog = ({ open, onOpenChange, onSuccess, schoolId }: AssignBoo
 
       // Fetch students
       const studentsResponse = await fetch(
-        `http://localhost:8000/api/principal/student/getstudents/${schoolId}`,
+        `${API_BASE_URL}/principal/student/getstudents/${schoolId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -107,7 +108,7 @@ const AssignBookDialog = ({ open, onOpenChange, onSuccess, schoolId }: AssignBoo
 
       // Fetch teachers
       const teachersResponse = await fetch(
-        `http://localhost:8000/api/principal/teacher/getall/${schoolId}`,
+        `${API_BASE_URL}/principal/teacher/getall/${schoolId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -152,7 +153,7 @@ const AssignBookDialog = ({ open, onOpenChange, onSuccess, schoolId }: AssignBoo
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/principal/library/issue`, {
+      const response = await fetch(`${API_BASE_URL}/principal/library/issue`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

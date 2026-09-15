@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Heading from '@/components/common/Heading';
+import { API_BASE_URL } from '@/lib/axios';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -104,7 +106,7 @@ const Hostel = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api/principal/getstudents/${authUser.school_id}`, {
+      const response = await fetch(`${API_BASE_URL}/principal/getstudents/${authUser.school_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

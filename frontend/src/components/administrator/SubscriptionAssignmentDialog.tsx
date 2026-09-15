@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/lib/axios';
 import { useForm } from 'react-hook-form';
 import {
   Dialog,
@@ -204,7 +205,7 @@ export default function SubscriptionAssignmentDialog({
 
   const checkActiveSubscription = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/administrator/subscriptions/school/${schoolId}`, {
+      const response = await fetch(`${API_BASE_URL}/administrator/subscriptions/school/${schoolId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json',

@@ -13,7 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import axios from 'axios';
 import { Badge } from '@/components/ui/badge';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import { API_BASE_URL } from '@/lib/axios';
 
 interface Notice {
   id: number;

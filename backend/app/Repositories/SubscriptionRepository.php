@@ -32,6 +32,11 @@ class SubscriptionRepository
         }
     }
 
+    public function getCurrentSubscription(int $schoolId): ?Subscription
+    {
+        return $this->getActiveSubscriptionBySchool($schoolId);
+    }
+
     public function findById(int $id): ?Subscription
     {
         try {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\SubscriptionService;
 use App\Services\PaymentService;
 use App\Models\User;
+use App\Models\Subscription;
 use App\Helpers\JWTHelper;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

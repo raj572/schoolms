@@ -1,6 +1,6 @@
 FROM php:8.2-fpm-alpine
 
-# System dependencies (added libzip-dev)
+# System dependencies
 RUN apk add --no-cache \
     nginx \
     git \
@@ -12,7 +12,7 @@ RUN apk add --no-cache \
     libzip-dev \
     oniguruma-dev
 
-# PHP extensions for Laravel (added zip)
+# PHP extensions for Laravel
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Get Composer
@@ -23,8 +23,8 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Install dependencies without running artisan scripts during build
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
@@ -32,4 +32,4 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=8000"]
+CMD ["sh", "-c", "php artisan package:discover --ansi && php artisan serve --host=0.0.0.0 --port=8000"]

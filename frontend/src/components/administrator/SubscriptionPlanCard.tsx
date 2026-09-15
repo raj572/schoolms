@@ -59,7 +59,7 @@ export function SubscriptionPlanCard({ plan, schoolId, onSuccess }: Subscription
       const options: RazorpayOrderOptions = {
         key: import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_SmO1yKCJ2rPjl9',
         amount: amount * 100, // Amount in paise
-        currency: transaction.order_currency,
+        currency: (transaction.order_currency || 'INR') as any,
         name: 'School Management System',
         description: `${plan.name} - ${billingCycle === 'annual' ? 'Annual' : 'Monthly'} Subscription`,
         order_id: transaction.razorpay_order_id,

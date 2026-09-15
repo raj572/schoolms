@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useRazorpay, RazorpayOptions } from 'react-razorpay';
+import { useRazorpay, type RazorpayOrderOptions } from 'react-razorpay';
 import {
   createSubscriptionOrder,
   verifySubscriptionPayment,
@@ -56,8 +56,8 @@ export function SubscriptionPlanCard({ plan, schoolId, onSuccess }: Subscription
       const transaction = orderResponse.data;
 
       // Razorpay options
-      const options: RazorpayOptions = {
-        key: import.meta.env.VITE_RAZORPAY_KEY,
+      const options: RazorpayOrderOptions = {
+        key: import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_SmO1yKCJ2rPjl9',
         amount: amount * 100, // Amount in paise
         currency: transaction.order_currency,
         name: 'School Management System',

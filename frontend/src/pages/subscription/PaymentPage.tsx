@@ -156,8 +156,7 @@ const PaymentPage: React.FC = () => {
       const userName = localStorage.getItem('full_name') || '';
       const userPhone = localStorage.getItem('phone') || '';
 
-      // Open Razorpay checkout
-      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY;
+      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_SmO1yKCJ2rPjl9';
       
       if (!razorpayKey) {
         throw new Error('Razorpay key is not configured. Please set VITE_RAZORPAY_KEY in your environment variables.');

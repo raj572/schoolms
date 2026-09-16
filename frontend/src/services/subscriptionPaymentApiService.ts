@@ -64,6 +64,7 @@ export interface SubscriptionTransaction {
 export interface ApiResponse<T = any> {
   status: boolean;
   message: string;
+  error_code?: string;
   data: T;
 }
 

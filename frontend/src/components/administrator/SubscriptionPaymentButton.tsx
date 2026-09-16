@@ -77,15 +77,28 @@ export default function SubscriptionPaymentButton({
       }
 
       // Step 3: Open Razorpay checkout
-      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_SmO1yKCJ2rPjl9';
+      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY || '';
       
       if (!razorpayKey) {
-        throw new Error('Razorpay key is not configured. Please set VITE_RAZORPAY_KEY in your environment variables.');
+        toast({
+          variant: 'destructive',
+          title: 'Configuration Error',
+          description: 'Razorpay Key ID is missing. Please set VITE_RAZORPAY_KEY in your frontend environment file.',
+        });
+        setIsLoading(false);
+        return;
       }
+
+      console.log('CHECKOUT_OPENED', {
+        school_id: schoolId,
+        transaction_id: transaction.id,
+        order_id: transaction.razorpay_order_id,
+        amount: transaction.order_amount,
+      });
 
       const options: RazorpayOrderOptions = {
         key: razorpayKey,
-        amount: transaction.order_amount * 100, // Amount in paise
+        amount: Math.round(transaction.order_amount * 100), // Amount in paise
         currency: (transaction.order_currency || 'INR') as 'INR',
         name: 'School ERP System',
         description: `${plan.name} - ${billingCycle === 'annual' ? 'Annual' : 'Monthly'} Subscription${trialDays > 0 ? ` (${trialDays} days trial)` : ''}`,
@@ -97,7 +110,7 @@ export default function SubscriptionPaymentButton({
         }) => {
           // Step 4: Verify payment signature and update database
           try {
-            console.log('Payment successful, verifying...', response);
+            console.log('PAYMENT_SUCCESS_CALLBACK received:', response);
             
             const verifyResponse = await verifySubscriptionPayment({
               transaction_id: transaction.id,
@@ -109,31 +122,25 @@ export default function SubscriptionPaymentButton({
             console.log('Verification response:', verifyResponse);
 
             if (verifyResponse.status) {
-              // Payment verified successfully!
-              // The backend has already:
-              // 1. Verified Razorpay signature
-              // 2. Updated transaction status to 'success' in subscription_transactions table
-              // 3. Created/updated subscription record
-              // 4. Updated school's subscription status
-              
               toast({
-                title: 'Success!',
+                title: 'Payment Successful!',
                 description: 'Payment verified and subscription activated successfully!',
               });
               onSuccess();
             } else {
               toast({
                 variant: 'destructive',
-                title: 'Verification Failed',
-                description: verifyResponse.message || 'Payment verification failed. Please contact support.',
+                title: verifyResponse.error_code || 'Verification Failed',
+                description: verifyResponse.message || 'Payment signature verification failed. Please contact support.',
               });
             }
           } catch (error: any) {
             console.error('Payment verification error:', error);
+            const errMsg = error?.response?.data?.message || error?.message || 'Payment verified on client, but backend verification failed.';
             toast({
               variant: 'destructive',
               title: 'Verification Error',
-              description: error.message || 'Payment successful but verification failed. Please contact support.',
+              description: errMsg,
             });
           }
         },
@@ -141,12 +148,6 @@ export default function SubscriptionPaymentButton({
           email: localStorage.getItem('email') || '',
           contact: '',
         },
-        // notes: {
-        //   school_id: schoolId.toString(),
-        //   plan_code: planCode,
-        //   billing_cycle: billingCycle,
-        //   school_name: schoolName,
-        // },
         theme: { 
           color: '#3b82f6',
           backdrop_color: 'rgba(0,0,0,0.7)',
@@ -164,12 +165,13 @@ export default function SubscriptionPaymentButton({
       
       // Add event listener for payment failures
       rzp.on('payment.failed', (response: any) => {
-        console.error('Payment failed:', response);
+        console.error('PAYMENT_FAILED callback:', response);
         setIsLoading(false);
+        const reason = response.error?.description || response.error?.reason || 'Payment declined by bank or cancelled.';
         toast({
           variant: 'destructive',
           title: 'Payment Failed',
-          description: response.error?.description || 'Payment failed. Please try again.',
+          description: reason,
         });
       });
       
@@ -178,10 +180,12 @@ export default function SubscriptionPaymentButton({
     } catch (error: any) {
       console.error('Payment initiation error:', error);
       setIsLoading(false);
+      const apiErrorMsg = error?.response?.data?.message || error?.message || 'Failed to initiate payment.';
+      const errorCode = error?.response?.data?.error_code || 'INITIATION_FAILED';
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: error.message || 'Failed to initiate payment',
+        title: errorCode === 'INVALID_CREDENTIALS' ? 'Invalid Razorpay Credentials' : 'Payment Initiation Failed',
+        description: apiErrorMsg,
       });
     }
   };

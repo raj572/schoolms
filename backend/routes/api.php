@@ -56,6 +56,9 @@ Route::middleware('jwt.auth')->group(function () {
     // Payment callback/webhook
     Route::post('payment-callback', [SubscriptionController::class, 'paymentCallback']);
   });
+
+  // Razorpay Webhook Endpoint
+  Route::post('payments/razorpay/webhook', [\App\Http\Controllers\SubscriptionPaymentController::class, 'handleWebhook']);
 });
 
 // Protected Routes (Require both authentication AND active subscription)

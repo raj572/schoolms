@@ -79,11 +79,12 @@ class SubscriptionPaymentController extends Controller
 
             $result = $this->subscriptionPaymentService->createSubscriptionOrder($validated);
 
-            $code = $result['status'] ? 201 : 500;
+            $code = $result['status'] ? 201 : 400;
             return response()->json($result, $code);
         } catch (ValidationException $e) {
             return response()->json([
                 'status' => false,
+                'error_code' => 'VALIDATION_FAILED',
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422);
@@ -91,15 +92,15 @@ class SubscriptionPaymentController extends Controller
             Log::error("Order creation failed: " . $e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Order creation failed',
-                'error' => $e->getMessage()
+                'error_code' => 'ORDER_CREATION_FAILED',
+                'message' => 'Order creation failed: ' . $e->getMessage()
             ], 500);
         }
     }
 
     /**
      * Verify Razorpay payment signature.
-     * POST /api/administrator/subscription/payment/verify
+     * POST /api/administrator/payments/verifyPayment
      */
     public function verifyPayment(Request $request): JsonResponse
     {
@@ -113,11 +114,12 @@ class SubscriptionPaymentController extends Controller
 
             $result = $this->subscriptionPaymentService->verifyAndUpdatePayment($validated);
 
-            $code = $result['status'] ? 200 : 500;
+            $code = $result['status'] ? 200 : 400;
             return response()->json($result, $code);
         } catch (ValidationException $e) {
             return response()->json([
                 'status' => false,
+                'error_code' => 'VALIDATION_FAILED',
                 'message' => 'Validation failed',
                 'errors' => $e->errors(),
             ], 422);
@@ -125,8 +127,32 @@ class SubscriptionPaymentController extends Controller
             Log::error("Payment verification failed: " . $e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Payment verification failed',
-                'error' => $e->getMessage(),
+                'error_code' => 'VERIFICATION_PROCESS_ERROR',
+                'message' => 'Payment verification failed: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Handle Razorpay Webhook notification.
+     * POST /api/payments/razorpay/webhook
+     */
+    public function handleWebhook(Request $request): JsonResponse
+    {
+        try {
+            $payload = $request->getContent();
+            $signature = $request->header('X-Razorpay-Signature') ?? '';
+
+            $result = $this->subscriptionPaymentService->handleWebhook($payload, $signature);
+
+            $code = $result['status'] ? 200 : 400;
+            return response()->json($result, $code);
+        } catch (Exception $e) {
+            Log::error("Webhook error: " . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'error_code' => 'WEBHOOK_FAILED',
+                'message' => 'Webhook processing failed: ' . $e->getMessage()
             ], 500);
         }
     }

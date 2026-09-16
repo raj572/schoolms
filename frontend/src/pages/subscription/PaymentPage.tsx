@@ -211,10 +211,16 @@ const PaymentPage: React.FC = () => {
       const userName = localStorage.getItem('full_name') || '';
       const userPhone = localStorage.getItem('phone') || '';
 
-      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_SmO1yKCJ2rPjl9';
+      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY || '';
       
       if (!razorpayKey) {
-        throw new Error('Razorpay key is not configured. Please set VITE_RAZORPAY_KEY in your environment variables.');
+        toast({
+          variant: 'destructive',
+          title: 'Configuration Error',
+          description: 'Razorpay key is missing. Please set VITE_RAZORPAY_KEY in frontend .env',
+        });
+        setProcessing(false);
+        return;
       }
 
       const currentPrice = billingCycle === 'annual' 
@@ -249,16 +255,17 @@ const PaymentPage: React.FC = () => {
         toast({
           variant: 'destructive',
           title: 'Payment Failed',
-          description: response.error?.description || 'Payment failed. Please try again.',
+          description: response.error?.description || 'Payment declined or cancelled by user.',
         });
       });
 
       rzp.open();
     } catch (error: any) {
       console.error('Payment initiation error:', error);
+      const apiMsg = error?.response?.data?.message || error?.message || 'Failed to initiate payment. Please try again.';
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to initiate payment. Please try again.',
+        title: 'Payment Initiation Error',
+        description: apiMsg,
         variant: 'destructive',
       });
     } finally {

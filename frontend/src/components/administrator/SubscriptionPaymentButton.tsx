@@ -77,13 +77,13 @@ export default function SubscriptionPaymentButton({
       }
 
       // Step 3: Open Razorpay checkout
-      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY || '';
+      const razorpayKey = orderResponse.key || transaction?.razorpay_key || import.meta.env.VITE_RAZORPAY_KEY || '';
       
       if (!razorpayKey) {
         toast({
           variant: 'destructive',
           title: 'Configuration Error',
-          description: 'Razorpay Key ID is missing. Please set VITE_RAZORPAY_KEY in your frontend environment file.',
+          description: 'Razorpay Key ID is missing. Please set VITE_RAZORPAY_KEY in your frontend environment file or configure RAZORPAY_KEY in backend .env',
         });
         setIsLoading(false);
         return;

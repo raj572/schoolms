@@ -211,13 +211,13 @@ const PaymentPage: React.FC = () => {
       const userName = localStorage.getItem('full_name') || '';
       const userPhone = localStorage.getItem('phone') || '';
 
-      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY || '';
+      const razorpayKey = orderResponse.key || transaction?.razorpay_key || import.meta.env.VITE_RAZORPAY_KEY || '';
       
       if (!razorpayKey) {
         toast({
           variant: 'destructive',
           title: 'Configuration Error',
-          description: 'Razorpay key is missing. Please set VITE_RAZORPAY_KEY in frontend .env',
+          description: 'Razorpay key is missing. Please set VITE_RAZORPAY_KEY in frontend .env or configure RAZORPAY_KEY in backend .env',
         });
         setProcessing(false);
         return;

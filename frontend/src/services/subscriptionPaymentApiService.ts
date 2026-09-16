@@ -59,12 +59,14 @@ export interface SubscriptionTransaction {
   school?: any;
   subscription_plan?: any;
   administrator?: any;
+  razorpay_key?: string;
 }
 
 export interface ApiResponse<T = any> {
   status: boolean;
   message: string;
   error_code?: string;
+  key?: string;
   data: T;
 }
 

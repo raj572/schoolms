@@ -151,7 +151,10 @@ class SubscriptionPaymentService
             return [
                 'status' => true,
                 'message' => 'Order created successfully',
-                'data' => $transaction
+                'key' => $key,
+                'data' => array_merge($transaction->toArray(), [
+                    'razorpay_key' => $key
+                ])
             ];
         } catch (Exception $e) {
             Log::error("[PAYMENT_FAILED] Order creation exception: " . $e->getMessage(), array_merge($logContext, [

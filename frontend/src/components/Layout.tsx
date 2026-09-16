@@ -27,15 +27,15 @@ export default function Layout() {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen font-[JetBrains Mono] w-full overflow-x-hidden">
+      <div className="flex h-screen max-h-screen font-[JetBrains Mono] w-full overflow-hidden bg-background">
         <SchoolSidebar currentRole={authUser.role} />
 
-        <div className="flex-1 flex flex-col min-w-0 w-full overflow-x-hidden">
+        <div className="flex-1 flex flex-col min-w-0 w-full h-full overflow-hidden">
           <SchoolNavbar
             currentRole={authUser.role}
             onRoleChange={() => {}}
           />
-          <main className="p-4 md:p-6 bg-background flex-1 w-full min-w-0 overflow-y-auto">
+          <main className="flex-1 w-full min-w-0 min-h-0 overflow-y-auto p-4 sm:p-6 md:p-8">
             <Outlet />
           </main>
         </div>

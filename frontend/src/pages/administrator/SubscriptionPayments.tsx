@@ -147,7 +147,7 @@ export default function SubscriptionPayments() {
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="space-y-6 w-full min-w-0 animate-fade-in">
       <Heading
         title="Subscription Payments"
         description="View and manage your subscription payment transactions"
@@ -155,7 +155,7 @@ export default function SubscriptionPayments() {
 
       {/* Statistics Cards */}
       {stats && (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Transactions</CardTitle>

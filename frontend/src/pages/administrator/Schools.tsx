@@ -251,13 +251,13 @@ export default function Schools() {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex justify-between items-center">
-      <Heading
-        title="Schools Management"
-        description="View and manage all registered schools"
-      />
-        <Button onClick={handleAddSchool}>
+    <div className="space-y-6 animate-fade-in w-full min-w-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <Heading
+          title="Schools Management"
+          description="View and manage all registered schools"
+        />
+        <Button onClick={handleAddSchool} className="w-full sm:w-auto">
           <Plus className="w-4 h-4 mr-2" />
           Add School
         </Button>

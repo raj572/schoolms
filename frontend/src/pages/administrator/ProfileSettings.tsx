@@ -235,7 +235,7 @@ export default function ProfileSettings() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in w-full min-w-0">
       <Heading
         title="Profile Settings"
         description="Manage your personal information and account settings"

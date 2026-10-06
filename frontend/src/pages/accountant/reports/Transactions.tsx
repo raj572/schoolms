@@ -137,15 +137,15 @@ const Transactions = () => {
   );
 
   return (
-    <div className="space-y-6 px-11 py-9 overflow-hidden">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-bold">Payment History</h1>
-          <p className="text-gray-500 text-xs">View and manage all payment transactions</p>
+          <h1 className="text-xl font-bold text-foreground">Payment History</h1>
+          <p className="text-muted-foreground text-xs">View and manage all payment transactions</p>
         </div>
         <div className="flex gap-3">
           {schools.length > 1 && (
-            <div className="w-64">
+            <div className="w-full sm:w-64">
               <Select
                 value={filters.school_id?.toString() || "all"}
                 onValueChange={(value) => {
@@ -331,7 +331,7 @@ const Transactions = () => {
         <CardHeader>
           <CardTitle className="text-lg">All Transactions</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-x-auto">
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />

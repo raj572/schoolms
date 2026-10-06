@@ -1284,11 +1284,12 @@ EOT;
     {
         try {
             $validated = $request->validate([
-                'service_type' => 'required|string|',
+                'service_type' => 'nullable|string|max:100',
                 'service_name' => 'required|string|max:100',
-                'stopage' => 'required|numeric|min:0',
-                'charge' => 'sometimes|required|numeric|min:0',
+                'stopage' => 'nullable|numeric|min:0',
+                'charge' => 'required|numeric|min:0',
                 'description' => 'nullable|string|max:255',
+                'status' => 'nullable|string|max:20',
             ]);
 
             $res = $this->userService->createServiceCharge($validated, $school_id);
@@ -1966,6 +1967,19 @@ EOT;
     public function createClassTimeTable(Request $request)
     {
         try {
+            $timetable = $request->input('timetable', []);
+            if (is_array($timetable)) {
+                foreach ($timetable as &$item) {
+                    if (isset($item['start_time'])) {
+                        $item['start_time'] = date('H:i', strtotime($item['start_time']));
+                    }
+                    if (isset($item['end_time'])) {
+                        $item['end_time'] = date('H:i', strtotime($item['end_time']));
+                    }
+                }
+                $request->merge(['timetable' => $timetable]);
+            }
+
             $validated = $request->validate([
                 'school_id' => 'required|integer|exists:schools,id',
                 'timetable' => 'required|array|min:1',
@@ -1974,7 +1988,7 @@ EOT;
                 'timetable.*.teacher_id' => 'required|integer|exists:teachers,id',
                 'timetable.*.day_of_week' => 'required|string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
                 'timetable.*.start_time' => 'required|date_format:H:i',
-                'timetable.*.end_time' => 'required|date_format:H:i|after:timetable.*.start_time',
+                'timetable.*.end_time' => 'required|date_format:H:i',
             ]);
 
             $result = $this->userService->createClassTimeTable($validated);

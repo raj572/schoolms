@@ -151,7 +151,12 @@ const StudentList = () => {
                               >
                                 <Eye className="h-4 w-4" />
                               </Button>
-                              <Button variant="ghost" size="sm">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate(`/principal/students/details/${student.id}`)}
+                                title="Edit Student"
+                              >
                                 <Edit className="h-4 w-4" />
                               </Button>
                               <Button
@@ -209,7 +214,12 @@ const StudentList = () => {
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => navigate(`/principal/students/details/${student.id}`)}
+                          title="Edit Student"
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button

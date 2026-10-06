@@ -1897,11 +1897,12 @@ EOT;
     try {
       $service = $this->studentServiceRepository->create([
         'school_id' => $school_id,
-        'service_type' => $data['service_type'],
+        'service_type' => $data['service_type'] ?? 'General',
         'service_name' => $data['service_name'],
         'charge' => $data['charge'],
         'description' => $data['description'] ?? null,
-        'stopage' => $data['stopage'] ?? null,
+        'stopage' => $data['stopage'] ?? 0,
+        'status' => $data['status'] ?? 'active',
         'created_at' => now(),
         'updated_at' => now(),
       ]);

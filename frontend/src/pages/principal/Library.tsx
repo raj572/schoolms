@@ -181,26 +181,26 @@ const Library = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background ">
-      <div className=" w-full">
-        <div className="flex justify-between items-center mb-8">
+    <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8 space-y-6">
+      <div className="w-full space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
           <div>
-            <h1 className="text-lg font-bold text-foreground">Library Management</h1>
-            <p className=" text-xs text-muted-foreground mt-2">Track issued books, overdue items, and fines</p>
+            <h1 className="text-xl font-bold text-foreground">Library Management</h1>
+            <p className="text-xs text-muted-foreground mt-1">Track issued books, overdue items, and fines</p>
           </div>
-          <div className="flex gap-2">
-            <Link to="/admin/dashboard">
-              <Button variant="outline" className="hover:bg-navbar hover:text-white">Back to Dashboard</Button>
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+            <Link to="/admin/dashboard" className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">Back to Dashboard</Button>
             </Link>
-            <Button variant="outline" onClick={handleRefresh} disabled={loading}>
+            <Button variant="outline" onClick={handleRefresh} disabled={loading} className="w-full sm:w-auto">
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button variant="outline" onClick={() => setShowAddBookDialog(true)}>
+            <Button variant="outline" onClick={() => setShowAddBookDialog(true)} className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Add Book
             </Button>
-            <Button onClick={() => setShowAssignBookDialog(true)}>
+            <Button onClick={() => setShowAssignBookDialog(true)} className="w-full sm:w-auto">
               <BookOpen className="h-4 w-4 mr-2" />
               Assign Book
             </Button>
@@ -339,10 +339,10 @@ const Library = () => {
                               {book.available_quantity} / {book.quantity}
                             </TableCell>
                             <TableCell className="text-xs">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                                 book.available_quantity > 0 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : 'bg-orange-100 text-orange-800'
+                                  ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300' 
+                                  : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                               }`}>
                                 {book.available_quantity > 0 ? 'Available' : 'Unavailable'}
                               </span>
@@ -491,10 +491,10 @@ const Library = () => {
                                 )}
                               </TableCell>
                               <TableCell className="text-xs">
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  overdueDays > 7 ? 'bg-red-100 text-red-800' :
-                                  overdueDays > 0 ? 'bg-orange-100 text-orange-800' :
-                                  'bg-green-100 text-green-800'
+                                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                                  overdueDays > 7 ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300' :
+                                  overdueDays > 0 ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300' :
+                                  'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                                 }`}>
                                   {overdueDays > 7 ? 'Critical' :
                                    overdueDays > 0 ? 'Overdue' :

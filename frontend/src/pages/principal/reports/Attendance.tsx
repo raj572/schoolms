@@ -14,6 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, Download, Calendar as CalendarIcon, Users, UserCheck, UserX, Clock, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
+import { exportToCsv } from '@/lib/exportUtils';
+import { toast } from 'sonner';
 
 interface AttendanceRecord {
   id: string;
@@ -115,12 +118,23 @@ const AttendanceReport = () => {
     return 'destructive';
   };
 
+  const navigate = useNavigate();
+
   const downloadReport = () => {
-    console.log('Downloading attendance report...');
+    if (filteredRecords.length === 0) {
+      toast.error('No attendance records to export');
+      return;
+    }
+    const headers = ['ID', 'Student Name', 'Roll No', 'Class', 'Section', 'Present Days', 'Total Days', 'Attendance %', 'Status', 'Last Present Date'];
+    const rows = filteredRecords.map((r) => [
+      r.id, r.studentName, r.rollNo, r.class, r.section, r.presentDays, r.totalDays, `${r.attendancePercentage}%`, r.status, r.lastPresentDate
+    ]);
+    exportToCsv(`attendance_report_${new Date().toISOString().split('T')[0]}.csv`, headers, rows);
+    toast.success(`Exported ${filteredRecords.length} attendance record(s)`);
   };
 
   const markAttendance = () => {
-    console.log('Opening attendance marking interface...');
+    navigate('/principal/students/attendance/mark-attendance');
   };
 
   if (loading) {
@@ -128,7 +142,7 @@ const AttendanceReport = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading attendance data...</p>
+          <p className="text-muted-foreground">Loading attendance data...</p>
         </div>
       </div>
     );
@@ -137,9 +151,9 @@ const AttendanceReport = () => {
   if (error) {
     return (
       <div className="space-y-6">
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-rose-200 bg-rose-50 dark:bg-rose-950/20">
           <CardContent className="pt-6">
-            <p className="text-red-600">{error}</p>
+            <p className="text-rose-600 dark:text-rose-400">{error}</p>
           </CardContent>
         </Card>
       </div>
@@ -147,18 +161,18 @@ const AttendanceReport = () => {
   }
 
   return (
-    <div className="space-y-6 ">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-lg font-bold ">Attendance Reports</h2>
-          <p className="text-gray-500 text-xs">Track and manage student attendance</p>
+          <h2 className="text-lg font-bold">Attendance Reports</h2>
+          <p className="text-muted-foreground text-xs mt-1">Track and manage student attendance</p>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={markAttendance}>
             <Clock className="h-4 w-4 mr-2" />
             Mark Attendance
           </Button>
-          <Button onClick={downloadReport}>
+          <Button onClick={downloadReport} disabled={filteredRecords.length === 0}>
             <Download className="h-4 w-4 mr-2" />
             Download Report
           </Button>

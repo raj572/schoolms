@@ -104,15 +104,15 @@ const AccountantFeeReports = () => {
   };
 
   return (
-    <div className="space-y-8 overflow-hidden px-12 py-9">
-      <div className="flex justify-between items-center">
+    <div className="space-y-8 p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-bold">Fee Collection Report</h1>
-          <p className="text-gray-500 text-xs">Generate comprehensive fee collection reports</p>
+          <h1 className="text-xl font-bold text-foreground">Fee Collection Report</h1>
+          <p className="text-muted-foreground text-xs">Generate comprehensive fee collection reports</p>
         </div>
         <div className="flex gap-3">
           {schools.length > 1 && (
-            <div className="w-64">
+            <div className="w-full sm:w-64">
               <Select
                 value={filters.school_id?.toString() || "all"}
                 onValueChange={(value) => {

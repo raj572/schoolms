@@ -503,35 +503,35 @@ const Timetable = () => {
         end_time: string;
       }> = [];
 
+      const formatTimeHHMM = (timeStr: string) => {
+        if (!timeStr) return "08:00";
+        const clean = timeStr.trim();
+        const parts = clean.split(":");
+        if (parts.length >= 2) {
+          const hh = parts[0].padStart(2, "0");
+          const mm = parts[1].slice(0, 2).padStart(2, "0");
+          return `${hh}:${mm}`;
+        }
+        return clean;
+      };
+
       localEntries.forEach((entry) => {
         if (entry.isDeleted && entry.id) {
           // Entry marked for deletion
           entriesToDelete.push(entry.id);
         } else if (!entry.isDeleted) {
-          if (entry.isModified && entry.id) {
-            // Modified entry: delete old, create new
-            console.log('🔄 Modified entry detected, will delete old ID:', entry.id);
-            entriesToDelete.push(entry.id);
+          if ((entry.isModified || entry.isNew) && entry.subject_id && entry.teacher_id) {
+            if (entry.isModified && entry.id) {
+              entriesToDelete.push(entry.id);
+            }
             entriesToCreate.push({
               school_id: Number(authUser.school_id),
-              class_id: selectedClass,
-              subject_id: entry.subject_id,
-              teacher_id: entry.teacher_id,
+              class_id: Number(selectedClass),
+              subject_id: Number(entry.subject_id),
+              teacher_id: Number(entry.teacher_id),
               day_of_week: entry.day,
-              start_time: entry.start_time,
-              end_time: entry.end_time,
-            });
-          } else if (entry.isNew) {
-            // New entry: just create
-            console.log('➕ New entry detected');
-            entriesToCreate.push({
-              school_id: Number(authUser.school_id),
-              class_id: selectedClass,
-              subject_id: entry.subject_id,
-              teacher_id: entry.teacher_id,
-              day_of_week: entry.day,
-              start_time: entry.start_time,
-              end_time: entry.end_time,
+              start_time: formatTimeHHMM(entry.start_time),
+              end_time: formatTimeHHMM(entry.end_time),
             });
           }
         }

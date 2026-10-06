@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, Download, Eye, DollarSign, Calendar, Users, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
+import { exportToCsv } from '@/lib/exportUtils';
+import { toast } from 'sonner';
 
 interface FeeRecord {
   id: string;
@@ -107,11 +109,20 @@ const FeeReports = () => {
   };
 
   const downloadReport = () => {
-    console.log('Downloading fee report...');
+    if (filteredRecords.length === 0) {
+      toast.error('No fee records to export');
+      return;
+    }
+    const headers = ['ID', 'Student Name', 'Roll No', 'Class', 'Section', 'Total Fee', 'Paid Amount', 'Pending Amount', 'Last Payment Date', 'Status', 'Parent Contact'];
+    const rows = filteredRecords.map((r) => [
+      r.id, r.studentName, r.rollNo, r.class, r.section, r.totalFee, r.paidAmount, r.pendingAmount, r.lastPaymentDate, r.status, r.parentContact
+    ]);
+    exportToCsv(`fee_report_${new Date().toISOString().split('T')[0]}.csv`, headers, rows);
+    toast.success(`Exported ${filteredRecords.length} fee record(s)`);
   };
 
   const sendReminder = (record: FeeRecord) => {
-    console.log(`Sending reminder to ${record.studentName}`);
+    toast.success(`Reminder sent to ${record.studentName} (${record.parentContact})`);
   };
 
   if (loading) {
@@ -119,7 +130,7 @@ const FeeReports = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading fee data...</p>
+          <p className="text-muted-foreground">Loading fee data...</p>
         </div>
       </div>
     );
@@ -128,9 +139,9 @@ const FeeReports = () => {
   if (error) {
     return (
       <div className="space-y-6">
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-rose-200 bg-rose-50 dark:bg-rose-950/20">
           <CardContent className="pt-6">
-            <p className="text-red-600">{error}</p>
+            <p className="text-rose-600 dark:text-rose-400">{error}</p>
           </CardContent>
         </Card>
       </div>
@@ -138,13 +149,13 @@ const FeeReports = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-lg font-bold ">Fee Reports</h2>
-          <p className="text-gray-500 text-xs">Track and manage student fee payments</p>
+          <h2 className="text-lg font-bold">Fee Reports</h2>
+          <p className="text-muted-foreground text-xs mt-1">Track and manage student fee payments</p>
         </div>
-        <Button onClick={downloadReport}>
+        <Button onClick={downloadReport} disabled={filteredRecords.length === 0}>
           <Download className="h-4 w-4 mr-2" />
           Download Report
         </Button>

@@ -8,6 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubjectForm, useSubjectStore } from "@/store/useSubjectStore";
 import { Badge } from "@/components/ui/badge";
 import { getTeacherCompletionForPrincipal, SyllabusCompletion } from "@/services/syllabusApiService";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 export interface TeacherSubject {
   id: number;
@@ -29,28 +34,49 @@ export interface TeacherSubject {
 
 const Details = () => {
   const { id } = useParams(); 
-  const { getTeacherById } = useUsersStore();
+  const { getTeacherById, updateTeacher } = useUsersStore();
   const [teacher, setTeacher] = useState<TeacherForm| null>(null);
   const [subjects, setSubjects] = useState<SubjectForm[]>([]);
   const [syllabusCompletion, setSyllabusCompletion] = useState<SyllabusCompletion[]>([]);
   const [isLoadingCompletion, setIsLoadingCompletion] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [editFormData, setEditFormData] = useState<TeacherForm>({});
   const { getSubjects } = useSubjectStore();
 
-//fetch teacher by id
-  useEffect(() => {
-    const fetchTeacher = async () => {
-      try {
-        if (!id) return;
-        const data = await getTeacherById(id);
+  const fetchTeacher = async () => {
+    try {
+      if (!id) return;
+      const data = await getTeacherById(id);
+      setTeacher(data);
+      if (data) setEditFormData(data);
+    } catch (error) {
+      console.error("Failed to fetch teacher:", error);
+    }
+  };
 
-        setTeacher(data);
-      } catch (error) {
-        console.error("Failed to fetch teacher:", error);
-      }
-    };
+  useEffect(() => {
     fetchTeacher();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  const handleUpdateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id || !teacher?.school_id) return;
+    try {
+      setIsUpdating(true);
+      const success = await updateTeacher(id, String(teacher.school_id), editFormData);
+      if (success) {
+        toast.success("Teacher updated successfully");
+        setIsEditDialogOpen(false);
+        await fetchTeacher();
+      }
+    } catch (error) {
+      console.error("Error updating teacher:", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
 
   //fetch subjects
@@ -111,10 +137,92 @@ const Details = () => {
           <Link to="/principal/teachers/list">
             <Button variant="outline">Back to List</Button>
           </Link>
-          <Button>
-            <Edit className="h-4 w-4 mr-2" />
-            Edit Teacher
-          </Button>
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setEditFormData(teacher || {})}>
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Teacher
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
+              <DialogHeader>
+                <DialogTitle>Edit Teacher Details</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleUpdateSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    value={editFormData.name || ""}
+                    onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={editFormData.email || ""}
+                    onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      value={editFormData.phone || ""}
+                      onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="employee_code">Employee Code</Label>
+                    <Input
+                      id="employee_code"
+                      value={editFormData.employee_code || ""}
+                      onChange={(e) => setEditFormData({ ...editFormData, employee_code: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="qualification">Qualification</Label>
+                    <Input
+                      id="qualification"
+                      value={editFormData.qualification || ""}
+                      onChange={(e) => setEditFormData({ ...editFormData, qualification: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Gender</Label>
+                    <Select
+                      value={editFormData.gender || "male"}
+                      onValueChange={(val) => setEditFormData({ ...editFormData, gender: val })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={isUpdating}>
+                    {isUpdating ? "Saving..." : "Save Changes"}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

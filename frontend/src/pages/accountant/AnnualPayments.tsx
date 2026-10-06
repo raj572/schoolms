@@ -115,7 +115,9 @@ const AnnualPayments = () => {
     try {
       setLoading(true);
       const response = await getAllAnnualPayments({
-        ...filters,
+        school_id: filters.school_id,
+        student_details_id: filters.student_details_id,
+        status: filters.status || undefined,
         per_page: pagination.per_page,
         page: pagination.current_page,
       });
@@ -329,11 +331,11 @@ const AnnualPayments = () => {
   };
 
   return (
-    <div className="space-y-8 px-12 py-9">
-      <div className="flex justify-between items-center">
+    <div className="space-y-8 p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-bold">Annual Payments</h1>
-          <p className="text-gray-500 text-xs">
+          <h1 className="text-xl font-bold text-foreground">Annual Payments</h1>
+          <p className="text-muted-foreground text-xs">
             Manage annual fee payments (admission, registration)
           </p>
         </div>
@@ -436,7 +438,7 @@ const AnnualPayments = () => {
         <CardHeader>
           <CardTitle className="text-md">Annual Payments</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-x-auto">
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />

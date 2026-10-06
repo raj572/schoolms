@@ -140,15 +140,15 @@ const AccountantDues = () => {
   const overdue7PlusAmount = overdue7Plus.reduce((sum, due) => sum + (due.total_amount || 0), 0);
 
   return (
-    <div className="space-y-8 px-16 py-9">
-      <div className="flex justify-between items-center">
+    <div className="space-y-8 p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-bold">Pending Dues</h1>
-          <p className="text-gray-500 text-xs">Track overdue payments and follow up with students</p>
+          <h1 className="text-xl font-bold text-foreground">Pending Dues</h1>
+          <p className="text-muted-foreground text-xs">Track overdue payments and follow up with students</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           {schools.length > 1 && (
-            <div className="w-64">
+            <div className="w-full sm:w-64">
               <Select
                 value={selectedSchoolId?.toString() || "all"}
                 onValueChange={(value) => {
@@ -257,7 +257,7 @@ const AccountantDues = () => {
                 Outstanding Payments
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -283,7 +283,7 @@ const AccountantDues = () => {
                           <TableCell className="text-xs">{due.studentClass}</TableCell>
                           <TableCell className="text-xs">
                             {due.type === "monthly" ? "Monthly Fee" : "Annual Fee"}
-                            {due.type === "monthly" && due.month && ` - ${due.month}`}
+                            {due.type === "monthly" && (due as any).month && ` - ${(due as any).month}`}
                           </TableCell>
                           <TableCell className="font-semibold text-xs">
                             {formatCurrency(due.total_amount || 0)}

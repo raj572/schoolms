@@ -58,9 +58,9 @@ export const TeacherBulkActionBar: React.FC<TeacherBulkActionBarProps> = ({
             variant="outline"
             onClick={onMarkAllPresent}
             disabled={isSaving}
-            className="bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+            className="bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-700 font-medium"
           >
-            <CheckCircle className="w-4 h-4 mr-1" />
+            <CheckCircle className="w-4 h-4 mr-1 text-emerald-600 dark:text-emerald-400" />
             Mark All Present
           </Button>
 
@@ -69,9 +69,9 @@ export const TeacherBulkActionBar: React.FC<TeacherBulkActionBarProps> = ({
             variant="outline"
             onClick={onMarkAllAbsent}
             disabled={isSaving}
-            className="bg-rose-50 dark:bg-rose-950/20 hover:bg-rose-100 dark:hover:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800"
+            className="bg-rose-50 dark:bg-rose-950/80 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-800 dark:text-rose-200 border-rose-300 dark:border-rose-700 font-medium"
           >
-            <XCircle className="w-4 h-4 mr-1" />
+            <XCircle className="w-4 h-4 mr-1 text-rose-600 dark:text-rose-400" />
             Mark All Absent
           </Button>
 

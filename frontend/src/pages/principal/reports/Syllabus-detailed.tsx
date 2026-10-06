@@ -26,13 +26,15 @@ export default function SyllabusDetailed() {
     subject_id: "",
   });
 
-  // Extract unique values for filters
-  const teachers = Array.from(new Set(data.map((d) => ({ id: d.teacher_id, name: d.teacher_name }))));
+  // Extract unique values for filters safely
+  const teachers = Array.from(
+    new Map((data || []).filter((d) => d && d.teacher_id).map((d) => [d.teacher_id, { id: d.teacher_id, name: d.teacher_name || "Unknown" }])).values()
+  );
   const classes = Array.from(
-    new Set(data.map((d) => ({ id: d.class_id, name: `${d.class_name}-${d.section}` })))
+    new Map((data || []).filter((d) => d && d.class_id).map((d) => [d.class_id, { id: d.class_id, name: `${d.class_name || ""}-${d.section || ""}` }])).values()
   );
   const subjects = Array.from(
-    new Set(data.map((d) => ({ id: d.subject_id, name: d.subject_name })))
+    new Map((data || []).filter((d) => d && d.subject_id).map((d) => [d.subject_id, { id: d.subject_id, name: d.subject_name || "Unknown" }])).values()
   );
 
   useEffect(() => {
@@ -47,13 +49,13 @@ export default function SyllabusDetailed() {
     try {
       setIsLoading(true);
       const response = await getPrincipalDetailedView();
-      if (response.status) {
+      if (response && response.status) {
         setData(response.data || []);
       } else {
         toast({
           variant: "destructive",
           title: "Error",
-          description: response.message || "Failed to load data",
+          description: response?.message || "Failed to load data",
         });
       }
     } catch (error) {
@@ -69,17 +71,17 @@ export default function SyllabusDetailed() {
   };
 
   const applyFilters = () => {
-    let filtered = [...data];
+    let filtered = [...(data || [])];
 
     // Apply filters
-    if (filters.teacher_id) {
-      filtered = filtered.filter((d) => d.teacher_id.toString() === filters.teacher_id);
+    if (filters.teacher_id && filters.teacher_id !== "all") {
+      filtered = filtered.filter((d) => d.teacher_id?.toString() === filters.teacher_id);
     }
-    if (filters.class_id) {
-      filtered = filtered.filter((d) => d.class_id.toString() === filters.class_id);
+    if (filters.class_id && filters.class_id !== "all") {
+      filtered = filtered.filter((d) => d.class_id?.toString() === filters.class_id);
     }
-    if (filters.subject_id) {
-      filtered = filtered.filter((d) => d.subject_id.toString() === filters.subject_id);
+    if (filters.subject_id && filters.subject_id !== "all") {
+      filtered = filtered.filter((d) => d.subject_id?.toString() === filters.subject_id);
     }
 
     // Apply search
@@ -87,10 +89,10 @@ export default function SyllabusDetailed() {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (d) =>
-          d.teacher_name.toLowerCase().includes(term) ||
-          d.class_name.toLowerCase().includes(term) ||
-          d.subject_name.toLowerCase().includes(term) ||
-          d.section.toLowerCase().includes(term)
+          (d.teacher_name || "").toLowerCase().includes(term) ||
+          (d.class_name || "").toLowerCase().includes(term) ||
+          (d.subject_name || "").toLowerCase().includes(term) ||
+          (d.section || "").toLowerCase().includes(term)
       );
     }
 
@@ -110,13 +112,13 @@ export default function SyllabusDetailed() {
       "Last Updated",
     ];
     const rows = filteredData.map((d) => [
-      d.teacher_name,
-      d.class_name,
-      d.section,
-      d.subject_name,
-      d.total_chapters,
-      d.completed_chapters,
-      `${d.completion_percentage.toFixed(1)}%`,
+      d.teacher_name || "",
+      d.class_name || "",
+      d.section || "",
+      d.subject_name || "",
+      d.total_chapters || 0,
+      d.completed_chapters || 0,
+      `${(d.completion_percentage || 0).toFixed(1)}%`,
       d.last_updated || "N/A",
     ]);
 
@@ -135,19 +137,19 @@ export default function SyllabusDetailed() {
   };
 
   const getCompletionColor = (percentage: number) => {
-    if (percentage >= 75) return "text-success";
-    if (percentage >= 50) return "text-warning";
-    return "text-destructive";
+    if (percentage >= 75) return "text-emerald-600 dark:text-emerald-400";
+    if (percentage >= 50) return "text-amber-600 dark:text-amber-400";
+    return "text-rose-600 dark:text-rose-400";
   };
 
   const getCompletionBg = (percentage: number) => {
-    if (percentage >= 75) return "bg-success/10";
-    if (percentage >= 50) return "bg-warning/10";
-    return "bg-destructive/10";
+    if (percentage >= 75) return "bg-emerald-500/10";
+    if (percentage >= 50) return "bg-amber-500/10";
+    return "bg-rose-500/10";
   };
 
   const clearFilters = () => {
-    setFilters({ teacher_id: "", class_id: "", subject_id: "" });
+    setFilters({ teacher_id: "all", class_id: "all", subject_id: "all" });
     setSearchTerm("");
   };
 
@@ -160,12 +162,12 @@ export default function SyllabusDetailed() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in px-16 py-9">
+    <div className="space-y-6 animate-fade-in p-4 sm:p-6 lg:p-9">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-lg font-bold">Syllabus Completion - Detailed View</h1>
-          <p className="text-gray-500 text-xs mt-1">
+          <p className="text-muted-foreground text-xs mt-1">
             Detailed breakdown of syllabus completion with filters
           </p>
         </div>
@@ -176,15 +178,15 @@ export default function SyllabusDetailed() {
       </div>
 
       {/* Filters */}
-      <Card className="bg-gradient-card shadow-md border-0">
+      <Card className="bg-card shadow-md border">
         <CardHeader>
           <CardTitle className="text-md">Filters</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Label htmlFor="search">Search</Label>
-              <div className="relative">
+              <div className="relative mt-1">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="search"
@@ -199,14 +201,14 @@ export default function SyllabusDetailed() {
             <div>
               <Label>Teacher</Label>
               <Select
-                value={filters.teacher_id}
+                value={filters.teacher_id || "all"}
                 onValueChange={(value) => setFilters({ ...filters, teacher_id: value })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="mt-1">
                   <SelectValue placeholder="All Teachers" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Teachers</SelectItem>
+                  <SelectItem value="all">All Teachers</SelectItem>
                   {teachers.map((teacher) => (
                     <SelectItem key={teacher.id} value={teacher.id.toString()}>
                       {teacher.name}
@@ -219,14 +221,14 @@ export default function SyllabusDetailed() {
             <div>
               <Label>Class</Label>
               <Select
-                value={filters.class_id}
+                value={filters.class_id || "all"}
                 onValueChange={(value) => setFilters({ ...filters, class_id: value })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="mt-1">
                   <SelectValue placeholder="All Classes" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Classes</SelectItem>
+                  <SelectItem value="all">All Classes</SelectItem>
                   {classes.map((cls) => (
                     <SelectItem key={cls.id} value={cls.id.toString()}>
                       {cls.name}
@@ -239,14 +241,14 @@ export default function SyllabusDetailed() {
             <div>
               <Label>Subject</Label>
               <Select
-                value={filters.subject_id}
+                value={filters.subject_id || "all"}
                 onValueChange={(value) => setFilters({ ...filters, subject_id: value })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="mt-1">
                   <SelectValue placeholder="All Subjects" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Subjects</SelectItem>
+                  <SelectItem value="all">All Subjects</SelectItem>
                   {subjects.map((subject) => (
                     <SelectItem key={subject.id} value={subject.id.toString()}>
                       {subject.name}

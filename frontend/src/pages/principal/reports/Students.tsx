@@ -10,6 +10,8 @@ import Heading from '@/components/common/Heading';
 import { API_BASE_URL } from '@/lib/axios';
 import { Search, Download, Eye, Filter, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
+import { exportToCsv } from '@/lib/exportUtils';
+import { toast } from 'sonner';
 
 interface Student {
   id: string;
@@ -100,23 +102,33 @@ const StudentReports = () => {
 
   const getGradeColor = (grade: string) => {
     switch (grade) {
-      case 'A+': return 'bg-green-100 text-green-800';
-      case 'A': return 'bg-blue-100 text-blue-800';
-      case 'B+': return 'bg-yellow-100 text-yellow-800';
-      case 'B': return 'bg-orange-100 text-orange-800';
-      case 'C': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'A+': return 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300';
+      case 'A': return 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300';
+      case 'B+': return 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300';
+      case 'B': return 'bg-yellow-100 dark:bg-yellow-950/60 text-yellow-800 dark:text-yellow-300';
+      case 'C': return 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const generateReport = (student: Student) => {
-    // Mock report generation
-    console.log(`Generating report for ${student.name}`);
+    const headers = ["ID", "Name", "Roll No", "Class", "Section", "Total Marks", "Percentage", "Grade", "Status", "Parent Contact"];
+    const rows = [[student.id, student.name, student.rollNo, student.class, student.section, `${student.totalMarks}/500`, `${student.percentage}%`, student.grade, student.status, student.parentContact]];
+    exportToCsv(`student_report_${student.rollNo || student.id}.csv`, headers, rows);
+    toast.success(`Report downloaded for ${student.name}`);
   };
 
   const downloadAllReports = () => {
-    // Mock download functionality
-    console.log('Downloading all reports...');
+    if (filteredStudents.length === 0) {
+      toast.error("No student records to export");
+      return;
+    }
+    const headers = ["ID", "Name", "Roll No", "Class", "Section", "Total Marks", "Percentage", "Grade", "Status", "Parent Contact"];
+    const rows = filteredStudents.map((student) => [
+      student.id, student.name, student.rollNo, student.class, student.section, `${student.totalMarks}/500`, `${student.percentage}%`, student.grade, student.status, student.parentContact
+    ]);
+    exportToCsv(`all_student_reports_${new Date().toISOString().split('T')[0]}.csv`, headers, rows);
+    toast.success(`Exported ${filteredStudents.length} student report(s)`);
   };
 
   if (loading) {
@@ -124,7 +136,7 @@ const StudentReports = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading student data...</p>
+          <p className="text-muted-foreground">Loading student data...</p>
         </div>
       </div>
     );
@@ -133,9 +145,9 @@ const StudentReports = () => {
   if (error) {
     return (
       <div className="space-y-6">
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-rose-200 bg-rose-50 dark:bg-rose-950/20">
           <CardContent className="pt-6">
-            <p className="text-red-600">{error}</p>
+            <p className="text-rose-600 dark:text-rose-400">{error}</p>
           </CardContent>
         </Card>
       </div>
@@ -143,13 +155,13 @@ const StudentReports = () => {
   }
 
   return (
-    <div className="space-y-6 ">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-lg font-bold ">Student Reports</h2>
-          <p className="text-gray-500 text-xs">View and manage student academic reports</p>
+          <h2 className="text-lg font-bold">Student Reports</h2>
+          <p className="text-muted-foreground text-xs mt-1">View and manage student academic reports</p>
         </div>
-        <Button onClick={downloadAllReports}>
+        <Button onClick={downloadAllReports} disabled={filteredStudents.length === 0}>
           <Download className="h-4 w-4 mr-2" />
           Download All Reports
         </Button>

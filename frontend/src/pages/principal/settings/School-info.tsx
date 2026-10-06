@@ -100,6 +100,15 @@ export const SchoolInfo = () => {
   // File uploads
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [signatureFile, setSignatureFile] = useState<File | null>(null);
+  const [logoError, setLogoError] = useState(false);
+
+  const getLogoUrl = (path: string) => {
+    if (!path) return "";
+    if (path.startsWith("data:") || path.startsWith("http://") || path.startsWith("https://")) {
+      return path;
+    }
+    return path.startsWith("/") ? path : `/${path}`;
+  };
 
   // Fetch all school data on component mount
   const fetchSchoolData = useCallback(async () => {
@@ -344,6 +353,7 @@ export const SchoolInfo = () => {
     const file = event.target.files?.[0];
     if (file) {
       setLogoFile(file);
+      setLogoError(false);
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -490,9 +500,14 @@ export const SchoolInfo = () => {
           <Card className="bg-gradient-card shadow-soft">
             <CardHeader>
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 bg-primary/10 rounded-lg flex items-center justify-center relative">
-                  {schoolData.logo_path ? (
-                    <img src={schoolData.logo_path} alt="School Logo" className="w-full h-full object-cover rounded-lg" />
+                <div className="w-20 h-20 bg-primary/10 rounded-lg flex items-center justify-center relative overflow-hidden">
+                  {schoolData.logo_path && !logoError ? (
+                    <img 
+                      src={getLogoUrl(schoolData.logo_path)} 
+                      alt="School Logo" 
+                      className="w-full h-full object-cover rounded-lg"
+                      onError={() => setLogoError(true)}
+                    />
                   ) : (
                     <School className="h-10 w-10 text-primary" />
                   )}

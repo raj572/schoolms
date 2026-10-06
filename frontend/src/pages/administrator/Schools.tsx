@@ -209,20 +209,20 @@ export default function Schools() {
   const getSubscriptionBadge = (schoolId: number) => {
     const subscription = schoolSubscriptions.get(schoolId);
     if (!subscription) {
-      return <Badge variant="outline" className="bg-gray-100 text-gray-600">No Subscription</Badge>;
+      return <Badge variant="outline" className="bg-muted text-muted-foreground border-border">No Subscription</Badge>;
     }
 
     const statusColors: Record<string, string> = {
-      active: 'bg-green-100 text-green-800',
-      trial: 'bg-blue-100 text-blue-800',
-      expired: 'bg-red-100 text-red-800',
-      canceled: 'bg-gray-100 text-gray-600',
-      past_due: 'bg-amber-100 text-amber-800',
-      suspended: 'bg-red-100 text-red-800',
+      active: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+      trial: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200 dark:border-blue-800',
+      expired: 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800',
+      canceled: 'bg-muted text-muted-foreground border-border',
+      past_due: 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800',
+      suspended: 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800',
     };
 
     return (
-      <Badge className={statusColors[subscription.status] || 'bg-gray-100 text-gray-600'}>
+      <Badge className={statusColors[subscription.status] || 'bg-muted text-muted-foreground'}>
         {subscription.plan?.display_name || subscription.status}
       </Badge>
     );
@@ -231,11 +231,11 @@ export default function Schools() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800';
+        return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
       case 'inactive':
-        return 'bg-red-100 text-red-800';
+        return 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground';
     }
   };
 

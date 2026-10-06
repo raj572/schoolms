@@ -99,6 +99,7 @@ export default function AdministratorDashboard() {
   const [subscriptionTrend, setSubscriptionTrend] = useState<SubscriptionTrend[]>([]);
   const [topSchools, setTopSchools] = useState<TopSchool[]>([]);
   const [recentSchools, setRecentSchools] = useState<RecentSchool[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Dynamic currency configuration from system settings
   const currentCurrency = localStorage.getItem('sa_currency') || 'INR';
@@ -220,10 +221,29 @@ export default function AdministratorDashboard() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <Heading
-        title="Administrator Dashboard"
-        description="Business analytics and insights for growth"
-      />
+      {/* Header and Search */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <Heading
+          title="Administrator Dashboard"
+          description="Business analytics and insights for growth"
+        />
+        <div className="flex items-center gap-2 w-full sm:w-80">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              placeholder="Search dashboard schools..."
+              className="pl-9 text-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          {searchQuery && (
+            <Button variant="ghost" size="sm" onClick={() => setSearchQuery('')}>
+              Clear
+            </Button>
+          )}
+        </div>
+      </div>
 
       {/* Setup Progress Banner */}
       <SetupProgressBanner />
@@ -243,9 +263,9 @@ export default function AdministratorDashboard() {
                     {kpi.trend === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                   </Badge>
                 </div>
-                <p className="text-2xl font-bold">{kpi.value}</p>
-                <p className="text-sm text-gray-600 mt-1">{kpi.title}</p>
-                <p className="text-xs text-gray-500 mt-2">{kpi.change}</p>
+                <p className="text-2xl font-bold text-foreground">{kpi.value}</p>
+                <p className="text-sm text-muted-foreground mt-1">{kpi.title}</p>
+                <p className="text-xs text-muted-foreground mt-2">{kpi.change}</p>
               </CardContent>
             </Card>
           );
@@ -396,85 +416,89 @@ export default function AdministratorDashboard() {
             <CardTitle>Top Schools by Revenue</CardTitle>
           </CardHeader>
           <CardContent>
-            {topSchools.length > 0 ? (
+            {topSchools.filter(s => !searchQuery || s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.plan.toLowerCase().includes(searchQuery.toLowerCase())).length > 0 ? (
               <div className="space-y-4">
-                {topSchools.map((school, index) => (
-                  <div 
-                    key={index}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold">
-                        #{index + 1}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold">{school.name}</h4>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline">{school.plan}</Badge>
-                          <Badge variant={school.status === 'active' ? 'default' : 'secondary'}>
-                            {school.status}
-                          </Badge>
+                {topSchools
+                  .filter(s => !searchQuery || s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.plan.toLowerCase().includes(searchQuery.toLowerCase()))
+                  .map((school, index) => (
+                    <div 
+                      key={index}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold">
+                          #{index + 1}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-foreground">{school.name}</h4>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge variant="outline">{school.plan}</Badge>
+                            <Badge variant={school.status === 'active' ? 'default' : 'secondary'}>
+                              {school.status}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-bold text-primary">
-                        ₹{(school.revenue / 1000).toFixed(0)}K
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-primary">
+                          ₹{(school.revenue / 1000).toFixed(0)}K
+                        </div>
+                        <div className="text-xs text-muted-foreground">Lifetime value</div>
                       </div>
-                      <div className="text-xs text-gray-500">Lifetime value</div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             ) : (
-              <div className="flex items-center justify-center h-32 text-gray-500">
-                No revenue data available
+              <div className="flex items-center justify-center h-32 text-muted-foreground">
+                {searchQuery ? 'No matching revenue data found' : 'No revenue data available'}
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* Recently Joined Schools */}
-      <Card>
-        <CardHeader>
+        <Card>
+          <CardHeader>
             <CardTitle>Recently Joined Schools</CardTitle>
-        </CardHeader>
-        <CardContent>
-            {recentSchools.length > 0 ? (
-          <div className="space-y-4">
-            {recentSchools.map((school, index) => (
-              <div 
-                key={index} 
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Building2 className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{school.name}</h4>
-                    <p className="text-sm text-gray-500">{school.city}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Badge variant="outline">{school.plan}</Badge>
-                  <Badge 
-                    variant={school.status === 'active' ? 'default' : 'secondary'}
-                  >
-                    {school.status}
-                  </Badge>
-                      <span className="text-sm text-gray-500">{school.joined_date}</span>
-                </div>
+          </CardHeader>
+          <CardContent>
+            {recentSchools.filter(s => !searchQuery || s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.city.toLowerCase().includes(searchQuery.toLowerCase()) || s.plan.toLowerCase().includes(searchQuery.toLowerCase())).length > 0 ? (
+              <div className="space-y-4">
+                {recentSchools
+                  .filter(s => !searchQuery || s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.city.toLowerCase().includes(searchQuery.toLowerCase()) || s.plan.toLowerCase().includes(searchQuery.toLowerCase()))
+                  .map((school, index) => (
+                    <div 
+                      key={index} 
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Building2 className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-foreground">{school.name}</h4>
+                          <p className="text-sm text-muted-foreground">{school.city}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <Badge variant="outline">{school.plan}</Badge>
+                        <Badge 
+                          variant={school.status === 'active' ? 'default' : 'secondary'}
+                        >
+                          {school.status}
+                        </Badge>
+                        <span className="text-sm text-muted-foreground">{school.joined_date}</span>
+                      </div>
+                    </div>
+                  ))}
               </div>
-            ))}
-          </div>
             ) : (
-              <div className="flex items-center justify-center h-32 text-gray-500">
-                No schools found
+              <div className="flex items-center justify-center h-32 text-muted-foreground">
+                {searchQuery ? 'No matching schools found' : 'No schools found'}
               </div>
             )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

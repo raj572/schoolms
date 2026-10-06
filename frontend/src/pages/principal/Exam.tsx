@@ -460,16 +460,16 @@ export const Exam = () => {
               ) : (
                 <div className="space-y-4">
                   {exams.map((exam) => (
-                    <div key={exam.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
+                    <div key={exam.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors bg-card">
+                      <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <div className="flex-1 w-full">
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
                             <h4 className="font-semibold text-lg">{exam.exam_name}</h4>
                             <Badge variant={exam.status === 'scheduled' ? 'default' : exam.status === 'ongoing' ? 'default' : 'secondary'}>
                               {exam.status}
                             </Badge>
                           </div>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm text-muted-foreground">
                             <div>
                               <span className="font-medium">Type:</span> {exam.exam_type || 'Standard'}
                             </div>

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AttendanceChart } from '@/components/attendance/AttendanceCharts';
 import { getAttendanceAnalytics } from '@/services/attendanceService';
 import {
@@ -407,9 +408,44 @@ const AttendanceDashboard: React.FC = () => {
                         {teacher.attendance_percentage}% attendance
                       </Badge>
                     </div>
-                    <Button size="sm" variant="outline">
-                      Contact
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button size="sm" variant="outline">
+                          Contact
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-sm">
+                        <DialogHeader>
+                          <DialogTitle>Contact {teacher.name}</DialogTitle>
+                          <DialogDescription>Reach out to address low attendance ({teacher.attendance_percentage}%)</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-3 pt-2">
+                          {teacher.email ? (
+                            <a
+                              href={`mailto:${teacher.email}?subject=Attendance%20Notice&body=Dear%20${encodeURIComponent(teacher.name)},%20we%20noticed%20your%20attendance%20percentage%20is%20below%2075%.`}
+                              className="flex items-center gap-3 p-3 rounded-md border hover:bg-muted transition-colors text-sm font-medium"
+                            >
+                              <Mail className="w-4 h-4 text-primary" />
+                              <span>Email: {teacher.email}</span>
+                            </a>
+                          ) : (
+                            <p className="text-xs text-muted-foreground italic">No email address available</p>
+                          )}
+
+                          {teacher.phone ? (
+                            <a
+                              href={`tel:${teacher.phone}`}
+                              className="flex items-center gap-3 p-3 rounded-md border hover:bg-muted transition-colors text-sm font-medium"
+                            >
+                              <Phone className="w-4 h-4 text-primary" />
+                              <span>Phone: {teacher.phone}</span>
+                            </a>
+                          ) : (
+                            <p className="text-xs text-muted-foreground italic">No phone number available</p>
+                          )}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 ))}
               </div>

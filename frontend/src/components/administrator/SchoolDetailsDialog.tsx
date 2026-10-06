@@ -75,6 +75,10 @@ export default function SchoolDetailsDialog({
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Loading School Details</DialogTitle>
+            <DialogDescription>Please wait while school details are loaded.</DialogDescription>
+          </DialogHeader>
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>

@@ -26,6 +26,9 @@ export interface School {
   status?: string;
   administrator_id?: number;
   subscription_active?: boolean;
+  subscription_status?: string;
+  subscription_start_date?: string;
+  subscription_end_date?: string;
   created_at?: string;
   updated_at?: string;
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Loader2, Building2 } from 'lucide-react';
@@ -125,6 +125,9 @@ export default function AssignSchoolDialog({
             <Building2 className="h-5 w-5" />
             Assign Principal to School
           </DialogTitle>
+          <DialogDescription>
+            Select a school to assign to principal {principal.full_name}.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">

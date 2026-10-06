@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { UserCircle, Mail, Phone, Building2, Calendar, User, Shield } from 'lucide-react';
@@ -34,6 +34,9 @@ export default function PrincipalDetailsDialog({
             <UserCircle className="h-5 w-5" />
             Principal Details
           </DialogTitle>
+          <DialogDescription>
+            Detailed information for principal {principal.full_name}.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">

@@ -134,9 +134,9 @@ const ExamReport = () => {
       toast.error('No exam records to export');
       return;
     }
-    const headers = ['ID', 'Student Name', 'Roll No', 'Class', 'Section', 'Exam Type', 'Total Marks', 'Max Marks', 'Percentage', 'Grade', 'Rank'];
+    const headers = ['ID', 'Student Name', 'Roll No', 'Class', 'Section', 'Exam Type', 'Total Marks', 'Max Total Marks', 'Percentage', 'Grade', 'Rank'];
     const rows = filteredResults.map((r) => [
-      r.id, r.studentName, r.rollNo, r.class, r.section, r.examType, r.totalMarks, r.maxMarks, `${r.percentage}%`, r.grade, r.rank
+      r.id, r.studentName, r.rollNo, r.class, r.section, r.examType, r.totalMarks, r.maxTotalMarks, `${r.percentage}%`, r.grade, r.rank
     ]);
     exportToCsv(`exam_report_${new Date().toISOString().split('T')[0]}.csv`, headers, rows);
     toast.success(`Exported ${filteredResults.length} exam result(s)`);

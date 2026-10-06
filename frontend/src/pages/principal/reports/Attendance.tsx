@@ -125,9 +125,9 @@ const AttendanceReport = () => {
       toast.error('No attendance records to export');
       return;
     }
-    const headers = ['ID', 'Student Name', 'Roll No', 'Class', 'Section', 'Present Days', 'Total Days', 'Attendance %', 'Status', 'Last Present Date'];
+    const headers = ['ID', 'Student Name', 'Roll No', 'Class', 'Section', 'Present Days', 'Total Days', 'Attendance %', 'Absent Days', 'Last Absent Date'];
     const rows = filteredRecords.map((r) => [
-      r.id, r.studentName, r.rollNo, r.class, r.section, r.presentDays, r.totalDays, `${r.attendancePercentage}%`, r.status, r.lastPresentDate
+      r.id, r.studentName, r.rollNo, r.class, r.section, r.presentDays, r.totalDays, `${r.attendancePercentage}%`, r.absentDays, r.lastAbsent
     ]);
     exportToCsv(`attendance_report_${new Date().toISOString().split('T')[0]}.csv`, headers, rows);
     toast.success(`Exported ${filteredRecords.length} attendance record(s)`);

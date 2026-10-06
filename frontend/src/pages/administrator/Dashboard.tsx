@@ -11,8 +11,10 @@ import {
   CreditCard,
   AlertCircle,
   CheckCircle,
-  Clock
+  Clock,
+  Search
 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import Heading from '@/components/common/Heading';
 import { 
   BarChart, 

@@ -1102,7 +1102,7 @@ EOT;
         ->orderBy('created_at', 'desc')
         ->get()
         ->map(function ($user) {
-          /** @var \App\Models\User $user */
+          /** @var User $user */
           $userArray = $user->toArray();
           return $userArray;
         });

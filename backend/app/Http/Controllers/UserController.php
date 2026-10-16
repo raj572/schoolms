@@ -92,7 +92,7 @@ class UserController extends Controller
 
             // For administrators, verify school ownership
             if ($authUser && $authUser->role === 'administrator') {
-                $school = \App\Models\School::find($school_id);
+                $school = School::find($school_id);
                 if (!$school || $school->administrator_id != $authUser->id) {
                     return response()->json([
                         'status' => false,
@@ -2564,141 +2564,17 @@ EOT;
             $administratorId = $authUser->id;
 
             // Get school IDs for this administrator
-            $schoolIds = \App\Models\School::where('administrator_id', $administratorId)->pluck('id');
-
-            $stats = [
-                'total_schools' => \App\Models\School::where('administrator_id', $administratorId)->count(),
-                'active_schools' => \App\Models\School::where('administrator_id', $administratorId)->where('status', 'active')->count(),
-                'total_users' => User::whereIn('school_id', $schoolIds)->count(),
-                'total_subscriptions' => \App\Models\Subscription::whereIn('school_id', $schoolIds)->count(),
-                'active_subscriptions' => \App\Models\Subscription::whereIn('school_id', $schoolIds)->where('status', 'active')->count(),
-                'trial_subscriptions' => \App\Models\Subscription::whereIn('school_id', $schoolIds)->where('status', 'trial')->count(),
-                'expired_subscriptions' => \App\Models\Subscription::whereIn('school_id', $schoolIds)->where('status', 'expired')->count(),
-                'total_revenue' => \App\Models\PaymentTransaction::whereIn('school_id', $schoolIds)->where('status', 'completed')->sum('amount'),
-                'monthly_revenue' => \App\Models\PaymentTransaction::whereIn('school_id', $schoolIds)->where('status', 'completed')
-                    ->whereMonth('created_at', now()->month)
-                    ->whereYear('created_at', now()->year)
-                    ->sum('amount'),
-                'pending_payments' => \App\Models\PaymentTransaction::whereIn('school_id', $schoolIds)->where('status', 'pending')->count(),
-            ];
-
-            // Revenue growth for last 10 months
-            $revenueGrowth = [];
-            for ($i = 9; $i >= 0; $i--) {
-                $month = now()->subMonths($i);
-                $monthName = $month->format('M');
-                $revenue = \App\Models\PaymentTransaction::whereIn('school_id', $schoolIds)
-                    ->where('status', 'completed')
-                    ->whereMonth('created_at', $month->month)
-                    ->whereYear('created_at', $month->year)
-                    ->sum('amount');
-                $schoolCount = \App\Models\Subscription::whereIn('school_id', $schoolIds)
-                    ->whereMonth('created_at', $month->month)
-                    ->whereYear('created_at', $month->year)
-                    ->count();
-                $revenueGrowth[] = [
-                    'month' => $monthName,
-                    'revenue' => (float)$revenue,
-                    'schools' => $schoolCount,
-                ];
-            }
-
-            // Plan distribution
-            $planDistribution = \App\Models\Subscription::select('plan_id', DB::raw('count(*) as value'))
-                ->whereIn('school_id', $schoolIds)
-                ->whereIn('status', ['active', 'trial'])
-                ->groupBy('plan_id')
-                ->with('plan')
-                ->get()
-                ->map(function ($item) {
-                    return [
-                        'name' => $item->plan->name ?? 'Unknown Plan',
-                        'value' => $item->value,
-                        'color' => $this->getPlanColor($item->plan->name ?? 'Unknown Plan'),
-                    ];
-                });
-
-            // Subscription trend for last 6 months
-            $subscriptionTrend = [];
-            for ($i = 5; $i >= 0; $i--) {
-                $month = now()->subMonths($i);
-                $monthName = $month->format('M');
-                $active = \App\Models\Subscription::whereIn('school_id', $schoolIds)
-                    ->where('status', 'active')
-                    ->whereMonth('created_at', $month->month)
-                    ->whereYear('created_at', $month->year)
-                    ->count();
-                $trial = \App\Models\Subscription::whereIn('school_id', $schoolIds)
-                    ->where('status', 'trial')
-                    ->whereMonth('created_at', $month->month)
-                    ->whereYear('created_at', $month->year)
-                    ->count();
-                $expired = \App\Models\Subscription::whereIn('school_id', $schoolIds)
-                    ->where('status', 'expired')
-                    ->whereMonth('created_at', $month->month)
-                    ->whereYear('created_at', $month->year)
-                    ->count();
-                $subscriptionTrend[] = [
-                    'month' => $monthName,
-                    'active' => $active,
-                    'trial' => $trial,
-                    'expired' => $expired,
-                ];
-            }
-
-            // Top schools by revenue (lifetime value) - only administrator's schools
-            $topSchools = \App\Models\School::select('schools.id', 'schools.name', DB::raw('COALESCE(SUM(payment_transactions.amount), 0) as total_revenue'))
-                ->where('schools.administrator_id', $administratorId)
-                ->leftJoin('payment_transactions', function($join) {
-                    $join->on('schools.id', '=', 'payment_transactions.school_id')
-                         ->where('payment_transactions.status', '=', 'completed');
-                })
-                ->groupBy('schools.id', 'schools.name')
-                ->orderBy('total_revenue', 'desc')
-                ->having('total_revenue', '>', 0)
-                ->limit(5)
-                ->with(['subscriptions' => function ($query) {
-                    $query->latest()->with('plan');
-                }])
-                ->get()
-                ->map(function ($school) {
-                    $latestSubscription = $school->subscriptions->first();
-                    return [
-                        'name' => $school->name,
-                        'revenue' => (float)$school->total_revenue,
-                        'plan' => $latestSubscription && $latestSubscription->plan ? $latestSubscription->plan->name : 'No Plan',
-                        'status' => $latestSubscription ? $latestSubscription->status : 'inactive',
-                    ];
-                });
-
-            // Recent schools - only administrator's schools
-            $recentSchools = \App\Models\School::where('administrator_id', $administratorId)
-                ->with(['subscriptions' => function ($query) {
-                    $query->latest()->with('plan');
-                }])
-                ->orderBy('created_at', 'desc')
-                ->limit(5)
-                ->get()
-                ->map(function ($school) {
-                    $latestSubscription = $school->subscriptions->first();
-                    return [
-                        'name' => $school->name,
-                        'city' => $school->city ?? 'N/A',
-                        'plan' => $latestSubscription && $latestSubscription->plan ? $latestSubscription->plan->name : 'No Plan',
-                        'status' => $latestSubscription ? $latestSubscription->status : 'inactive',
-                        'joined_date' => $school->created_at->format('Y-m-d'),
-                    ];
-                });
+            $schoolIds = School::where('administrator_id', $administratorId)->pluck('id');
 
             return response()->json([
                 'status' => true,
                 'data' => [
-                    'stats' => $stats,
-                    'revenue_growth' => $revenueGrowth,
-                    'plan_distribution' => $planDistribution,
-                    'subscription_trend' => $subscriptionTrend,
-                    'top_schools' => $topSchools,
-                    'recent_schools' => $recentSchools,
+                    'stats' => $this->getDashboardStats($administratorId, $schoolIds),
+                    'revenue_growth' => $this->getRevenueGrowth($schoolIds),
+                    'plan_distribution' => $this->getPlanDistribution($schoolIds),
+                    'subscription_trend' => $this->getSubscriptionTrend($schoolIds),
+                    'top_schools' => $this->getTopSchools($administratorId),
+                    'recent_schools' => $this->getRecentSchools($administratorId),
                 ],
             ]);
 
@@ -2710,6 +2586,145 @@ EOT;
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    private function getDashboardStats($administratorId, $schoolIds): array
+    {
+        return [
+            'total_schools' => School::where('administrator_id', $administratorId)->count(),
+            'active_schools' => School::where('administrator_id', $administratorId)->where('status', 'active')->count(),
+            'total_users' => User::whereIn('school_id', $schoolIds)->count(),
+            'total_subscriptions' => \App\Models\Subscription::whereIn('school_id', $schoolIds)->count(),
+            'active_subscriptions' => \App\Models\Subscription::whereIn('school_id', $schoolIds)->where('status', 'active')->count(),
+            'trial_subscriptions' => \App\Models\Subscription::whereIn('school_id', $schoolIds)->where('status', 'trial')->count(),
+            'expired_subscriptions' => \App\Models\Subscription::whereIn('school_id', $schoolIds)->where('status', 'expired')->count(),
+            'total_revenue' => \App\Models\PaymentTransaction::whereIn('school_id', $schoolIds)->where('status', 'completed')->sum('amount'),
+            'monthly_revenue' => \App\Models\PaymentTransaction::whereIn('school_id', $schoolIds)->where('status', 'completed')
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->sum('amount'),
+            'pending_payments' => \App\Models\PaymentTransaction::whereIn('school_id', $schoolIds)->where('status', 'pending')->count(),
+        ];
+    }
+
+    private function getRevenueGrowth($schoolIds): array
+    {
+        $revenueGrowth = [];
+        for ($i = 9; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $monthName = $month->format('M');
+            $revenue = \App\Models\PaymentTransaction::whereIn('school_id', $schoolIds)
+                ->where('status', 'completed')
+                ->whereMonth('created_at', $month->month)
+                ->whereYear('created_at', $month->year)
+                ->sum('amount');
+            $schoolCount = \App\Models\Subscription::whereIn('school_id', $schoolIds)
+                ->whereMonth('created_at', $month->month)
+                ->whereYear('created_at', $month->year)
+                ->count();
+            $revenueGrowth[] = [
+                'month' => $monthName,
+                'revenue' => (float)$revenue,
+                'schools' => $schoolCount,
+            ];
+        }
+        return $revenueGrowth;
+    }
+
+    private function getPlanDistribution($schoolIds)
+    {
+        return \App\Models\Subscription::select('plan_id', DB::raw('count(*) as value'))
+            ->whereIn('school_id', $schoolIds)
+            ->whereIn('status', ['active', 'trial'])
+            ->groupBy('plan_id')
+            ->with('plan')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'name' => $item->plan->name ?? 'Unknown Plan',
+                    'value' => $item->value,
+                    'color' => $this->getPlanColor($item->plan->name ?? 'Unknown Plan'),
+                ];
+            });
+    }
+
+    private function getSubscriptionTrend($schoolIds): array
+    {
+        $subscriptionTrend = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $monthName = $month->format('M');
+            $active = \App\Models\Subscription::whereIn('school_id', $schoolIds)
+                ->where('status', 'active')
+                ->whereMonth('created_at', $month->month)
+                ->whereYear('created_at', $month->year)
+                ->count();
+            $trial = \App\Models\Subscription::whereIn('school_id', $schoolIds)
+                ->where('status', 'trial')
+                ->whereMonth('created_at', $month->month)
+                ->whereYear('created_at', $month->year)
+                ->count();
+            $expired = \App\Models\Subscription::whereIn('school_id', $schoolIds)
+                ->where('status', 'expired')
+                ->whereMonth('created_at', $month->month)
+                ->whereYear('created_at', $month->year)
+                ->count();
+            $subscriptionTrend[] = [
+                'month' => $monthName,
+                'active' => $active,
+                'trial' => $trial,
+                'expired' => $expired,
+            ];
+        }
+        return $subscriptionTrend;
+    }
+
+    private function getTopSchools($administratorId)
+    {
+        return School::select('schools.id', 'schools.name', DB::raw('COALESCE(SUM(payment_transactions.amount), 0) as total_revenue'))
+            ->where('schools.administrator_id', $administratorId)
+            ->leftJoin('payment_transactions', function ($join) {
+                $join->on('schools.id', '=', 'payment_transactions.school_id')
+                    ->where('payment_transactions.status', '=', 'completed');
+            })
+            ->groupBy('schools.id', 'schools.name')
+            ->orderBy('total_revenue', 'desc')
+            ->having('total_revenue', '>', 0)
+            ->limit(5)
+            ->with(['subscriptions' => function ($query) {
+                $query->latest()->with('plan');
+            }])
+            ->get()
+            ->map(function ($school) {
+                $latestSubscription = $school->subscriptions->first();
+                return [
+                    'name' => $school->name,
+                    'revenue' => (float)$school->total_revenue,
+                    'plan' => $latestSubscription && $latestSubscription->plan ? $latestSubscription->plan->name : 'No Plan',
+                    'status' => $latestSubscription ? $latestSubscription->status : 'inactive',
+                ];
+            });
+    }
+
+    private function getRecentSchools($administratorId)
+    {
+        return School::where('administrator_id', $administratorId)
+            ->with(['subscriptions' => function ($query) {
+                $query->latest()->with('plan');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($school) {
+                $latestSubscription = $school->subscriptions->first();
+                return [
+                    'name' => $school->name,
+                    'city' => $school->city ?? 'N/A',
+                    'plan' => $latestSubscription && $latestSubscription->plan ? $latestSubscription->plan->name : 'No Plan',
+                    'status' => $latestSubscription ? $latestSubscription->status : 'inactive',
+                    'joined_date' => $school->created_at->format('Y-m-d'),
+                ];
+            });
     }
 
     private function getPlanColor($planName)

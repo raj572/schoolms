@@ -926,5 +926,21 @@ Route::prefix('student')->middleware('jwt.auth')->group(function () {
     Route::get('/issues/borrower', [\App\Http\Controllers\LibraryController::class, 'getBorrowerIssues']);
     Route::get('/digital-resources/{school_id}', [\App\Http\Controllers\LibraryController::class, 'getDigitalResources']);
   });
+
+  // Student Fees & Payments
+  Route::prefix('fees')->group(function () {
+    Route::get('/{student_id}', [\App\Http\Controllers\StudentDashboardController::class, 'getFees']);
+    Route::post('/pay', [\App\Http\Controllers\StudentDashboardController::class, 'payFee']);
+  });
 });
 
+// ==================== PARENT ROUTES ====================
+Route::prefix('parent')->middleware('jwt.auth')->group(function () {
+  Route::get('/dashboard/{parent_id}', [\App\Http\Controllers\ParentDashboardController::class, 'getDashboard']);
+  Route::get('/fees/{parent_id}', [\App\Http\Controllers\ParentDashboardController::class, 'getFees']);
+  Route::post('/fees/pay', [\App\Http\Controllers\ParentDashboardController::class, 'payFee']);
+  Route::get('/academic/{student_id}', [\App\Http\Controllers\ParentDashboardController::class, 'getAcademicProfile']);
+  Route::get('/personal/{student_id}', [\App\Http\Controllers\ParentDashboardController::class, 'getPersonalInfo']);
+  Route::post('/absence-note', [\App\Http\Controllers\ParentDashboardController::class, 'submitAbsenceNote']);
+  Route::get('/notices', [\App\Http\Controllers\ParentDashboardController::class, 'getNotices']);
+});

@@ -1,14 +1,30 @@
 name: app
-description: "A new Flutter project."
+description: "EduPulse - Modern Academic School Management Mobile Application"
 publish_to: 'none'
 version: 0.1.0+1
 
 environment:
-  sdk: ^3.12.2
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+
+  # UI & Design System
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
+  fl_chart: ^0.70.2
+  table_calendar: ^3.1.2
+
+  # Networking & State Management
+  dio: ^5.7.0
+  flutter_riverpod: ^2.6.1
+
+  # Storage & Utilities
+  flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.3.3
+  intl: ^0.20.1
+  go_router: ^14.6.2
 
 dev_dependencies:
   flutter_test:

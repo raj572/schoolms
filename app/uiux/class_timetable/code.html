@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"secondary-fixed-dim":"#c4c1fb","surface-container-high":"#e2e7ff","on-surface-variant":"#434655","on-secondary-container":"#514f81","on-error-container":"#93000a","on-primary-fixed-variant":"#003ea8","on-primary-fixed":"#00174b","surface":"#faf8ff","on-tertiary":"#ffffff","primary-container":"#2563eb","on-secondary-fixed-variant":"#444173","surface-container-highest":"#dae2fd","on-secondary-fixed":"#181445","error":"#ba1a1a","on-tertiary-container":"#bdffdb","tertiary-fixed":"#6ffbbe","on-surface":"#131b2e","secondary":"#5b598c","primary-fixed-dim":"#b4c5ff","surface-variant":"#dae2fd","secondary-fixed":"#e3dfff","surface-container":"#eaedff","primary-fixed":"#dbe1ff","surface-container-lowest":"#ffffff","secondary-container":"#c7c3fe","background":"#faf8ff","outline":"#737686","inverse-surface":"#283044","primary":"#004ac6","error-container":"#ffdad6","inverse-primary":"#b4c5ff","on-tertiary-fixed-variant":"#005236","on-tertiary-fixed":"#002113","on-secondary":"#ffffff","on-primary":"#ffffff","tertiary-container":"#007d55","tertiary-fixed-dim":"#4edea3","outline-variant":"#c3c6d7","inverse-on-surface":"#eef0ff","on-primary-container":"#eeefff","surface-container-low":"#f2f3ff","tertiary":"#006242","surface-dim":"#d2d9f4","surface-bright":"#faf8ff","on-error":"#ffffff","on-background":"#131b2e","surface-tint":"#0053db"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter":"1rem","space-xl":"2rem","space-md":"1rem","gutter-mobile":"0.75rem","space-sm":"0.5rem","margin":"1.5rem","space-lg":"1.5rem","space-xs":"0.25rem","margin-mobile":"1rem"},"fontFamily":{"headline-xl":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-xl-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"data-tabular-md":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"data-tabular-lg":["Plus Jakarta Sans"]},"fontSize":{"headline-xl":["36px",{"lineHeight":"44px","letterSpacing":"-0.03em","fontWeight":"800"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"700"}],"headline-xl-mobile":["28px",{"lineHeight":"34px","letterSpacing":"-0.025em","fontWeight":"800"}],"headline-md":["18px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"data-tabular-md":["14px",{"lineHeight":"18px","fontWeight":"600"}],"headline-lg-mobile":["22px",{"lineHeight":"28px","letterSpacing":"-0.015em","fontWeight":"700"}],"data-tabular-lg":["20px",{"lineHeight":"24px","fontWeight":"700"}]}}}};</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#faf8ff;color:#131b2e;font-family:'Plus Jakarta Sans',sans-serif;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0 flex-1"><img alt="EduPulse Emblem" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1UPKSEuyD7VXHGjLqXD-5wRBz2hpKkgTaf10Tgz5jQHRDIXD0y9Swfuwn5Q3pF_o9GGRw_XuQ4ccXJcXK4ng2fpjoM0gg7hUnCn938gcCM2f4V65TbXcL5gscNMH-PrP-WsKONsIm2_5mgKAc7WX1vjByV5d5RCEDU70zzri-A8wrEMDPZRlRPSe64j9sBlCrlgP-BDbwehFmEUhXJLGJfoKKDPjGgn69uOGlu1UqnKHNuLsVqj_qU3wQ"/><div class="flex flex-col min-w-0 justify-center"><div class="flex items-center gap-1"><span class="font-label-sm text-label-sm text-primary uppercase tracking-wider font-bold">EduPulse</span><span class="font-label-sm text-label-sm text-outline">•</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">Timetable</span></div><button aria-label="Switch Student" class="flex items-center gap-1 text-left min-w-0 group py-0.5" type="button"><span class="font-label-lg text-label-lg text-on-surface font-semibold truncate group-hover:text-primary transition-colors">Maya Lin <span class="text-on-surface-variant font-normal text-xs">(11-B)</span></span><span class="material-symbols-outlined text-[18px] text-on-surface-variant">unfold_more</span></button></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Notifications" class="relative w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container active:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></button><div class="flex items-center justify-center pl-1"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0tyNPIrzzG7BSKBHO6jHPlrbJQzYjJqLd6qVsnhtPns-_o24je8pv5LqvjJjkCX8NaF5QjQ1joau2p8UFlbQhTTyXOKPLt8PYj18Hv4qRHY9hUPL2BFmRVCNxi6wea783Fkkh7bNrtVUUN6eWACAfBaSwRu8VOCTLKkJhGqH_kimTS0enA14kZ4KES0CMttQBi3s3zR5Qo1Ahi_ubfvXgDbNkSBGjvaGFVpCftZFk_igjnSAQ7THO"/></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen"><div class="flex flex-col w-full pb-8">
+<div class="px-margin-mobile pt-3 pb-2">
+<div class="bg-surface-container p-1 rounded-full flex items-center shadow-sm">
+<button class="flex-1 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5" id="tab-classes" onclick="switchScheduleView('classes')">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">calendar_view_day</span>
+<span>Class Schedule</span>
+</button>
+<button class="flex-1 py-2 rounded-full text-on-surface-variant font-label-lg text-label-lg hover:text-on-surface transition-all duration-200 flex items-center justify-center gap-1.5" id="tab-exams" onclick="switchScheduleView('exams')">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+<span>Exam Schedule</span>
+</button>
+</div>
+</div>
+<div class="w-full overflow-x-auto no-scrollbar py-2.5 px-margin-mobile flex gap-2.5 scroll-smooth">
+<button class="day-pill flex-shrink-0 flex flex-col items-center justify-center w-[60px] h-[72px] rounded-2xl bg-surface-container-low text-on-surface-variant transition-all duration-200 shadow-sm active:scale-95" onclick="selectDay(this)">
+<span class="font-label-sm text-label-sm uppercase tracking-wider opacity-75">Mon</span>
+<span class="font-data-tabular-lg text-data-tabular-lg mt-0.5">18</span>
+<span class="w-1.5 h-1.5 rounded-full bg-transparent mt-1"></span>
+</button>
+<button class="day-pill flex-shrink-0 flex flex-col items-center justify-center w-[60px] h-[72px] rounded-2xl bg-primary text-on-primary shadow-md shadow-primary/20 transition-all duration-200 active:scale-95" onclick="selectDay(this)">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold">Tue</span>
+<span class="font-data-tabular-lg text-data-tabular-lg font-bold mt-0.5">19</span>
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container mt-1"></span>
+</button>
+<button class="day-pill flex-shrink-0 flex flex-col items-center justify-center w-[60px] h-[72px] rounded-2xl bg-surface-container-low text-on-surface-variant transition-all duration-200 shadow-sm active:scale-95" onclick="selectDay(this)">
+<span class="font-label-sm text-label-sm uppercase tracking-wider opacity-75">Wed</span>
+<span class="font-data-tabular-lg text-data-tabular-lg mt-0.5">20</span>
+<span class="w-1.5 h-1.5 rounded-full bg-transparent mt-1"></span>
+</button>
+<button class="day-pill flex-shrink-0 flex flex-col items-center justify-center w-[60px] h-[72px] rounded-2xl bg-surface-container-low text-on-surface-variant transition-all duration-200 shadow-sm active:scale-95" onclick="selectDay(this)">
+<span class="font-label-sm text-label-sm uppercase tracking-wider opacity-75">Thu</span>
+<span class="font-data-tabular-lg text-data-tabular-lg mt-0.5">21</span>
+<span class="w-1.5 h-1.5 rounded-full bg-transparent mt-1"></span>
+</button>
+<button class="day-pill flex-shrink-0 flex flex-col items-center justify-center w-[60px] h-[72px] rounded-2xl bg-surface-container-low text-on-surface-variant transition-all duration-200 shadow-sm active:scale-95" onclick="selectDay(this)">
+<span class="font-label-sm text-label-sm uppercase tracking-wider opacity-75">Fri</span>
+<span class="font-data-tabular-lg text-data-tabular-lg mt-0.5">22</span>
+<span class="w-1.5 h-1.5 rounded-full bg-transparent mt-1"></span>
+</button>
+</div>
+<div class="px-margin-mobile mt-2">
+<div class="bg-gradient-to-r from-surface-container to-surface-container-high rounded-2xl p-4 shadow-sm flex items-center justify-between">
+<div class="flex flex-col min-w-0 pr-2">
+<div class="flex items-center gap-1.5 text-primary mb-1">
+<span class="material-symbols-outlined text-[18px]">event_available</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wide font-bold">Today's Agenda</span>
+</div>
+<p class="font-headline-md text-headline-md text-on-surface font-bold truncate">Tuesday, March 19</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span>5 Classes</span>
+<span>•</span>
+<span>1 Lab</span>
+<span>•</span>
+<span>1 Advisory</span>
+</p>
+</div>
+<div class="flex flex-col items-center justify-center bg-surface-container-lowest px-3 py-2 rounded-xl shadow-sm flex-shrink-0 text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Progress</span>
+<span class="font-data-tabular-md text-data-tabular-md text-primary font-bold">1 / 5 Done</span>
+</div>
+</div>
+</div>
+<div class="px-margin-mobile mt-5 flex flex-col space-y-4" id="classes-view">
+<div class="flex items-start gap-3 relative">
+<div class="flex flex-col items-center w-12 flex-shrink-0 pt-1">
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface-variant font-bold leading-none">08:30</span>
+<span class="font-label-sm text-label-sm text-outline mt-0.5">09:15</span>
+<div class="w-0.5 h-full bg-surface-container-highest mt-3 rounded-full flex-1 min-h-[50px]"></div>
+</div>
+<div class="flex-1 bg-surface-container-lowest/80 rounded-2xl p-4 shadow-sm transition-all opacity-80 hover:opacity-100">
+<div class="flex items-center justify-between gap-2 mb-2">
+<span class="inline-flex items-center gap-1 bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-label-sm text-on-surface-variant font-semibold">
+<span class="material-symbols-outlined text-[14px] text-tertiary">check_circle</span>
+            Completed
+          </span>
+<span class="font-label-sm text-label-sm text-outline">Period 1</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Homeroom &amp; Advisory</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-outline">meeting_room</span>
+<span>Room 102</span>
+</p>
+<div class="mt-3.5 pt-3 bg-surface-container-low/50 -mx-4 -mb-4 px-4 py-3 rounded-b-2xl flex items-center justify-between">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md flex items-center justify-center font-bold flex-shrink-0">
+              MA
+            </div>
+<span class="font-label-md text-label-md text-on-surface truncate">Mrs. Alvarez</span>
+</div>
+<button aria-label="Message Teacher" class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3 relative">
+<div class="flex flex-col items-center w-12 flex-shrink-0 pt-1">
+<span class="font-data-tabular-md text-data-tabular-md text-primary font-bold leading-none">09:30</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">10:45</span>
+<div class="w-0.5 h-full bg-primary/20 mt-3 rounded-full flex-1 min-h-[60px]"></div>
+</div>
+<div class="flex-1 bg-surface-container-lowest rounded-2xl p-4 shadow-md shadow-primary/10 transition-all relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary rounded-l-2xl"></div>
+<div class="flex items-center justify-between gap-2 mb-2 pl-0.5">
+<span class="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-bold animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            Now Happening
+          </span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Science Block</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-extrabold pl-0.5">AP Chemistry</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 pl-0.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">science</span>
+<span>Science Lab 3 • Period 2</span>
+</p>
+<div class="mt-3.5 pt-3 bg-surface-container-low -mx-4 -mb-4 px-4 py-3 rounded-b-2xl flex items-center justify-between">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md flex items-center justify-center font-bold flex-shrink-0 shadow-sm">
+              DA
+            </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-semibold truncate">Dr. Aris</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lab Lead</span>
+</div>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<button aria-label="Syllabus Attachment" class="px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-primary hover:bg-surface-container-high transition-colors font-label-sm text-label-sm font-bold flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">description</span>
+<span>Lab #4 PDF</span>
+</button>
+<button aria-label="Contact Dr. Aris" class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3 relative">
+<div class="flex flex-col items-center w-12 flex-shrink-0 pt-1">
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface font-bold leading-none">11:00</span>
+<span class="font-label-sm text-label-sm text-outline mt-0.5">12:15</span>
+<div class="w-0.5 h-full bg-surface-container-highest mt-3 rounded-full flex-1 min-h-[50px]"></div>
+</div>
+<div class="flex-1 bg-surface-container-lowest rounded-2xl p-4 shadow-sm transition-all hover:shadow-md">
+<div class="flex items-center justify-between gap-2 mb-2">
+<span class="inline-flex items-center gap-1 bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-label-sm text-on-surface font-semibold">
+            Upcoming
+          </span>
+<span class="font-label-sm text-label-sm text-outline">Period 3</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Honors Calculus BC</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-outline">pin_drop</span>
+<span>Room 214 • Math Wing</span>
+</p>
+<div class="mt-3.5 pt-3 bg-surface-container-low/50 -mx-4 -mb-4 px-4 py-3 rounded-b-2xl flex items-center justify-between">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-center font-bold flex-shrink-0">
+              MC
+            </div>
+<span class="font-label-md text-label-md text-on-surface truncate">Mr. Chen</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<button aria-label="Syllabus" class="px-2 py-1 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[15px]">attachment</span>
+<span>Syllabus</span>
+</button>
+<button aria-label="Quick Contact" class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3 relative">
+<div class="flex flex-col items-center w-12 flex-shrink-0 pt-1">
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface-variant font-bold leading-none">12:15</span>
+<span class="font-label-sm text-label-sm text-outline mt-0.5">01:15</span>
+<div class="w-0.5 h-full bg-surface-container-highest mt-3 rounded-full flex-1 min-h-[40px]"></div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-2xl p-3.5 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">restaurant</span>
+</div>
+<div>
+<h4 class="font-label-lg text-label-lg font-bold text-on-surface">Lunch Break &amp; Library Access</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Main Cafeteria &amp; Study Hall B</p>
+</div>
+</div>
+<span class="inline-flex bg-surface-container-lowest px-2 py-0.5 rounded-md font-label-sm text-label-sm text-on-surface-variant shadow-sm">60 min</span>
+</div>
+</div>
+<div class="flex items-start gap-3 relative">
+<div class="flex flex-col items-center w-12 flex-shrink-0 pt-1">
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface font-bold leading-none">01:20</span>
+<span class="font-label-sm text-label-sm text-outline mt-0.5">02:35</span>
+<div class="w-0.5 h-full bg-surface-container-highest mt-3 rounded-full flex-1 min-h-[50px]"></div>
+</div>
+<div class="flex-1 bg-surface-container-lowest rounded-2xl p-4 shadow-sm transition-all hover:shadow-md">
+<div class="flex items-center justify-between gap-2 mb-2">
+<span class="inline-flex items-center gap-1 bg-surface-container px-2.5 py-0.5 rounded-full font-label-sm text-label-sm text-on-surface font-semibold">
+            Upcoming
+          </span>
+<span class="font-label-sm text-label-sm text-outline">Period 4</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">World History: Modern</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-outline">meeting_room</span>
+<span>Room 108</span>
+</p>
+<div class="mt-3.5 pt-3 bg-surface-container-low/50 -mx-4 -mb-4 px-4 py-3 rounded-b-2xl flex items-center justify-between">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest text-on-surface font-label-md text-label-md flex items-center justify-center font-bold flex-shrink-0">
+              KV
+            </div>
+<span class="font-label-md text-label-md text-on-surface truncate">Ms. Vance</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<button aria-label="Syllabus" class="px-2 py-1 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[15px]">attachment</span>
+<span>Unit 3 Map</span>
+</button>
+<button aria-label="Quick Contact" class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3 relative">
+<div class="flex flex-col items-center w-12 flex-shrink-0 pt-1">
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface font-bold leading-none">02:45</span>
+<span class="font-label-sm text-label-sm text-outline mt-0.5">04:00</span>
+</div>
+<div class="flex-1 bg-surface-container-lowest rounded-2xl p-4 shadow-sm transition-all hover:shadow-md">
+<div class="flex items-center justify-between gap-2 mb-2">
+<span class="inline-flex items-center gap-1 bg-tertiary-fixed text-on-tertiary-fixed-variant px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-semibold">
+            Extracurricular
+          </span>
+<span class="font-label-sm text-label-sm text-outline">After School</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Varsity Track &amp; Field Practice</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-tertiary">sports</span>
+<span>Athletic Field &amp; Track Complex</span>
+</p>
+<div class="mt-3.5 pt-3 bg-surface-container-low/50 -mx-4 -mb-4 px-4 py-3 rounded-b-2xl flex items-center justify-between">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-7 h-7 rounded-full bg-tertiary/10 text-tertiary font-label-md text-label-md flex items-center justify-center font-bold flex-shrink-0">
+              JR
+            </div>
+<span class="font-label-md text-label-md text-on-surface truncate">Coach Reynolds</span>
+</div>
+<button aria-label="Field Pass Status" class="px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface hover:text-primary transition-colors font-label-sm text-label-sm font-semibold flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">verified</span>
+<span>Check-in Open</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="px-margin-mobile mt-5 hidden flex-col space-y-4" id="exams-view">
+<div class="bg-surface-container-low p-4 rounded-2xl flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed-dim text-on-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">notification_important</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface font-bold">Mid-Term Assessments</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Scheduled for Spring Quarter. Review testing venues below.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="inline-flex bg-error-container text-on-error-container font-label-sm text-label-sm font-bold px-2.5 py-0.5 rounded-full">
+          Friday, March 29
+        </span>
+<span class="font-data-tabular-md text-data-tabular-md text-outline">09:00 - 11:30 AM</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">AP Chemistry Mid-Term Exam</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Hall A • Proctor: Dr. Aris</p>
+<div class="mt-3 pt-3 bg-surface-container-low/40 -mx-4 -mb-4 px-4 py-2.5 rounded-b-2xl flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Permitted: Calculator Model TI-84+</span>
+<button class="text-primary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span>Guidelines</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="inline-flex bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-bold px-2.5 py-0.5 rounded-full">
+          Monday, April 01
+        </span>
+<span class="font-data-tabular-md text-data-tabular-md text-outline">01:00 - 02:45 PM</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Honors Calculus BC Benchmark</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Auditorium East • Proctor: Mr. Chen</p>
+<div class="mt-3 pt-3 bg-surface-container-low/40 -mx-4 -mb-4 px-4 py-2.5 rounded-b-2xl flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Permitted: Formula Booklet Only</span>
+<button class="text-primary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span>Guidelines</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+function switchScheduleView(view) {
+  const classesTab = document.getElementById('tab-classes');
+  const examsTab = document.getElementById('tab-exams');
+  const classesView = document.getElementById('classes-view');
+  const examsView = document.getElementById('exams-view');
+
+  if (view === 'classes') {
+    classesTab.className = "flex-1 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5";
+    classesTab.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+    classesTab.querySelector('.material-symbols-outlined').className = "material-symbols-outlined text-[18px] text-primary";
+    
+    examsTab.className = "flex-1 py-2 rounded-full text-on-surface-variant font-label-lg text-label-lg hover:text-on-surface transition-all duration-200 flex items-center justify-center gap-1.5";
+    examsTab.querySelector('.material-symbols-outlined').style.fontVariationSettings = "";
+    examsTab.querySelector('.material-symbols-outlined').className = "material-symbols-outlined text-[18px]";
+
+    classesView.classList.remove('hidden');
+    examsView.classList.add('hidden');
+  } else {
+    examsTab.className = "flex-1 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5";
+    examsTab.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+    examsTab.querySelector('.material-symbols-outlined').className = "material-symbols-outlined text-[18px] text-primary";
+
+    classesTab.className = "flex-1 py-2 rounded-full text-on-surface-variant font-label-lg text-label-lg hover:text-on-surface transition-all duration-200 flex items-center justify-center gap-1.5";
+    classesTab.querySelector('.material-symbols-outlined').style.fontVariationSettings = "";
+    classesTab.querySelector('.material-symbols-outlined').className = "material-symbols-outlined text-[18px]";
+
+    examsView.classList.remove('hidden');
+    classesView.classList.add('hidden');
+  }
+}
+
+function selectDay(button) {
+  const allPills = document.querySelectorAll('.day-pill');
+  allPills.forEach(pill => {
+    pill.className = "day-pill flex-shrink-0 flex flex-col items-center justify-center w-[60px] h-[72px] rounded-2xl bg-surface-container-low text-on-surface-variant transition-all duration-200 shadow-sm active:scale-95";
+    const dot = pill.querySelector('span:last-child');
+    if (dot) dot.className = "w-1.5 h-1.5 rounded-full bg-transparent mt-1";
+    const spans = pill.querySelectorAll('span');
+    if (spans[0]) spans[0].className = "font-label-sm text-label-sm uppercase tracking-wider opacity-75";
+    if (spans[1]) spans[1].className = "font-data-tabular-lg text-data-tabular-lg mt-0.5";
+  });
+
+  button.className = "day-pill flex-shrink-0 flex flex-col items-center justify-center w-[60px] h-[72px] rounded-2xl bg-primary text-on-primary shadow-md shadow-primary/20 transition-all duration-200 active:scale-95";
+  const activeDot = button.querySelector('span:last-child');
+  if (activeDot) activeDot.className = "w-1.5 h-1.5 rounded-full bg-on-tertiary-container mt-1";
+  const activeSpans = button.querySelectorAll('span');
+  if (activeSpans[0]) activeSpans[0].className = "font-label-sm text-label-sm uppercase tracking-wider font-bold";
+  if (activeSpans[1]) activeSpans[1].className = "font-data-tabular-lg text-data-tabular-lg font-bold mt-0.5";
+}
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(19,27,46,0.05)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant transition-colors" data-path="home" href="#"><span class="material-symbols-outlined text-[22px]">dashboard</span><span class="font-label-sm text-label-sm mt-0.5">Home</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] h-12 transition-colors text-primary font-bold" data-path="timetable" href="#"><span class="material-symbols-outlined text-[22px]">calendar_today</span><span class="font-label-sm text-label-sm mt-0.5">Timetable</span></a><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant transition-colors" data-path="grades" href="#"><span class="material-symbols-outlined text-[22px]">school</span><span class="font-label-sm text-label-sm mt-0.5">Grades</span></a><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant transition-colors" data-path="attendance" href="#"><span class="material-symbols-outlined text-[22px]">fact_check</span><span class="font-label-sm text-label-sm mt-0.5">Attendance</span></a><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant transition-colors" data-path="fees" href="#"><span class="material-symbols-outlined text-[22px]">account_balance_wallet</span><span class="font-label-sm text-label-sm mt-0.5">Fees</span></a></div></nav></body></html>

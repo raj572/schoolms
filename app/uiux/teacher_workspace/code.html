@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"secondary-fixed-dim":"#c4c1fb","surface-container-high":"#e2e7ff","on-surface-variant":"#434655","on-secondary-container":"#514f81","on-error-container":"#93000a","on-primary-fixed-variant":"#003ea8","on-primary-fixed":"#00174b","surface":"#faf8ff","on-tertiary":"#ffffff","primary-container":"#2563eb","on-secondary-fixed-variant":"#444173","surface-container-highest":"#dae2fd","on-secondary-fixed":"#181445","error":"#ba1a1a","on-tertiary-container":"#bdffdb","tertiary-fixed":"#6ffbbe","on-surface":"#131b2e","secondary":"#5b598c","primary-fixed-dim":"#b4c5ff","surface-variant":"#dae2fd","secondary-fixed":"#e3dfff","surface-container":"#eaedff","primary-fixed":"#dbe1ff","surface-container-lowest":"#ffffff","secondary-container":"#c7c3fe","background":"#faf8ff","outline":"#737686","inverse-surface":"#283044","primary":"#004ac6","error-container":"#ffdad6","inverse-primary":"#b4c5ff","on-tertiary-fixed-variant":"#005236","on-tertiary-fixed":"#002113","on-secondary":"#ffffff","on-primary":"#ffffff","tertiary-container":"#007d55","tertiary-fixed-dim":"#4edea3","outline-variant":"#c3c6d7","inverse-on-surface":"#eef0ff","on-primary-container":"#eeefff","surface-container-low":"#f2f3ff","tertiary":"#006242","surface-dim":"#d2d9f4","surface-bright":"#faf8ff","on-error":"#ffffff","on-background":"#131b2e","surface-tint":"#0053db"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter":"1rem","space-xl":"2rem","space-md":"1rem","gutter-mobile":"0.75rem","space-sm":"0.5rem","margin":"1.5rem","space-lg":"1.5rem","space-xs":"0.25rem","margin-mobile":"1rem"},"fontFamily":{"headline-xl":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-xl-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"data-tabular-md":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"data-tabular-lg":["Plus Jakarta Sans"]},"fontSize":{"headline-xl":["36px",{"lineHeight":"44px","letterSpacing":"-0.03em","fontWeight":"800"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"700"}],"headline-xl-mobile":["28px",{"lineHeight":"34px","letterSpacing":"-0.025em","fontWeight":"800"}],"headline-md":["18px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"data-tabular-md":["14px",{"lineHeight":"18px","fontWeight":"600"}],"headline-lg-mobile":["22px",{"lineHeight":"28px","letterSpacing":"-0.015em","fontWeight":"700"}],"data-tabular-lg":["20px",{"lineHeight":"24px","fontWeight":"700"}]}}}};</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#faf8ff;color:#131b2e;font-family:'Plus Jakarta Sans',sans-serif;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0 flex-1"><button aria-label="Back to Student View" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container active:bg-surface-container-high transition-colors -ml-2" type="button"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><div class="flex flex-col min-w-0 justify-center"><div class="flex items-center gap-1"><span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary tracking-wide uppercase">Faculty</span><span class="font-label-sm text-label-sm text-outline">•</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">Science Dept</span></div><div class="flex items-center gap-1.5"><h1 class="font-headline-md text-headline-md text-on-surface font-bold truncate">Dr. Aris Thorne</h1><span class="w-2 h-2 rounded-full bg-tertiary"></span></div></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Quick Actions" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container active:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[22px]">tune</span></button><button aria-label="Switch Role" class="w-11 h-11 flex items-center justify-center rounded-full text-primary hover:bg-surface-container active:bg-surface-container-high transition-colors" title="Switch Portal View"><span class="material-symbols-outlined text-[22px]">swap_horiz</span></button></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-8 bg-surface min-h-screen"><div class="flex flex-col w-full px-margin-mobile gap-space-lg">
+<!-- Teacher Status & Context Bar -->
+<section class="flex flex-col gap-space-sm pt-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-primary text-on-primary shadow-sm">
+          Educator Workspace
+        </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">domain</span>
+          Room 304 • Science Wing
+        </span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">
+        Term 2 (2024–25)
+      </span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">
+        Good morning, Dr. Thorne
+      </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Lab 3 safety inspections completed. 3 active periods scheduled today.
+      </p>
+</div>
+<!-- Quick Metric KPI Carousel -->
+<div class="flex gap-space-sm overflow-x-auto pb-1 -mx-margin-mobile px-margin-mobile no-scrollbar">
+<div class="flex-shrink-0 flex items-center gap-2.5 bg-surface-container-lowest px-3 py-2 rounded-xl shadow-sm min-w-[140px]">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">calendar_today</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface">3 Classes</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">On today's deck</span>
+</div>
+</div>
+<div class="flex-shrink-0 flex items-center gap-2.5 bg-surface-container-lowest px-3 py-2 rounded-xl shadow-sm min-w-[155px]">
+<div class="w-8 h-8 rounded-lg bg-error-container flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface">48 To Grade</span>
+<span class="font-label-sm text-label-sm text-error">12 urgent tests</span>
+</div>
+</div>
+<div class="flex-shrink-0 flex items-center gap-2.5 bg-surface-container-lowest px-3 py-2 rounded-xl shadow-sm min-w-[150px]">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface">98.2%</span>
+<span class="font-label-sm text-label-sm text-tertiary">Class Attendance</span>
+</div>
+</div>
+<div class="flex-shrink-0 flex items-center gap-2.5 bg-surface-container-lowest px-3 py-2 rounded-xl shadow-sm min-w-[150px]">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">mark_chat_unread</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface">2 Parent Notes</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Awaiting response</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Current / Upcoming Class Quick Action Hub -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col gap-space-md">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider">Starting in 18 mins</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface truncate">AP Chemistry (Period 2)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 09:30 – 10:45 AM
+          <span class="text-outline">•</span>
+<span class="material-symbols-outlined text-[16px]">science</span> Lab Station 3
+        </p>
+</div>
+<div class="flex flex-col items-end">
+<span class="px-2 py-1 rounded-lg bg-surface-container font-label-md text-label-md text-primary">Cohort A</span>
+</div>
+</div>
+<!-- Attendance Meter Snapshot -->
+<div class="bg-surface-container-low rounded-xl p-space-sm flex flex-col gap-2">
+<div class="flex items-center justify-between text-on-surface font-label-md text-label-md">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary">how_to_reg</span>
+          Roll Call Status
+        </span>
+<span class="font-data-tabular-md text-data-tabular-md text-primary">24 / 26 Present</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden flex">
+<div class="bg-tertiary h-full transition-all duration-300" style="width: 88%;"></div>
+<div class="bg-secondary h-full transition-all duration-300" style="width: 6%;"></div>
+<div class="bg-error h-full transition-all duration-300" style="width: 6%;"></div>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> 24 Present</span>
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 1 Tardy</span>
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-error"></span> 1 Unmarked</span>
+</div>
+</div>
+<!-- Hub Actions -->
+<div class="flex flex-col gap-space-xs">
+<button class="w-full h-12 bg-primary hover:bg-primary-container active:scale-[0.99] text-on-primary font-label-lg text-label-lg rounded-xl flex items-center justify-center gap-2 shadow-sm transition-transform" type="button">
+<span class="material-symbols-outlined text-[20px]">checklist</span>
+<span>Open Interactive Roll Call</span>
+</button>
+<div class="grid grid-cols-2 gap-space-xs mt-1">
+<button class="h-11 bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md rounded-xl flex items-center justify-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">lab_profile</span>
+<span>Lab Protocols</span>
+</button>
+<button class="h-11 bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md rounded-xl flex items-center justify-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">campaign</span>
+<span>Broadcast Note</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Interactive Rapid Roll Call Widget -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">groups</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Rapid Attendance</h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Auto-locks at 09:45 AM</span>
+</div>
+<!-- Roster Strip -->
+<div class="flex flex-col gap-space-xs divide-y-0" id="rosterList">
+<!-- Student 1 -->
+<div class="flex items-center justify-between py-2 px-1 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="relative w-9 h-9 rounded-full overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close up warm academic portrait of Maya Lin, a high school girl wearing a navy blue blazer and glasses, smiling gently in soft laboratory lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFl2R4TrnKOpUyVTdOhxKJhQTyasEmQBTFIRGF0q80iVylpIPaCluDC3pS2SPJHB96wzEjTrS5H4W-SSjuVU_AxtCHTeouRERrxvu3krSfA-zOQ0G7IzkDEeaDMDrnIobpK9tC7Dvia8uJuf0ol4ThRyFAyaiJ_Q7WXzbpEz_I4mak2fGiSjOuRVyUPb0IBkZF_x0YkoxO3LMCfnXHD8WpMsGRgEkdn4525IB18cPQQmxqdsOywB42"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Maya Lin</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Seat 3A • Bench Leader</span>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container p-0.5 rounded-lg" data-student-id="1">
+<button aria-label="Mark Maya Lin Present" class="roll-btn w-8 h-8 rounded-md bg-tertiary text-on-tertiary font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">P</button>
+<button aria-label="Mark Maya Lin Tardy" class="roll-btn w-8 h-8 rounded-md text-on-surface-variant hover:bg-surface font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">T</button>
+<button aria-label="Mark Maya Lin Absent" class="roll-btn w-8 h-8 rounded-md text-on-surface-variant hover:bg-surface font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">A</button>
+</div>
+</div>
+<!-- Student 2 -->
+<div class="flex items-center justify-between py-2 px-1 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="relative w-9 h-9 rounded-full overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Portrait of Liam Vance, high school boy with curly hair in a green casual sweater, neutral attentive expression against educational locker background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDscusHFHUaHl4F91ooIQnktgvVz-EpN0G-_pPa_xVtOHUtEgWjix37ruuTB8qEy5AQegd4tFgIV-jRlhtn_ADPN_G9QDAMS9OQR75OeP-9YJ8cr44BZluLZ6VXfkK9SBhA_PMZjeiyqUWcWDzG517WJ86_ulifliNMZmCXxgFkfzlw6L7Yllh6s6lJ3K5Tp1nZubzFljMLbvUaB3iJJOV0qEvdJunaOP80RmuKeir28qtrcs7p33OK"/>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Liam Vance</span>
+<span class="px-1.5 py-0.2 rounded font-label-sm text-[10px] bg-secondary-fixed text-on-secondary-fixed">Late Pass</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Seat 3B • Station Mate</span>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container p-0.5 rounded-lg" data-student-id="2">
+<button aria-label="Mark Liam Vance Present" class="roll-btn w-8 h-8 rounded-md text-on-surface-variant hover:bg-surface font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">P</button>
+<button aria-label="Mark Liam Vance Tardy" class="roll-btn w-8 h-8 rounded-md bg-secondary text-on-secondary font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">T</button>
+<button aria-label="Mark Liam Vance Absent" class="roll-btn w-8 h-8 rounded-md text-on-surface-variant hover:bg-surface font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">A</button>
+</div>
+</div>
+<!-- Student 3 -->
+<div class="flex items-center justify-between py-2 px-1 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="relative w-9 h-9 rounded-full overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Portrait of Sarah Jenkins, teen high school student smiling with braided hair, white collegiate polo shirt, bright clean natural classroom lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv6EzL2xPX96D9oxghGP4dOGijo5kD50UBqgwqBTkAt6WPkLAT1Wn-xndJ3rwt9IACca3sE2wGi9QG67aGWlKaGf0gcdSQGMzNlTnTty_d8eAI3Bh6iiqTqt_hY8MqiL6mYmrhK0JWTsbIKXtkt1xlmfI6247wcdpttgscQ_k51L79PfjCUPDwJuK4DA0-hUVSjko4G0xe4NW6EECvUicsxeanhaCIsmCIMYUgmouvUCZC1ixvKLY8"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Sarah Jenkins</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Seat 4A • Safety Officer</span>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container p-0.5 rounded-lg" data-student-id="3">
+<button aria-label="Mark Sarah Jenkins Present" class="roll-btn w-8 h-8 rounded-md bg-tertiary text-on-tertiary font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">P</button>
+<button aria-label="Mark Sarah Jenkins Tardy" class="roll-btn w-8 h-8 rounded-md text-on-surface-variant hover:bg-surface font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">T</button>
+<button aria-label="Mark Sarah Jenkins Absent" class="roll-btn w-8 h-8 rounded-md text-on-surface-variant hover:bg-surface font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">A</button>
+</div>
+</div>
+<!-- Student 4 (Unmarked) -->
+<div class="flex items-center justify-between py-2 px-1 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="relative w-9 h-9 rounded-full overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Portrait of Marcus Chen, varsity student in grey crewneck, attentive friendly expression, bright library bookshelf background in warm daylight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOqNBw-P4rnLBcn1V453OV7MJOYsVzRSFQ0-jC_vJh9h1yObWCiEhqbqo9wI_rnPKs9YjiHrlQX2sEfR6neBJu36Q7w8PxDxpVV677QFL636_-X8hyUp_kxxNqWIxYykZuBI6XiOUYQCmtlm62MjwxgxzZadHclz2aGuvr85zmYR_Yx4uRR-67J_aVxG2yzzpCMD286SqL6Puku_WoZ7vZ9gDRlEyetHRDTYzi4MaSOahqnIvOEFT_"/>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Marcus Chen</span>
+<span class="px-1.5 py-0.2 rounded font-label-sm text-[10px] bg-error-container text-on-error-container">Nurse Flag</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Seat 4B • Lab Support</span>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container p-0.5 rounded-lg" data-student-id="4">
+<button aria-label="Mark Marcus Chen Present" class="roll-btn w-8 h-8 rounded-md text-on-surface-variant hover:bg-surface font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">P</button>
+<button aria-label="Mark Marcus Chen Tardy" class="roll-btn w-8 h-8 rounded-md text-on-surface-variant hover:bg-surface font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">T</button>
+<button aria-label="Mark Marcus Chen Absent" class="roll-btn w-8 h-8 rounded-md bg-error text-on-error font-label-sm text-label-sm flex items-center justify-center transition-all" type="button">A</button>
+</div>
+</div>
+</div>
+<!-- Submit Roll Call -->
+<div class="pt-2">
+<button class="w-full h-11 bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md rounded-xl flex items-center justify-center gap-2 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary">send</span>
+<span>Submit Final Roster to Attendance Office</span>
+</button>
+</div>
+</section>
+<!-- Pending Grading & Review Queue -->
+<section class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">assignment_turned_in</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Grading Queue</h3>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold">48 Pending Total</span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Item 1: Hess's Law -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm relative">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container text-primary">AP Chem • Per 2</span>
+<span class="font-label-sm text-label-sm text-tertiary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span> Rubric Synced
+              </span>
+</div>
+<h4 class="font-label-lg text-label-lg text-on-surface">Lab Report #4: Hess's Law &amp; Enthalpy</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Submitted yesterday, 11:59 PM</p>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="font-data-tabular-lg text-data-tabular-lg text-tertiary">92%</span>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Class Avg</div>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Graded Progress</span>
+<span class="font-data-tabular-md text-data-tabular-md text-on-surface">24 / 28 Completed</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 85%;"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">4 Submissions left to grade</span>
+<button class="h-9 px-4 bg-primary text-on-primary font-label-md text-label-md rounded-lg flex items-center gap-1.5 shadow-sm active:scale-95 transition-all" type="button">
+<span>Grade Next</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Item 2: Mid-Unit Quiz -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm relative">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container text-secondary">Gen Chem • Per 4</span>
+<span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-error-container text-on-error-container">Needs Review</span>
+</div>
+<h4 class="font-label-lg text-label-lg text-on-surface">Thermodynamics Unit Quiz #2</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Auto-graded mcqs • 12 free-response remaining</p>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="font-data-tabular-lg text-data-tabular-lg text-on-surface">12 / 30</span>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Pending FRQs</div>
+</div>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 60%;"></div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">18 graded automatically</span>
+<button class="h-9 px-4 bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md rounded-lg flex items-center gap-1.5 transition-colors" type="button">
+<span>Review FRQs</span>
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Parent Inquiries & Student Safety Alerts -->
+<section class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">contact_support</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Parent Notes &amp; Flags</h3>
+</div>
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Note 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-2">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[16px]">mail</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface">Mrs. Eleanor Lin</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">(Maya's Mother)</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Today 08:12 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pl-9">
+          “Regarding the AP Chem Summer Research Grant, does Maya need to bring hard copies of recommendations to Lab 3 today?”
+        </p>
+<div class="flex justify-end gap-2 pl-9 pt-1">
+<button class="h-8 px-3 rounded-lg bg-surface-container hover:bg-surface-container-high font-label-sm text-label-sm text-on-surface flex items-center gap-1" type="button">
+<span>Dismiss</span>
+</button>
+<button class="h-8 px-3 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm flex items-center gap-1 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[14px]">reply</span>
+<span>Quick Reply</span>
+</button>
+</div>
+</div>
+<!-- Flag 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-error-container text-on-error-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[18px]">medical_services</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface truncate">Marcus Chen • Nurse Pass Active</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Cleared for mild allergy rest until 10:15 AM</span>
+</div>
+</div>
+<button class="h-8 px-2.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm flex-shrink-0 hover:bg-surface-container-high" type="button">
+          Acknowledge
+        </button>
+</div>
+</div>
+</section>
+<!-- Quick Teacher Tools Grid -->
+<section class="flex flex-col gap-space-sm pb-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">Faculty Quick Tools</h3>
+<div class="grid grid-cols-4 gap-2.5">
+<button class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low shadow-sm gap-1.5 transition-colors" type="button">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">score</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface text-center line-clamp-1">Grades</span>
+</button>
+<button class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low shadow-sm gap-1.5 transition-colors" type="button">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">crisis_alert</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface text-center line-clamp-1">Broadcast</span>
+</button>
+<button class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low shadow-sm gap-1.5 transition-colors" type="button">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[20px]">science</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface text-center line-clamp-1">Book Lab</span>
+</button>
+<button class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low shadow-sm gap-1.5 transition-colors" type="button">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[20px]">more_time</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface text-center line-clamp-1">Office Hrs</span>
+</button>
+</div>
+</section>
+</div>
+<script>
+  // Simple interactive toggle for Roll Call buttons
+  document.querySelectorAll('[data-student-id]').forEach(group => {
+    const buttons = group.querySelectorAll('.roll-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => {
+          b.className = 'roll-btn w-8 h-8 rounded-md text-on-surface-variant hover:bg-surface font-label-sm text-label-sm flex items-center justify-center transition-all';
+        });
+        const label = btn.textContent.trim();
+        if (label === 'P') {
+          btn.className = 'roll-btn w-8 h-8 rounded-md bg-tertiary text-on-tertiary font-label-sm text-label-sm flex items-center justify-center transition-all';
+        } else if (label === 'T') {
+          btn.className = 'roll-btn w-8 h-8 rounded-md bg-secondary text-on-secondary font-label-sm text-label-sm flex items-center justify-center transition-all';
+        } else if (label === 'A') {
+          btn.className = 'roll-btn w-8 h-8 rounded-md bg-error text-on-error font-label-sm text-label-sm flex items-center justify-center transition-all';
+        }
+      });
+    });
+  });
+</script></main></body></html>

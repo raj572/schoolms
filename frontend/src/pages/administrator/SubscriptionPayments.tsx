@@ -18,6 +18,8 @@ import Heading from '@/components/common/Heading';
 import {
   getAdministratorTransactions,
   getAdministratorStats,
+  getSubscriptionInvoiceUrl,
+  getSubscriptionInvoiceDownloadUrl,
   type SubscriptionTransaction,
   type TransactionStats
 } from '@/services/subscriptionPaymentApiService';
@@ -309,18 +311,33 @@ export default function SubscriptionPayments() {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            toast({
-                              title: 'Transaction Details',
-                              description: `Order ID: ${transaction.razorpay_order_id}`,
-                            });
-                          }}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
+                        <div className="flex items-center gap-1.5">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 px-2.5 text-xs text-primary border-primary/30 hover:bg-primary/10 flex items-center gap-1.5"
+                            title="View Official Tax Invoice"
+                            onClick={() => {
+                              const url = getSubscriptionInvoiceUrl(transaction.id);
+                              window.open(url, '_blank');
+                            }}
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Invoice</span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                            title="Download PDF Invoice"
+                            onClick={() => {
+                              const url = getSubscriptionInvoiceDownloadUrl(transaction.id);
+                              window.open(url, '_blank');
+                            }}
+                          >
+                            <Download className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -360,18 +377,31 @@ export default function SubscriptionPayments() {
 
                     <div className="flex items-center justify-between gap-2 border-t pt-3 text-xs text-muted-foreground">
                       <span>Date: {formatDate(transaction.created_at)}</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          toast({
-                            title: 'Transaction Details',
-                            description: `Order ID: ${transaction.razorpay_order_id}`,
-                          });
-                        }}
-                      >
-                        <Eye className="w-3.5 h-3.5 mr-1" /> Details
-                      </Button>
+                      <div className="flex items-center gap-1.5">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 text-xs flex items-center gap-1"
+                          onClick={() => {
+                            const url = getSubscriptionInvoiceUrl(transaction.id);
+                            window.open(url, '_blank');
+                          }}
+                        >
+                          <Eye className="w-3.5 h-3.5" /> Invoice
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          title="Download PDF"
+                          onClick={() => {
+                            const url = getSubscriptionInvoiceDownloadUrl(transaction.id);
+                            window.open(url, '_blank');
+                          }}
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

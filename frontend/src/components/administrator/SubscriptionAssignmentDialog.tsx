@@ -26,7 +26,7 @@ import {
   getSubscriptionPlans,
   SubscriptionAssignment,
 } from '@/services/administratorApiService';
-import { Loader2, CreditCard, Calendar, Package, TrendingUp, Check, Users } from 'lucide-react';
+import { Loader2, CreditCard, Calendar, Package, TrendingUp, Check, Users, AlertTriangle } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import SubscriptionPaymentButton from './SubscriptionPaymentButton';
 
@@ -463,8 +463,52 @@ export default function SubscriptionAssignmentDialog({
         }}
         className="space-y-6 overflow-y-auto flex-1 py-4"
       >
-              {/* Select Plan */}
-          <div className="space-y-2">
+        {/* Active Subscription Warning / Extension Notice */}
+        {activeSubscription && (
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div className="space-y-1.5 text-sm flex-1">
+              <div className="flex items-center justify-between">
+                <h5 className="font-semibold text-amber-500">Active Subscription Found</h5>
+                <Badge variant="outline" className="text-amber-500 border-amber-500/40 text-[11px] capitalize">
+                  {activeSubscription.status}
+                </Badge>
+              </div>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                <strong>{schoolName}</strong> currently has an active <strong>{activeSubscription.plan?.name || 'Subscription'}</strong> expiring on{' '}
+                <span className="font-semibold text-foreground">
+                  {new Date(activeSubscription.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </span>.
+              </p>
+              <div className="bg-amber-500/15 border border-amber-500/25 rounded-md p-2.5 text-xs text-amber-300">
+                <span className="font-semibold">⚠️ Expiry Extension Notice:</span> Making this payment will not overwrite remaining days — the school's expiry date will be extended to{' '}
+                <strong className="underline text-amber-200">
+                  {(() => {
+                    if (!activeSubscription?.end_date) return '';
+                    const currentEnd = new Date(activeSubscription.end_date);
+                    const now = new Date();
+                    const baseDate = currentEnd > now ? currentEnd : now;
+                    const extended = new Date(baseDate.getTime());
+                    if (billingCycle === 'annual') {
+                      extended.setFullYear(extended.getFullYear() + 1);
+                    } else {
+                      extended.setMonth(extended.getMonth() + 1);
+                    }
+                    return extended.toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric'
+                    });
+                  })()}
+                </strong>{' '}
+                ({billingCycle === 'annual' ? '+1 Year / 12 Months' : '+1 Month'}).
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Select Plan */}
+        <div className="space-y-2">
             <Label htmlFor="plan" className="text-sm font-medium">
               Select Plan <span className="text-red-500">*</span>
             </Label>

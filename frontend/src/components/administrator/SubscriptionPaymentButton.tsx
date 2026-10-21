@@ -7,6 +7,7 @@ import { CreditCard, Loader2 } from 'lucide-react';
 import {
   createSubscriptionOrder,
   verifySubscriptionPayment,
+  getSubscriptionInvoiceUrl,
   type CreateSubscriptionOrderData
 } from '@/services/subscriptionPaymentApiService';
 import { assignSubscription, getSubscriptionPlans } from '@/services/administratorApiService';
@@ -122,11 +123,16 @@ export default function SubscriptionPaymentButton({
             console.log('Verification response:', verifyResponse);
 
             if (verifyResponse.status) {
+              const invoiceId = verifyResponse.data?.id || transaction.id;
               toast({
                 title: 'Payment Successful!',
-                description: 'Payment verified and subscription activated successfully!',
+                description: 'Payment verified & subscription activated. Official invoice generated!',
               });
               onSuccess();
+              if (invoiceId) {
+                const url = getSubscriptionInvoiceUrl(invoiceId);
+                window.open(url, '_blank');
+              }
             } else {
               toast({
                 variant: 'destructive',

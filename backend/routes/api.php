@@ -197,6 +197,8 @@ Route::prefix('super-admin')->group(function () {
       Route::get('/', [\App\Http\Controllers\SubscriptionPaymentController::class, 'getAllTransactions']);
       Route::get('/stats', [\App\Http\Controllers\SubscriptionPaymentController::class, 'getAllStats']);
       Route::get('/{id}', [\App\Http\Controllers\SubscriptionPaymentController::class, 'getTransaction']);
+      Route::get('/{id}/invoice', [\App\Http\Controllers\SubscriptionInvoiceController::class, 'getInvoiceData']);
+      Route::get('/{id}/invoice/pdf', [\App\Http\Controllers\SubscriptionInvoiceController::class, 'downloadPdf']);
     });
 
     // All Users Management
@@ -277,6 +279,10 @@ Route::prefix('administrator')->middleware(['jwt.auth'])->group(function () {
 
     // Get subscription transaction statistics
     Route::get('/transaction-stats', [\App\Http\Controllers\SubscriptionPaymentController::class, 'getAdministratorStats']);
+
+    // Subscription Invoices
+    Route::get('/transactions/{id}/invoice', [\App\Http\Controllers\SubscriptionInvoiceController::class, 'getInvoiceData']);
+    Route::get('/transactions/{id}/invoice/pdf', [\App\Http\Controllers\SubscriptionInvoiceController::class, 'downloadPdf']);
   });
 
   // Principal Management - Full CRUD for principals

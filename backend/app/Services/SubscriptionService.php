@@ -191,6 +191,17 @@ class SubscriptionService
                     'registration_status' => 'active',
                 ]);
 
+                // Update school subscription dates
+                $schoolModel = \App\Models\School::find($data['school_id']);
+                if ($schoolModel) {
+                    $schoolModel->subscription_status = 'active';
+                    if (!$schoolModel->subscription_start_date) {
+                        $schoolModel->subscription_start_date = $startDate;
+                    }
+                    $schoolModel->subscription_end_date = $endDate;
+                    $schoolModel->save();
+                }
+
                 // Link payment transaction to subscription if transaction_id provided
                 if ($transactionId) {
                     \App\Models\PaymentTransaction::where('transaction_id', $transactionId)
@@ -223,6 +234,7 @@ class SubscriptionService
                     'message' => $message,
                     'data' => [
                         'subscription' => $subscription->fresh()->load('plan'),
+                        'transaction' => $isManual ? \App\Models\SubscriptionTransaction::where('school_id', $data['school_id'])->latest('id')->first() : null,
                         'trial_days' => $trialDays,
                         'transaction_id' => $transactionId,
                         'is_renewal' => $isRenewal,

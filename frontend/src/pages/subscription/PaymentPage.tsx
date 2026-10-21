@@ -5,8 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 import { subscriptionApi, SubscriptionPlan } from '@/services/subscriptionApiService';
-import { createSubscriptionOrder, verifySubscriptionPayment } from '@/services/subscriptionPaymentApiService';
-import { Loader2, CreditCard, Shield, CheckCircle2, ArrowLeft, Banknote, Building2 } from 'lucide-react';
+import {
+  createSubscriptionOrder,
+  verifySubscriptionPayment,
+  getSubscriptionInvoiceUrl,
+  getSubscriptionInvoiceDownloadUrl
+} from '@/services/subscriptionPaymentApiService';
+import { Loader2, CreditCard, Shield, CheckCircle2, ArrowLeft, Banknote, Building2, AlertTriangle, FileText, Download } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -65,7 +70,48 @@ const PaymentPage: React.FC = () => {
   const [paymentOption, setPaymentOption] = useState<'online' | 'manual'>('online');
   const [manualMethod, setManualMethod] = useState<string>('bank_transfer');
   const [manualReference, setManualReference] = useState<string>('');
+  const [activeSubscription, setActiveSubscription] = useState<any>(null);
+  const [successTransaction, setSuccessTransaction] = useState<any>(null);
   const { authUser, getUser } = useAuthStore();
+
+  useEffect(() => {
+    fetchActiveSubscription();
+  }, [authUser]);
+
+  const fetchActiveSubscription = async () => {
+    try {
+      const schoolId = authUser?.school_id || Number(localStorage.getItem('school_id')) || Number(localStorage.getItem('schoolId')) || 1;
+      const res = await fetch(`${API_BASE_URL}/subscriptions/current/${schoolId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+      });
+      const data = await res.json();
+      if (data.status && data.data && ['active', 'trial'].includes(data.data.status)) {
+        setActiveSubscription(data.data);
+      }
+    } catch {
+      // quiet fallback
+    }
+  };
+
+  const getExtendedExpiryDate = () => {
+    if (!activeSubscription?.end_date) return null;
+    const currentEnd = new Date(activeSubscription.end_date);
+    const now = new Date();
+    const baseDate = currentEnd > now ? currentEnd : now;
+    const extended = new Date(baseDate.getTime());
+    if (billingCycle === 'annual') {
+      extended.setFullYear(extended.getFullYear() + 1);
+    } else {
+      extended.setMonth(extended.getMonth() + 1);
+    }
+    return extended.toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
 
   const handleManualPayment = async () => {
     if (!plan) return;
@@ -100,8 +146,12 @@ const PaymentPage: React.FC = () => {
           title: 'Subscription Activated!',
           description: data.message || 'Manual payment submitted and subscription activated successfully!',
         });
-        getUser();
-        navigate('/administrator/dashboard');
+        await getUser();
+        if (data.data?.transaction?.id) {
+          setSuccessTransaction(data.data.transaction);
+        } else {
+          navigate('/administrator/dashboard');
+        }
       } else {
         throw new Error(data.message || 'Manual payment activation failed');
       }
@@ -285,7 +335,7 @@ const PaymentPage: React.FC = () => {
       if (verifyResponse.status) {
         toast({
           title: 'Payment Successful!',
-          description: 'Your subscription is now active. Welcome aboard!',
+          description: 'Your subscription is now active. Official invoice generated!',
         });
 
         // Update user's subscription status
@@ -293,8 +343,11 @@ const PaymentPage: React.FC = () => {
         localStorage.setItem('registration_status', 'active');
         await getUser();
 
-        // Navigate to dashboard
-        navigate('/principal/dashboard');
+        if (verifyResponse.data?.id) {
+          setSuccessTransaction(verifyResponse.data);
+        } else {
+          navigate('/administrator/dashboard');
+        }
       } else {
         throw new Error(verifyResponse.message || 'Payment verification failed');
       }
@@ -327,6 +380,79 @@ const PaymentPage: React.FC = () => {
     return monthlyTotal * 0.1; // 10% discount
   };
 
+  if (successTransaction) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full text-center shadow-xl border-emerald-500/30">
+          <CardHeader className="pb-3">
+            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3">
+              <CheckCircle2 className="w-10 h-10" />
+            </div>
+            <CardTitle className="text-2xl font-bold text-foreground">Payment Successful!</CardTitle>
+            <CardDescription className="text-sm mt-1">
+              Your subscription is active and an official invoice has been generated.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-muted/40 p-3.5 rounded-lg text-left text-xs space-y-1.5 border">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Plan:</span>
+                <span className="font-semibold text-foreground">{plan?.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Billing Cycle:</span>
+                <span className="font-semibold text-foreground capitalize">{billingCycle}</span>
+              </div>
+              {successTransaction.razorpay_order_id && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Order ID:</span>
+                  <span className="font-mono text-foreground text-[11px] truncate max-w-[200px]">{successTransaction.razorpay_order_id}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <Button
+                variant="outline"
+                className="w-full flex items-center justify-center gap-1.5 border-primary/40 text-primary hover:bg-primary/10"
+                onClick={() => {
+                  const url = getSubscriptionInvoiceUrl(successTransaction.id);
+                  window.open(url, '_blank');
+                }}
+              >
+                <FileText className="w-4 h-4" />
+                <span>View Invoice</span>
+              </Button>
+              <Button
+                variant="secondary"
+                className="w-full flex items-center justify-center gap-1.5"
+                onClick={() => {
+                  const url = getSubscriptionInvoiceDownloadUrl(successTransaction.id);
+                  window.open(url, '_blank');
+                }}
+              >
+                <Download className="w-4 h-4" />
+                <span>Download PDF</span>
+              </Button>
+            </div>
+
+            <Button
+              className="w-full mt-4"
+              onClick={() => {
+                const role = authUser?.role;
+                if (role === 'super_admin') navigate('/super-admin/dashboard');
+                else if (role === 'administrator') navigate('/administrator/dashboard');
+                else navigate('/principal/dashboard');
+              }}
+            >
+              Continue to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -354,6 +480,30 @@ const PaymentPage: React.FC = () => {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Plans
         </Button>
+
+        {/* Active Subscription Warning / Extension Notice */}
+        {activeSubscription && (
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-6 flex items-start gap-3 shadow-sm">
+            <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div className="space-y-1.5 flex-1 text-sm">
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-amber-500">Active Subscription Notice</h4>
+                <Badge variant="outline" className="border-amber-500/40 text-amber-500 uppercase text-[10px]">
+                  {activeSubscription.status}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Your school already has an active subscription for <strong>{activeSubscription.plan_name || activeSubscription.plan?.name || 'Current Plan'}</strong> expiring on{' '}
+                <span className="font-semibold text-foreground">
+                  {new Date(activeSubscription.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </span>.
+              </p>
+              <div className="bg-amber-500/15 border border-amber-500/25 rounded-md p-2.5 text-xs text-amber-300">
+                <strong>⚠️ Expiry Date Extension:</strong> Making this payment will not overwrite your active subscription — your expiry date will be <strong>extended to {getExtendedExpiryDate()}</strong> ({billingCycle === 'annual' ? '+1 Year' : '+1 Month'}).
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Plan Summary */}

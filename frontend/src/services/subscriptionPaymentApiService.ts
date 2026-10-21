@@ -142,6 +142,16 @@ export const getAllStats = async (): Promise<ApiResponse<TransactionStats>> => {
   return response.data;
 };
 
+export const getSubscriptionInvoiceUrl = (transactionId: number): string => {
+  const base = API_BASE_URL.replace(/\/api\/?$/, '');
+  return `${base}/invoices/subscription/${transactionId}`;
+};
+
+export const getSubscriptionInvoiceDownloadUrl = (transactionId: number): string => {
+  const base = API_BASE_URL.replace(/\/api\/?$/, '');
+  return `${base}/invoices/subscription/${transactionId}/download`;
+};
+
 export const subscriptionPaymentApi = {
   createOrder: createSubscriptionOrder,
   verifyPayment: verifySubscriptionPayment,
@@ -150,5 +160,7 @@ export const subscriptionPaymentApi = {
   getTransactionById,
   getAllTransactions,
   getAllStats,
+  getSubscriptionInvoiceUrl,
+  getSubscriptionInvoiceDownloadUrl,
 };
 

@@ -109,10 +109,26 @@ class SubscriptionPaymentService
                 'receipt' => $receipt
             ]));
 
-            // Calculate subscription dates
+            // Calculate subscription dates (extend if subscription is already active)
             $durationMonths = $billingCycle === 'annual' ? 12 : 1;
-            $startDate = now();
-            $endDate = now()->addMonths($durationMonths);
+            $existingSubscription = Subscription::where('school_id', $school->id)
+                ->whereIn('status', ['active', 'trial'])
+                ->where('end_date', '>', now())
+                ->orderBy('end_date', 'desc')
+                ->first();
+
+            $isExtension = false;
+            $currentExpiry = null;
+
+            if ($existingSubscription) {
+                $isExtension = true;
+                $currentExpiry = Carbon::parse($existingSubscription->end_date);
+                $startDate = $currentExpiry->copy();
+                $endDate = $currentExpiry->copy()->addMonths($durationMonths);
+            } else {
+                $startDate = now();
+                $endDate = now()->addMonths($durationMonths);
+            }
 
             // Store transaction
             $transactionData = [
@@ -131,12 +147,18 @@ class SubscriptionPaymentService
                 'duration_months' => $durationMonths,
                 'subscription_start_date' => $startDate,
                 'subscription_end_date' => $endDate,
+                'remarks' => $isExtension
+                    ? "Subscription extension from {$currentExpiry->format('d M Y')} to {$endDate->format('d M Y')}"
+                    : "Subscription activated for {$durationMonths} month(s)",
                 'api_response' => json_encode([
                     'id' => $razorpayOrder['id'],
                     'entity' => $razorpayOrder['entity'],
                     'amount' => $razorpayOrder['amount'],
                     'currency' => $razorpayOrder['currency'],
                     'status' => $razorpayOrder['status'],
+                    'is_extension' => $isExtension,
+                    'previous_expiry_date' => $currentExpiry ? $currentExpiry->toDateString() : null,
+                    'new_expiry_date' => $endDate->toDateString(),
                 ]),
             ];
 
@@ -145,15 +167,24 @@ class SubscriptionPaymentService
             Log::info("[PAYMENT_DATABASE_UPDATED] Transaction record created as pending", array_merge($logContext, [
                 'transaction_id' => $transaction->id,
                 'razorpay_order_id' => $transaction->razorpay_order_id,
-                'status' => 'pending'
+                'status' => 'pending',
+                'is_extension' => $isExtension
             ]));
 
             return [
                 'status' => true,
-                'message' => 'Order created successfully',
+                'message' => $isExtension
+                    ? "Order created. Payment will extend your subscription expiry date to {$endDate->format('d M, Y')}."
+                    : 'Order created successfully',
                 'key' => $key,
+                'is_extension' => $isExtension,
+                'current_expiry_date' => $currentExpiry ? $currentExpiry->toDateString() : null,
+                'new_expiry_date' => $endDate->toDateString(),
                 'data' => array_merge($transaction->toArray(), [
-                    'razorpay_key' => $key
+                    'razorpay_key' => $key,
+                    'is_extension' => $isExtension,
+                    'current_expiry_date' => $currentExpiry ? $currentExpiry->toDateString() : null,
+                    'new_expiry_date' => $endDate->toDateString(),
                 ])
             ];
         } catch (Exception $e) {
@@ -263,7 +294,9 @@ class SubscriptionPaymentService
             $school = School::find($transaction->school_id);
             if ($school) {
                 $school->subscription_status = 'active';
-                $school->subscription_start_date = $transaction->subscription_start_date;
+                if (!$school->subscription_start_date) {
+                    $school->subscription_start_date = $transaction->subscription_start_date;
+                }
                 $school->subscription_end_date = $transaction->subscription_end_date;
                 $school->save();
             }
@@ -397,28 +430,47 @@ class SubscriptionPaymentService
     private function createOrUpdateSubscription(SubscriptionTransaction $transaction): void
     {
         try {
-            // Check if active subscription exists
+            // Check if active or trial subscription exists
             $existingSubscription = Subscription::where('school_id', $transaction->school_id)
-                ->where('status', 'active')
+                ->whereIn('status', ['active', 'trial'])
+                ->orderBy('end_date', 'desc')
                 ->first();
 
             if ($existingSubscription) {
-                // Update existing subscription
-                $existingSubscription->plan_id = $transaction->subscription_plan_id;
-                $existingSubscription->billing_cycle = $transaction->billing_cycle;
-                $existingSubscription->start_date = $transaction->subscription_start_date;
-                $existingSubscription->end_date = $transaction->subscription_end_date;
-                $existingSubscription->amount = $transaction->order_amount;
-                $existingSubscription->save();
+                $currentEnd = Carbon::parse($existingSubscription->end_date);
+                if ($currentEnd->isFuture()) {
+                    // Extend from existing future expiry date
+                    $newEndDate = $currentEnd->copy()->addMonths($transaction->duration_months ?: 1);
+                    $existingSubscription->plan_id = $transaction->subscription_plan_id;
+                    $existingSubscription->billing_cycle = $transaction->billing_cycle;
+                    $existingSubscription->end_date = $newEndDate;
+                    $existingSubscription->status = 'active';
+                    $existingSubscription->amount = $transaction->order_amount;
+                    $existingSubscription->save();
+
+                    // Sync transaction dates
+                    $transaction->subscription_start_date = $currentEnd;
+                    $transaction->subscription_end_date = $newEndDate;
+                    $transaction->save();
+                } else {
+                    // Previous subscription already expired, refresh start and end
+                    $existingSubscription->plan_id = $transaction->subscription_plan_id;
+                    $existingSubscription->billing_cycle = $transaction->billing_cycle;
+                    $existingSubscription->start_date = $transaction->subscription_start_date ?? now();
+                    $existingSubscription->end_date = $transaction->subscription_end_date ?? now()->addMonths($transaction->duration_months ?: 1);
+                    $existingSubscription->status = 'active';
+                    $existingSubscription->amount = $transaction->order_amount;
+                    $existingSubscription->save();
+                }
             } else {
                 // Create new subscription
                 Subscription::create([
                     'school_id' => $transaction->school_id,
                     'plan_id' => $transaction->subscription_plan_id,
-                    'subscribed_by' => $transaction->administrator_id,
+                    'subscribed_by' => $transaction->administrator_id ?? 1,
                     'billing_cycle' => $transaction->billing_cycle,
-                    'start_date' => $transaction->subscription_start_date,
-                    'end_date' => $transaction->subscription_end_date,
+                    'start_date' => $transaction->subscription_start_date ?? now(),
+                    'end_date' => $transaction->subscription_end_date ?? now()->addMonths($transaction->duration_months ?: 1),
                     'status' => 'active',
                     'amount' => $transaction->order_amount,
                 ]);

@@ -950,3 +950,15 @@ Route::prefix('parent')->middleware('jwt.auth')->group(function () {
   Route::post('/absence-note', [\App\Http\Controllers\ParentDashboardController::class, 'submitAbsenceNote']);
   Route::get('/notices', [\App\Http\Controllers\ParentDashboardController::class, 'getNotices']);
 });
+
+// ==================== OFFICIAL SCHOOL DOCUMENTS ====================
+Route::prefix('documents')->group(function () {
+  Route::get('/fee-receipt/{id?}', [\App\Http\Controllers\SchoolDocumentController::class, 'feeReceipt']);
+  Route::get('/admission-receipt/{studentId?}', [\App\Http\Controllers\SchoolDocumentController::class, 'admissionReceipt']);
+  Route::get('/marksheet/{studentId?}', [\App\Http\Controllers\SchoolDocumentController::class, 'marksheet']);
+  Route::get('/admit-card/{studentId?}', [\App\Http\Controllers\SchoolDocumentController::class, 'admitCard']);
+  Route::get('/transfer-certificate/{studentId?}', [\App\Http\Controllers\SchoolDocumentController::class, 'transferCertificate']);
+  Route::get('/id-card/{studentId?}', [\App\Http\Controllers\SchoolDocumentController::class, 'idCard']);
+  Route::get('/bonafide-certificate/{studentId?}', [\App\Http\Controllers\SchoolDocumentController::class, 'bonafideCertificate']);
+});
+

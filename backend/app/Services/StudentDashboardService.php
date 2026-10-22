@@ -269,12 +269,16 @@ class StudentDashboardService
         // Calculate dynamic attendance from database
         $attendancePercentage = 92.86;
         $attendanceStanding = 'Honor Standing';
+        $studentDetailsId = null;
         if ($studentId > 0) {
+            // Resolve student_details_id (supports passing either students.id or student_details.id)
+            $studentDetailsId = \Illuminate\Support\Facades\DB::table('student_details')
+                ->where('id', $studentId)
+                ->orWhere('student_id', $studentId)
+                ->value('id') ?? $studentId;
+
             $attendanceRecords = \Illuminate\Support\Facades\DB::table('student_attendance_records')
-                ->where(function ($q) use ($studentId) {
-                    $q->where('student_details_id', $studentId)
-                      ->orWhere('student_id', $studentId);
-                })
+                ->where('student_details_id', $studentDetailsId)
                 ->selectRaw('COUNT(*) as total_records, SUM(CASE WHEN status = "present" THEN 1 ELSE 0 END) as present_count')
                 ->first();
 
@@ -296,10 +300,15 @@ class StudentDashboardService
         $academicStanding = 'Honor Roll';
         $examPercentage = 94.5;
         if ($studentId > 0) {
+            $resolvedDetailsId = $studentDetailsId ?? (\Illuminate\Support\Facades\DB::table('student_details')
+                ->where('id', $studentId)
+                ->orWhere('student_id', $studentId)
+                ->value('id') ?? $studentId);
+
             $marksStats = \Illuminate\Support\Facades\DB::table('student_exam_marks')
-                ->where(function ($q) use ($studentId) {
+                ->where(function ($q) use ($studentId, $resolvedDetailsId) {
                     $q->where('student_id', $studentId)
-                      ->orWhere('student_details_id', $studentId);
+                      ->orWhere('student_details_id', $resolvedDetailsId);
                 })
                 ->selectRaw('COUNT(*) as total_exams, SUM(marks_obtained) as total_obtained, SUM(marks_total) as total_max')
                 ->first();

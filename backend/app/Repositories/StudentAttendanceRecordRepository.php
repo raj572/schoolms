@@ -33,7 +33,12 @@ class StudentAttendanceRecordRepository
 
   public function findByStudentAndDate(int $studentId, string $date): ?StudentAttendanceRecord
   {
-    return StudentAttendanceRecord::where('student_id', $studentId)
+    $studentDetailsId = \Illuminate\Support\Facades\DB::table('student_details')
+      ->where('id', $studentId)
+      ->orWhere('student_id', $studentId)
+      ->value('id') ?? $studentId;
+
+    return StudentAttendanceRecord::where('student_details_id', $studentDetailsId)
       ->where('attendance_date', $date)
       ->first();
   }
@@ -47,6 +52,11 @@ class StudentAttendanceRecordRepository
 
   public function getByStudent(int $studentId): Collection
   {
-    return StudentAttendanceRecord::where('student_id', $studentId)->get();
+    $studentDetailsId = \Illuminate\Support\Facades\DB::table('student_details')
+      ->where('id', $studentId)
+      ->orWhere('student_id', $studentId)
+      ->value('id') ?? $studentId;
+
+    return StudentAttendanceRecord::where('student_details_id', $studentDetailsId)->get();
   }
 }

@@ -62,22 +62,20 @@ class AccountantService
 
             $schools = collect();
 
+            // Direct school assignment (Principal-level)
+            if ($accountant->school_id) {
+                $school = School::find($accountant->school_id);
+                if ($school) {
+                    $schools->push($school);
+                }
+            }
+
             // Administrator-level: Has administrator_id, can access all schools under that administrator
             if ($accountant->administrator_id) {
                 $administrator = User::find($accountant->administrator_id);
                 if ($administrator && $administrator->role === 'administrator') {
-                    $schools = School::where('administrator_id', $administrator->id)
-                        ->where('status', 'active')
-                        ->get();
-                }
-            }
-            // Principal-level: Has school_id, can access only that school
-            elseif ($accountant->school_id) {
-                $school = School::where('id', $accountant->school_id)
-                    ->where('status', 'active')
-                    ->first();
-                if ($school) {
-                    $schools = collect([$school]);
+                    $adminSchools = School::where('administrator_id', $administrator->id)->get();
+                    $schools = $schools->merge($adminSchools)->unique('id');
                 }
             }
 
@@ -111,6 +109,11 @@ class AccountantService
                 return false;
             }
 
+            // Direct school assignment
+            if ($accountant->school_id && $accountant->school_id == $schoolId) {
+                return true;
+            }
+
             // Administrator-level: Check if school belongs to administrator
             if ($accountant->administrator_id) {
                 $administrator = User::find($accountant->administrator_id);
@@ -119,10 +122,6 @@ class AccountantService
                         ->where('administrator_id', $administrator->id)
                         ->exists();
                 }
-            }
-            // Principal-level: Check if school matches accountant's school_id
-            elseif ($accountant->school_id) {
-                return $accountant->school_id == $schoolId;
             }
 
             return false;

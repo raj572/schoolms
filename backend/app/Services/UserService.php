@@ -968,7 +968,7 @@ EOT;
         ];
       }
 
-      $updatableFields = ['full_name', 'username', 'email', 'phone'];
+      $updatableFields = ['full_name', 'username', 'email', 'phone', 'status'];
       // Only allow role update if it's not a self-update
       if (!$allowSelfUpdate) {
         $updatableFields[] = 'role';
@@ -1025,7 +1025,7 @@ EOT;
     }
   }
 
-  public function toggleUserStatus(int $userId): array
+  public function toggleUserStatus(int $userId, ?string $explicitStatus = null): array
   {
     try {
       $user = User::find($userId);
@@ -1049,7 +1049,12 @@ EOT;
         ];
       }
 
-      $newStatus = $user->status === 'active' ? 'inactive' : 'active';
+      if ($explicitStatus && in_array(strtolower($explicitStatus), ['active', 'inactive'])) {
+        $newStatus = strtolower($explicitStatus);
+      } else {
+        $newStatus = $user->status === 'active' ? 'inactive' : 'active';
+      }
+
       $this->userRepository->update($userId, ['status' => $newStatus, 'updated_at' => now()]);
 
       Log::info("User ID {$userId} status changed to {$newStatus}");

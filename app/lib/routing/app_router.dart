@@ -1,6 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../features/accountant/presentation/screens/accountant_dashboard_screen.dart';
+import '../features/accountant/presentation/screens/accountant_fees_screen.dart';
+import '../features/accountant/presentation/screens/accountant_fee_structure_screen.dart';
+import '../features/accountant/presentation/screens/accountant_monthly_dues_screen.dart';
+import '../features/accountant/presentation/screens/accountant_annual_payments_screen.dart';
+import '../features/accountant/presentation/screens/accountant_service_charges_screen.dart';
+import '../features/accountant/presentation/screens/accountant_payments_screen.dart';
+import '../features/accountant/presentation/screens/accountant_extra_services_screen.dart';
+import '../features/accountant/presentation/screens/accountant_reports_screen.dart';
 import '../features/administrator/presentation/screens/administrator_dashboard_screen.dart';
 import '../features/auth/presentation/controllers/auth_controller.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
@@ -78,6 +86,50 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/accountant',
         builder: (context, state) => const AccountantDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/accountant/fees',
+        builder: (context, state) => const AccountantFeesScreen(),
+      ),
+      GoRoute(
+        path: '/accountant/fees-structure',
+        builder: (context, state) => const AccountantFeeStructureScreen(),
+      ),
+      GoRoute(
+        path: '/accountant/monthly-dues',
+        builder: (context, state) => const AccountantMonthlyDuesScreen(),
+      ),
+      GoRoute(
+        path: '/accountant/annual-payments',
+        builder: (context, state) => const AccountantAnnualPaymentsScreen(),
+      ),
+      GoRoute(
+        path: '/accountant/service-charges',
+        builder: (context, state) => const AccountantServiceChargesScreen(),
+      ),
+      GoRoute(
+        path: '/accountant/payments',
+        builder: (context, state) => const AccountantPaymentsScreen(),
+      ),
+      GoRoute(
+        path: '/accountant/extra-services',
+        builder: (context, state) => const AccountantExtraServicesScreen(),
+      ),
+      GoRoute(
+        path: '/accountant/reports',
+        builder: (context, state) => const AccountantReportsScreen(),
+      ),
+      GoRoute(
+        path: '/accountant/reports/fee',
+        builder: (context, state) => const AccountantReportsScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/accountant/reports/dues-pending',
+        builder: (context, state) => const AccountantReportsScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/accountant/reports/transactions',
+        builder: (context, state) => const AccountantReportsScreen(initialTab: 2),
       ),
       GoRoute(
         path: '/librarian',

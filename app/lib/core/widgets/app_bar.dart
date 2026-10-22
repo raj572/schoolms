@@ -18,6 +18,8 @@ class EduPulseAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String? avatarUrl;
   final bool? showBackButton;
   final VoidCallback? onBackPressed;
+  final VoidCallback? onMenuTap;
+  final Widget? leading;
 
   const EduPulseAppBar({
     super.key,
@@ -28,6 +30,8 @@ class EduPulseAppBar extends ConsumerWidget implements PreferredSizeWidget {
     this.onNotificationTap,
     this.onProfileTap,
     this.onBackPressed,
+    this.onMenuTap,
+    this.leading,
     this.hasUnreadNotification = true,
     this.avatarUrl,
     this.showBackButton,
@@ -54,7 +58,9 @@ class EduPulseAppBar extends ConsumerWidget implements PreferredSizeWidget {
           ),
           child: Row(
             children: [
-              if (canPop)
+              if (leading != null)
+                leading!
+              else if (canPop)
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: onBackPressed ?? () => Navigator.of(context).maybePop(),
@@ -71,6 +77,27 @@ class EduPulseAppBar extends ConsumerWidget implements PreferredSizeWidget {
                         Icons.arrow_back_ios_new_rounded,
                         color: EduPulseColors.textHeadline,
                         size: 18,
+                      ),
+                    ),
+                  ),
+                )
+              else if (onMenuTap != null)
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onMenuTap,
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: EduPulseColors.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: EduPulseColors.border),
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.menu_rounded,
+                        color: EduPulseColors.textHeadline,
+                        size: 20,
                       ),
                     ),
                   ),

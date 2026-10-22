@@ -166,6 +166,7 @@ class StudentFeesNotifier extends StateNotifier<StudentFeesState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
       final data = await _repo.getFees(_studentId, _schoolId);
+      if (!mounted) return;
       if (data != null) {
         final dues = (data['dues'] as List?)?.map((d) => Map<String, dynamic>.from(d)).toList() ?? [];
         final history = (data['history'] as List?)?.map((h) => Map<String, dynamic>.from(h)).toList() ?? [];
@@ -216,6 +217,7 @@ class StudentFeesNotifier extends StateNotifier<StudentFeesState> {
         );
       }
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(
         isLoading: false,
         studentName: 'Rahul Singh',
@@ -242,6 +244,7 @@ class StudentFeesNotifier extends StateNotifier<StudentFeesState> {
   Future<bool> payDue(int paymentId, {String mode = 'Online Gateway'}) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     await _repo.payFee(paymentId: paymentId, mode: mode);
+    if (!mounted) return true;
 
     final updatedDues = List<Map<String, dynamic>>.from(state.dues);
     final paidItem = updatedDues.firstWhere(
@@ -283,6 +286,7 @@ class StudentFeesNotifier extends StateNotifier<StudentFeesState> {
         await _repo.payFee(paymentId: id, mode: mode);
       }
     }
+    if (!mounted) return true;
 
     final newHistory = [
       ...state.dues.map((due) => {

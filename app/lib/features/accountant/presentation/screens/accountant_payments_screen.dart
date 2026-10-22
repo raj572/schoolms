@@ -185,6 +185,23 @@ class _AccountantPaymentsScreenState extends ConsumerState<AccountantPaymentsScr
                 ],
               ),
             ),
+            const SizedBox(height: 10),
+
+            // Status Filter Chips
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _buildStatusChip('All Statuses', 'all'),
+                  const SizedBox(width: 8),
+                  _buildStatusChip('Paid', 'paid'),
+                  const SizedBox(width: 8),
+                  _buildStatusChip('Processing', 'processing'),
+                  const SizedBox(width: 8),
+                  _buildStatusChip('Failed', 'failed'),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
 
             // Payments List
@@ -248,6 +265,18 @@ class _AccountantPaymentsScreenState extends ConsumerState<AccountantPaymentsScr
       backgroundColor: EduPulseColors.surfaceCard,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18), side: BorderSide(color: isSelected ? Colors.transparent : EduPulseColors.border)),
       onSelected: (_) => setState(() => _modeFilter = value),
+    );
+  }
+
+  Widget _buildStatusChip(String label, String value) {
+    final isSelected = _statusFilter == value;
+    return ChoiceChip(
+      label: Text(label, style: TextStyle(fontSize: 11, color: isSelected ? Colors.white : EduPulseColors.textHeadline, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400)),
+      selected: isSelected,
+      selectedColor: const Color(0xFF7C3AED),
+      backgroundColor: EduPulseColors.surfaceCard,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18), side: BorderSide(color: isSelected ? Colors.transparent : EduPulseColors.border)),
+      onSelected: (_) => setState(() => _statusFilter = value),
     );
   }
 

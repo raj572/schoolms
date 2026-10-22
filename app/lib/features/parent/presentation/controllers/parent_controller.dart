@@ -140,6 +140,7 @@ class ParentFeesNotifier extends StateNotifier<ParentFeesState> {
   Future<void> loadFees() async {
     try {
       final data = await _repo.getFees(_parentId).timeout(const Duration(seconds: 3));
+      if (!mounted) return;
       if (data != null) {
         final dues = (data['dues'] as List?)?.map((d) => Map<String, dynamic>.from(d)).toList() ?? [];
         final receipts = (data['receipts'] as List?)?.map((r) => Map<String, dynamic>.from(r)).toList() ?? [];
@@ -155,6 +156,7 @@ class ParentFeesNotifier extends StateNotifier<ParentFeesState> {
         );
       }
     } catch (_) {
+      if (!mounted) return;
       state = state.copyWith(isLoading: false);
     }
   }
@@ -164,6 +166,7 @@ class ParentFeesNotifier extends StateNotifier<ParentFeesState> {
     try {
       await _repo.payFee(feeId, mode: mode).timeout(const Duration(seconds: 3));
     } catch (_) {}
+    if (!mounted) return false;
 
     final updatedDues = List<Map<String, dynamic>>.from(state.dues);
     final paidItem = updatedDues.firstWhere(

@@ -94,9 +94,13 @@ class StatusPill extends StatelessWidget {
             Icon(icon, size: 12, color: fg),
             const SizedBox(width: 3),
           ],
-          Text(
-            label,
-            style: EduPulseTypography.labelSm(color: fg),
+          Flexible(
+            child: Text(
+              label,
+              style: EduPulseTypography.labelSm(color: fg),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
           ),
         ],
       ),

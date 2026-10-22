@@ -30,6 +30,13 @@ import '../features/principal/presentation/screens/principal_documents_screen.da
 import '../features/principal/presentation/screens/principal_reports_screen.dart';
 import '../features/principal/presentation/screens/principal_settings_screen.dart';
 import '../features/student/presentation/screens/student_shell_screen.dart';
+import '../features/student/presentation/screens/student_dashboard_screen.dart';
+import '../features/student/presentation/screens/student_profile_screen.dart';
+import '../features/student/presentation/screens/student_attendance_screen.dart';
+import '../features/student/presentation/screens/student_grades_screen.dart';
+import '../features/student/presentation/screens/student_fees_screen.dart';
+import '../features/student/presentation/screens/student_library_screen.dart';
+import '../features/student/presentation/screens/student_messages_screen.dart';
 import '../features/super_admin/presentation/screens/super_admin_dashboard_screen.dart';
 import '../features/teacher/presentation/screens/teacher_workspace_screen.dart';
 import '../features/teacher/presentation/screens/teacher_profile_screen.dart';
@@ -92,6 +99,50 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/student',
         builder: (context, state) => const StudentShellScreen(),
+      ),
+      GoRoute(
+        path: '/student/dashboard',
+        builder: (context, state) => const StudentDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/student/profile',
+        builder: (context, state) => const StudentProfileScreen(),
+      ),
+      GoRoute(
+        path: '/student/attendance',
+        builder: (context, state) => const StudentAttendanceScreen(),
+      ),
+      GoRoute(
+        path: '/student/exams',
+        builder: (context, state) => const StudentGradesScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/student/exams/result',
+        builder: (context, state) => const StudentGradesScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/student/exams/reports-cards',
+        builder: (context, state) => const StudentGradesScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/student/fees',
+        builder: (context, state) => const StudentFeesScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/student/fees/due',
+        builder: (context, state) => const StudentFeesScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/student/fees/payments-history',
+        builder: (context, state) => const StudentFeesScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/student/library',
+        builder: (context, state) => const StudentLibraryScreen(),
+      ),
+      GoRoute(
+        path: '/student/messages',
+        builder: (context, state) => const StudentMessagesScreen(),
       ),
       GoRoute(
         path: '/teacher',

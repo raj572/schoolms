@@ -5,22 +5,27 @@ import '../../../../core/theme/typography.dart';
 import '../../../../core/widgets/app_bar.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../controllers/student_controller.dart';
+import '../widgets/student_navigation_drawer.dart';
 
 class StudentProfileScreen extends ConsumerWidget {
   const StudentProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     final user = ref.watch(authProvider).user;
     final profileAsync = ref.watch(studentProfileProvider);
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: EduPulseColors.surface,
-      appBar: const EduPulseAppBar(
+      drawer: const StudentNavigationDrawer(currentRoute: '/student/profile'),
+      appBar: EduPulseAppBar(
         title: 'Learnaz',
         subtitle: 'Profile',
         switcherLabel: 'Student Record & Settings',
         showBackButton: true,
+        onMenuTap: () => scaffoldKey.currentState?.openDrawer(),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

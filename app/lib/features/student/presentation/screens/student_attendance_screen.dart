@@ -7,20 +7,25 @@ import '../../../../core/widgets/app_bar.dart';
 import '../../../../core/widgets/metric_card.dart';
 import '../../../../core/widgets/status_pill.dart';
 import '../controllers/student_controller.dart';
+import '../widgets/student_navigation_drawer.dart';
 
 class StudentAttendanceScreen extends ConsumerWidget {
   const StudentAttendanceScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     final attendanceAsync = ref.watch(studentAttendanceProvider);
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: EduPulseColors.surface,
-      appBar: const EduPulseAppBar(
+      drawer: const StudentNavigationDrawer(currentRoute: '/student/attendance'),
+      appBar: EduPulseAppBar(
         title: 'Learnaz',
         subtitle: 'Attendance',
         switcherLabel: 'Academic Record',
+        onMenuTap: () => scaffoldKey.currentState?.openDrawer(),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

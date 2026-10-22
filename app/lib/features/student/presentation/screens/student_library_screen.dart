@@ -5,6 +5,7 @@ import '../../../../core/theme/typography.dart';
 import '../../../../core/widgets/app_bar.dart';
 import '../../../../core/widgets/status_pill.dart';
 import '../controllers/student_controller.dart';
+import '../widgets/student_navigation_drawer.dart';
 
 class StudentLibraryScreen extends ConsumerStatefulWidget {
   const StudentLibraryScreen({super.key});
@@ -14,6 +15,7 @@ class StudentLibraryScreen extends ConsumerStatefulWidget {
 }
 
 class _StudentLibraryScreenState extends ConsumerState<StudentLibraryScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedTab = 0; // 0: Catalog, 1: My Issues, 2: Digital Resources
   String _searchQuery = '';
   final TextEditingController _searchCtrl = TextEditingController();
@@ -132,12 +134,15 @@ class _StudentLibraryScreenState extends ConsumerState<StudentLibraryScreen> {
     final resourcesAsync = ref.watch(studentDigitalResourcesProvider);
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: EduPulseColors.surface,
-      appBar: const EduPulseAppBar(
+      drawer: const StudentNavigationDrawer(currentRoute: '/student/library'),
+      appBar: EduPulseAppBar(
         title: 'Learnaz',
         subtitle: 'Library',
         switcherLabel: 'Academic Resource Center',
         showBackButton: true,
+        onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

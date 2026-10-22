@@ -1,16 +1,14 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
-
 class ApiConstants {
-  // Determine local dev environment URL
+  // Live server API URL
+  static const String liveBaseUrl = 'https://schoolapi.lazfort.com/api';
+
+  // Base API URL
   static String get baseUrl {
-    if (kIsWeb) {
-      return 'http://localhost:8000/api';
-    } else if (Platform.isAndroid) {
-      return 'http://10.0.2.2:8000/api';
-    } else {
-      return 'http://127.0.0.1:8000/api';
+    const customUrl = String.fromEnvironment('API_URL');
+    if (customUrl.isNotEmpty) {
+      return customUrl;
     }
+    return liveBaseUrl;
   }
 
   // Auth Endpoints

@@ -15,6 +15,11 @@ class StudentService extends Model
         'description',
     ];
 
+    public function school()
+    {
+        return $this->belongsTo(School::class, 'school_id');
+    }
+
     public function extraServices()
     {
         return $this->hasMany(ExtraService::class, 'service_id');

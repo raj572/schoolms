@@ -17,7 +17,7 @@ class RoleSeeder extends Seeder
 {
     /**
      * Seed sample test accounts for all application roles.
-     * Default Password for all seeded test accounts: Password@123
+     * Default Password for all seeded test accounts: password (or Password@123)
      */
     public function run(): void
     {

@@ -110,24 +110,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         email: email,
         password: password,
       );
-    } else if (_selectedRole == 'administrator') {
-      await ref.read(authProvider.notifier).simpleLogin(
-        email: email,
-        password: password,
-      );
     } else {
       if (_selectedSchool == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a school')),
+          const SnackBar(content: Text('Please select an institution')),
         );
         return;
       }
-      await ref.read(authProvider.notifier).loginWithSchool(
+      final success = await ref.read(authProvider.notifier).loginWithSchool(
         email: email,
         password: password,
         role: _selectedRole,
         schoolId: _selectedSchool!.id,
       );
+      if (!success && _selectedRole == 'administrator') {
+        await ref.read(authProvider.notifier).simpleLogin(
+          email: email,
+          password: password,
+        );
+      }
     }
   }
 
@@ -246,8 +247,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // School Selector (for non-super-admin / non-administrator)
-                  if (_selectedRole != 'super_admin' && _selectedRole != 'administrator') ...[
+                  // School Selector (for all roles except super_admin)
+                  if (_selectedRole != 'super_admin') ...[
                     Text(
                       'INSTITUTION',
                       style: EduPulseTypography.labelSm(

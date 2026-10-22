@@ -13,23 +13,31 @@ class JWTHelper
     {
         $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
 
+        $userId = is_array($data) ? ($data['user_id'] ?? $data['id'] ?? null) : ($data->user_id ?? $data->id ?? null);
+        $email = is_array($data) ? ($data['email'] ?? null) : ($data->email ?? null);
+        $role = is_array($data) ? ($data['role'] ?? null) : ($data->role ?? null);
+
         // Build payload with dynamic data
         $payloadData = [
-            'user_id' => $data['user_id'] ?? ($data->id ?? null),
-            'email' => $data['email'] ?? ($data->email ?? null),
-            'role' => $data['role'] ?? ($data->role ?? null),
+            'user_id' => $userId,
+            'email' => $email,
+            'role' => $role,
             'iat' => time(),
             'exp' => time() + (60 * 60 * 24 * 7), // 7 days
         ];
 
         // Add school_id only if it exists (not for super_admin)
-        if (isset($data['school_id']) || (is_object($data) && property_exists($data, 'school_id'))) {
-            $payloadData['school_id'] = $data['school_id'] ?? $data->school_id;
+        if (is_array($data) && isset($data['school_id'])) {
+            $payloadData['school_id'] = $data['school_id'];
+        } elseif (is_object($data) && (isset($data->school_id) || property_exists($data, 'school_id'))) {
+            $payloadData['school_id'] = $data->school_id;
         }
 
         // Add type for super admin
-        if (isset($data['type'])) {
+        if (is_array($data) && isset($data['type'])) {
             $payloadData['type'] = $data['type'];
+        } elseif (is_object($data) && (isset($data->type) || property_exists($data, 'type'))) {
+            $payloadData['type'] = $data->type;
         }
 
         $payload = json_encode($payloadData);

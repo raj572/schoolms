@@ -32,11 +32,16 @@ RUN rm -f bootstrap/cache/*.php
 # Install dependencies without dev packages
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Ensure storage and cache directories exist with full write permissions
+RUN mkdir -p storage/framework/cache/data \
+             storage/framework/sessions \
+             storage/framework/views \
+             storage/logs \
+             bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 8000
 
-# Clear old cache and start server
-CMD ["sh", "-c", "php artisan config:clear && php artisan package:discover --ansi && php artisan serve --host=0.0.0.0 --port=8000"]
+# Automatically ensure directories exist, permissions are applied (even if mounted volumes override), clear cache, and start server
+CMD ["sh", "-c", "mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache && chmod -R 777 storage bootstrap/cache && php artisan cache:clear && php artisan config:clear && php artisan view:clear && php artisan package:discover --ansi && php artisan serve --host=0.0.0.0 --port=8000"]

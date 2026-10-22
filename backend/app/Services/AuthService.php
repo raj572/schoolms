@@ -266,6 +266,25 @@ class AuthService
                 case 'teacher':
                     $user = $this->teacherRepository->getByEmail($email, $school_id)->first();
                     break;
+                case 'administrator':
+                    $user = $this->userRepository->getUser($email, $school_id)->first();
+                    if (!$user) {
+                        $adminUser = \App\Models\User::where('email', $email)->where('role', 'administrator')->first();
+                        if ($adminUser) {
+                            $isSchoolAdmin = DB::table('schools')
+                                ->where('id', $school_id)
+                                ->where('administrator_id', $adminUser->id)
+                                ->exists();
+                            if ($isSchoolAdmin || empty($adminUser->school_id)) {
+                                $user = $adminUser;
+                                if (empty($user->school_id)) {
+                                    $user->school_id = $school_id;
+                                    $user->save();
+                                }
+                            }
+                        }
+                    }
+                    break;
                 default:
                     $user = $this->userRepository->getUser($email, $school_id)->first();
                     break;

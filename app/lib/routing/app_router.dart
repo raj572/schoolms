@@ -15,6 +15,20 @@ import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/librarian/presentation/screens/librarian_dashboard_screen.dart';
 import '../features/parent/presentation/screens/parent_shell_screen.dart';
 import '../features/principal/presentation/screens/principal_dashboard_screen.dart';
+import '../features/principal/presentation/screens/principal_users_screen.dart';
+import '../features/principal/presentation/screens/principal_students_screen.dart';
+import '../features/principal/presentation/screens/principal_teachers_screen.dart';
+import '../features/principal/presentation/screens/principal_classes_screen.dart';
+import '../features/principal/presentation/screens/principal_exam_screen.dart';
+import '../features/principal/presentation/screens/principal_attendance_screen.dart';
+import '../features/principal/presentation/screens/principal_transport_screen.dart';
+import '../features/principal/presentation/screens/principal_hostel_screen.dart';
+import '../features/principal/presentation/screens/principal_wardens_screen.dart';
+import '../features/principal/presentation/screens/principal_library_screen.dart';
+import '../features/principal/presentation/screens/principal_communication_screen.dart';
+import '../features/principal/presentation/screens/principal_documents_screen.dart';
+import '../features/principal/presentation/screens/principal_reports_screen.dart';
+import '../features/principal/presentation/screens/principal_settings_screen.dart';
 import '../features/student/presentation/screens/student_shell_screen.dart';
 import '../features/super_admin/presentation/screens/super_admin_dashboard_screen.dart';
 import '../features/teacher/presentation/screens/teacher_workspace_screen.dart';
@@ -82,6 +96,146 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/principal',
         builder: (context, state) => const PrincipalDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/principal/users',
+        builder: (context, state) => const PrincipalUsersScreen(),
+      ),
+      GoRoute(
+        path: '/principal/users/register',
+        builder: (context, state) => const PrincipalUsersScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/principal/users/list',
+        builder: (context, state) => const PrincipalUsersScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/principal/students',
+        builder: (context, state) => const PrincipalStudentsScreen(),
+      ),
+      GoRoute(
+        path: '/principal/students/register',
+        builder: (context, state) => const PrincipalStudentsScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/principal/students/list',
+        builder: (context, state) => const PrincipalStudentsScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/principal/students/attendance',
+        builder: (context, state) => const PrincipalStudentsScreen(initialTab: 2),
+      ),
+      GoRoute(
+        path: '/principal/students/services',
+        builder: (context, state) => const PrincipalStudentsScreen(initialTab: 3),
+      ),
+      GoRoute(
+        path: '/principal/teachers',
+        builder: (context, state) => const PrincipalTeachersScreen(),
+      ),
+      GoRoute(
+        path: '/principal/teachers/register',
+        builder: (context, state) => const PrincipalTeachersScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/principal/teachers/list',
+        builder: (context, state) => const PrincipalTeachersScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/principal/classes',
+        builder: (context, state) => const PrincipalClassesScreen(),
+      ),
+      GoRoute(
+        path: '/principal/classes/list',
+        builder: (context, state) => const PrincipalClassesScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/principal/classes/subjects',
+        builder: (context, state) => const PrincipalClassesScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/principal/classes/timetable',
+        builder: (context, state) => const PrincipalClassesScreen(initialTab: 2),
+      ),
+      GoRoute(
+        path: '/principal/exam',
+        builder: (context, state) => const PrincipalExamScreen(),
+      ),
+      GoRoute(
+        path: '/principal/attendance',
+        builder: (context, state) => const PrincipalAttendanceScreen(),
+      ),
+      GoRoute(
+        path: '/principal/attendance/teachers',
+        builder: (context, state) => const PrincipalAttendanceScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/principal/attendance/dashboard',
+        builder: (context, state) => const PrincipalAttendanceScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/principal/library',
+        builder: (context, state) => const PrincipalLibraryScreen(),
+      ),
+      GoRoute(
+        path: '/principal/transport',
+        builder: (context, state) => const PrincipalTransportScreen(),
+      ),
+      GoRoute(
+        path: '/principal/hostel',
+        builder: (context, state) => const PrincipalHostelScreen(),
+      ),
+      GoRoute(
+        path: '/principal/wardens',
+        builder: (context, state) => const PrincipalWardensScreen(),
+      ),
+      GoRoute(
+        path: '/principal/communication',
+        builder: (context, state) => const PrincipalCommunicationScreen(),
+      ),
+      GoRoute(
+        path: '/principal/documents',
+        builder: (context, state) => const PrincipalDocumentsScreen(),
+      ),
+      GoRoute(
+        path: '/principal/reports',
+        builder: (context, state) => const PrincipalReportsScreen(),
+      ),
+      GoRoute(
+        path: '/principal/reports/student',
+        builder: (context, state) => const PrincipalReportsScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/principal/reports/fee',
+        builder: (context, state) => const PrincipalReportsScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/principal/reports/attendance',
+        builder: (context, state) => const PrincipalReportsScreen(initialTab: 2),
+      ),
+      GoRoute(
+        path: '/principal/reports/exams',
+        builder: (context, state) => const PrincipalReportsScreen(initialTab: 3),
+      ),
+      GoRoute(
+        path: '/principal/reports/syllabus-overview',
+        builder: (context, state) => const PrincipalReportsScreen(initialTab: 4),
+      ),
+      GoRoute(
+        path: '/principal/settings',
+        builder: (context, state) => const PrincipalSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/principal/settings/user-management',
+        builder: (context, state) => const PrincipalSettingsScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/principal/settings/roles',
+        builder: (context, state) => const PrincipalSettingsScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/principal/settings/school-info',
+        builder: (context, state) => const PrincipalSettingsScreen(initialTab: 2),
       ),
       GoRoute(
         path: '/accountant',

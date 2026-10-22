@@ -484,10 +484,12 @@ EOT;
             $user = User::find($userId);
 
             $validated = $request->validate([
+                'full_name' => 'sometimes|string|max:100',
                 'username' => ['sometimes', 'string', 'max:100', new UniqueUsername($userId, 'users')],
                 'email' => 'sometimes|email|unique:users,email,' . $userId,
                 'phone' => 'sometimes|string|max:100',
-                'role' => 'sometimes|string|max:15'
+                'role' => 'sometimes|string|max:15',
+                'status' => 'sometimes|string|in:active,inactive',
             ]);
 
             $validated['id'] = $userId;
@@ -712,10 +714,11 @@ EOT;
         }
     }
 
-    public function toggleUserStatus(int $userId)
+    public function toggleUserStatus(Request $request, int $userId)
     {
         try {
-            $res = $this->userService->toggleUserStatus($userId);
+            $status = $request->input('status');
+            $res = $this->userService->toggleUserStatus($userId, $status);
             $code = $this->httpCodeFromServiceResult($res, false);
             return response()->json($res, $code);
         } catch (Exception $e) {

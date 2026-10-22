@@ -18,6 +18,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController(text: 'student@school.com');
   final _passwordController = TextEditingController(text: 'password');
+  final _roleScrollController = ScrollController();
   
   String _selectedRole = 'student';
   School? _selectedSchool;
@@ -41,6 +42,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void initState() {
     super.initState();
     _loadSchools();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _roleScrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollRoles(bool forward) {
+    if (!_roleScrollController.hasClients) return;
+    final target = (_roleScrollController.offset + (forward ? 180.0 : -180.0)).clamp(
+      0.0,
+      _roleScrollController.position.maxScrollExtent,
+    );
+    _roleScrollController.animateTo(
+      target,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   Future<void> _loadSchools() async {
@@ -97,6 +119,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
       _passwordController.text = 'password';
     });
+
+    // Auto-scroll the pills bar so the selected role is in view
+    final index = _roles.indexWhere((r) => r['key'] == role);
+    if (index != -1 && _roleScrollController.hasClients) {
+      final target = (index * 120.0 - 60.0).clamp(
+        0.0,
+        _roleScrollController.position.maxScrollExtent,
+      );
+      _roleScrollController.animateTo(
+        target,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   Future<void> _handleLogin() async {
@@ -193,17 +229,58 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 28),
 
-                  // Role Selector Horizontal Carousel
-                  Text(
-                    'SELECT ROLE',
-                    style: EduPulseTypography.labelSm(
-                      color: EduPulseColors.textMuted,
-                    ),
+                  // Role Selector Header with Left & Right scroll buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'SELECT ROLE',
+                        style: EduPulseTypography.labelSm(
+                          color: EduPulseColors.textMuted,
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            onTap: () => _scrollRoles(false),
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: EduPulseColors.surfaceCard,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: EduPulseColors.border),
+                              ),
+                              child: const Icon(Icons.chevron_left, size: 16, color: EduPulseColors.textMuted),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          InkWell(
+                            onTap: () => _scrollRoles(true),
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: EduPulseColors.surfaceCard,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: EduPulseColors.border),
+                              ),
+                              child: const Icon(Icons.chevron_right, size: 16, color: EduPulseColors.textMuted),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
+
+                  // Scrollable Role Chips Carousel
                   SizedBox(
-                    height: 42,
+                    height: 44,
                     child: ListView.separated(
+                      controller: _roleScrollController,
+                      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                       scrollDirection: Axis.horizontal,
                       itemCount: _roles.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 8),
@@ -225,11 +302,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     ? EduPulseColors.primary
                                     : EduPulseColors.border,
                               ),
+                              boxShadow: isSelected
+                                  ? [
+                                      BoxShadow(
+                                        color: EduPulseColors.primary.withValues(alpha: 0.25),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 3),
+                                      )
+                                    ]
+                                  : null,
                             ),
                             child: Row(
                               children: [
-                                Text(r['icon']!, style: const TextStyle(fontSize: 14)),
-                                const SizedBox(width: 6),
+                                Text(r['icon']!, style: const TextStyle(fontSize: 15)),
+                                const SizedBox(width: 7),
                                 Text(
                                   r['label']!,
                                   style: EduPulseTypography.labelSm(
@@ -245,7 +331,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
+
+                  // Full Role Dropdown Selector (1-tap access to all 9 roles)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: EduPulseColors.surfaceCard,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: EduPulseColors.border),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: _selectedRole,
+                        icon: const Icon(Icons.unfold_more_rounded, size: 20, color: EduPulseColors.textMuted),
+                        items: _roles.map((r) {
+                          return DropdownMenuItem<String>(
+                            value: r['key'],
+                            child: Row(
+                              children: [
+                                Text(r['icon']!, style: const TextStyle(fontSize: 16)),
+                                const SizedBox(width: 10),
+                                Text(
+                                  r['label']!,
+                                  style: EduPulseTypography.bodyMd(
+                                    color: EduPulseColors.textHeadline,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          if (val != null) _onRoleChanged(val);
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
 
                   // School Selector (for all roles except super_admin)
                   if (_selectedRole != 'super_admin') ...[

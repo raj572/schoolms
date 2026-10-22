@@ -427,7 +427,7 @@ class HostelService
                         'id' => $allocation->studentDetails->id,
                         'candidate_name' => $allocation->studentDetails->candidate_name,
                         'class' => $allocation->studentDetails->class,
-                        'section' => $allocation->studentDetails->secction,
+                        'section' => $allocation->studentDetails->section,
                         'father_name' => $allocation->studentDetails->father_name,
                         'mother_name' => $allocation->studentDetails->mother_name,
                         'phone' => $allocation->studentDetails->phone,

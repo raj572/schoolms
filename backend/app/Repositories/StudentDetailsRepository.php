@@ -42,7 +42,7 @@ class StudentDetailsRepository
     public function getAllStudentsWithServices(int $school_id)
     {
         // 1. Fetch students (only limited fields)
-        $students = StudentDetails::select('id', 'candidate_name', 'class', 'secction', 'father_name', 'phone')
+        $students = StudentDetails::select('id', 'candidate_name', 'class', 'section', 'father_name', 'phone')
             ->where('school_id', $school_id)
             ->with(['services:id,service_type,service_name,charge']) // subscribed services only
             ->get();

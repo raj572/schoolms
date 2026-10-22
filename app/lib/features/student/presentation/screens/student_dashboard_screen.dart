@@ -7,6 +7,7 @@ import '../../../../core/widgets/metric_card.dart';
 import '../../../../core/widgets/status_pill.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../controllers/student_controller.dart';
+import '../widgets/student_navigation_drawer.dart';
 import 'student_library_screen.dart';
 import 'student_messages_screen.dart';
 import 'student_profile_screen.dart';
@@ -17,17 +18,21 @@ class StudentDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     final user = ref.watch(authProvider).user;
     final dashboardAsync = ref.watch(studentDashboardProvider);
     final attendanceAsync = ref.watch(studentAttendanceProvider);
     final noticesAsync = ref.watch(studentNoticesProvider);
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: EduPulseColors.surface,
+      drawer: const StudentNavigationDrawer(currentRoute: '/student/dashboard'),
       appBar: EduPulseAppBar(
         title: 'Learnaz',
         subtitle: 'Student Portal',
         switcherLabel: user != null ? '${user.fullName} (${user.email})' : 'Student (Learnaz)',
+        onMenuTap: () => scaffoldKey.currentState?.openDrawer(),
         onProfileTap: () {
           _showProfileBottomSheet(context, ref, user);
         },
@@ -139,17 +144,31 @@ class StudentDashboardScreen extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: EduPulseColors.primaryContainer,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: EduPulseColors.border, width: 2),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.person, color: EduPulseColors.primary, size: 28),
-                        ),
+                      Row(
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                            icon: const Icon(Icons.menu_open_rounded, size: 16),
+                            label: const Text('All Menus', style: TextStyle(fontSize: 11)),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              minimumSize: const Size(60, 32),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: EduPulseColors.primaryContainer,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: EduPulseColors.border, width: 2),
+                            ),
+                            child: const Center(
+                              child: Icon(Icons.person, color: EduPulseColors.primary, size: 24),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

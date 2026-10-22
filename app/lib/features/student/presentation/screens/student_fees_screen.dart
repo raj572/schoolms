@@ -6,16 +6,29 @@ import '../../../../core/theme/typography.dart';
 import '../../../../core/widgets/app_bar.dart';
 import '../../../../core/widgets/status_pill.dart';
 import '../controllers/student_controller.dart';
+import '../widgets/student_navigation_drawer.dart';
 
 class StudentFeesScreen extends ConsumerStatefulWidget {
-  const StudentFeesScreen({super.key});
+  final int initialTab;
+
+  const StudentFeesScreen({
+    super.key,
+    this.initialTab = 0,
+  });
 
   @override
   ConsumerState<StudentFeesScreen> createState() => _StudentFeesScreenState();
 }
 
 class _StudentFeesScreenState extends ConsumerState<StudentFeesScreen> {
-  int _selectedTab = 0; // 0: Dues, 1: Payments History
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late int _selectedTab;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTab = widget.initialTab;
+  }
 
   String _formatInr(num amount) {
     final formatter = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 0);
@@ -28,11 +41,14 @@ class _StudentFeesScreenState extends ConsumerState<StudentFeesScreen> {
     final feesNotifier = ref.read(studentFeesNotifierProvider.notifier);
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: EduPulseColors.surface,
-      appBar: const EduPulseAppBar(
+      drawer: const StudentNavigationDrawer(currentRoute: '/student/fees'),
+      appBar: EduPulseAppBar(
         title: 'Learnaz',
         subtitle: 'Fees',
         switcherLabel: 'Fee & Billing Portal',
+        onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

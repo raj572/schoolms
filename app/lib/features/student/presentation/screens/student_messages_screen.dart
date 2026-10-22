@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/typography.dart';
 import '../../../../core/widgets/app_bar.dart';
+import '../widgets/student_navigation_drawer.dart';
 
 class StudentMessagesScreen extends ConsumerStatefulWidget {
   const StudentMessagesScreen({super.key});
@@ -12,6 +13,7 @@ class StudentMessagesScreen extends ConsumerStatefulWidget {
 }
 
 class _StudentMessagesScreenState extends ConsumerState<StudentMessagesScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String _selectedCategory = 'all'; // all, teacher, admin
   String _searchQuery = '';
   final TextEditingController _searchCtrl = TextEditingController();
@@ -89,12 +91,15 @@ class _StudentMessagesScreenState extends ConsumerState<StudentMessagesScreen> {
     }).toList();
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: EduPulseColors.surface,
-      appBar: const EduPulseAppBar(
+      drawer: const StudentNavigationDrawer(currentRoute: '/student/messages'),
+      appBar: EduPulseAppBar(
         title: 'Learnaz',
         subtitle: 'Messages',
         switcherLabel: 'Campus Communications',
         showBackButton: true,
+        onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showNewMessageDialog(context),

@@ -7,18 +7,31 @@ import '../../../../core/widgets/app_bar.dart';
 import '../../../../core/widgets/status_pill.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../controllers/student_controller.dart';
+import '../widgets/student_navigation_drawer.dart';
 
 class StudentGradesScreen extends ConsumerStatefulWidget {
-  const StudentGradesScreen({super.key});
+  final int initialTab;
+
+  const StudentGradesScreen({
+    super.key,
+    this.initialTab = 0,
+  });
 
   @override
   ConsumerState<StudentGradesScreen> createState() => _StudentGradesScreenState();
 }
 
 class _StudentGradesScreenState extends ConsumerState<StudentGradesScreen> {
-  int _selectedTermIndex = 0; // 0: Term 2 (Current), 1: Term 1, 2: Exam Schedule
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late int _selectedTermIndex; // 0: Term 2 (Current), 1: Term 1, 2: Exam Schedule
 
   final List<String> _terms = ['Term 2 (Current)', 'Term 1', 'Exam Schedule'];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTermIndex = widget.initialTab;
+  }
 
   final List<Map<String, dynamic>> _courses = [
     {
@@ -192,11 +205,14 @@ class _StudentGradesScreenState extends ConsumerState<StudentGradesScreen> {
         : _courses;
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: EduPulseColors.surface,
+      drawer: const StudentNavigationDrawer(currentRoute: '/student/exams'),
       appBar: EduPulseAppBar(
         title: 'Learnaz',
         subtitle: 'Grades',
         switcherLabel: '$studentName ($className)',
+        onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
       ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),

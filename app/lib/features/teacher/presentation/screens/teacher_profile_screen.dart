@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/typography.dart';
 import '../../../../core/widgets/app_bar.dart';
-import '../../../../core/widgets/status_pill.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../widgets/teacher_navigation_drawer.dart';
 

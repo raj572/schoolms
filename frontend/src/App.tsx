@@ -108,6 +108,7 @@ import Principals from "./pages/administrator/Principals";
 import AdministratorSubscriptions from "./pages/administrator/Subscriptions";
 import SubscriptionPayments from "./pages/administrator/SubscriptionPayments";
 import ProfileSettings from "./pages/administrator/ProfileSettings";
+import AdministratorDocuments from "./pages/administrator/Documents";
 
 // Librarian pages
 import LibrarianDashboard from "./pages/librarian/Dashboard";
@@ -217,6 +218,7 @@ const App = () => (
               <Route path="settings/school-info" element={<SchoolInfo />} />
               <Route path="settings/user-management" element={<UserManagement />} />
               <Route path="communication" element={<Communication />} />
+              <Route path="documents" element={<AdministratorDocuments />} />
               <Route path="teachers/list" element={<List />} />
               <Route path="teachers/register" element={<Register />} />
               {/* <Route path="teachers/subject" element={<AssignSubject />} /> */}
@@ -383,6 +385,7 @@ const App = () => (
             <Route path="principals" element={<Principals />} />
             <Route path="subscriptions" element={<AdministratorSubscriptions />} />
             <Route path="payments" element={<SubscriptionPayments />} />
+            <Route path="documents" element={<AdministratorDocuments />} />
             <Route path="profile-settings" element={<ProfileSettings />} />
           </Route>
         </Route>

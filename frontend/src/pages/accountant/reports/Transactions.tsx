@@ -21,8 +21,9 @@ import {
 } from "@/components/ui/select";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Search, Download, Eye, Loader2 } from "lucide-react";
+import { Search, Download, Eye, Loader2, Receipt } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { openDocument } from "@/lib/documentUtils";
 import {
   getPaymentHistory,
   getAccessibleSchools,
@@ -347,6 +348,7 @@ const Transactions = () => {
                   <TableHead className="text-xs">Status</TableHead>
                   <TableHead className="text-xs">Payment Date</TableHead>
                   <TableHead className="text-xs">Mode</TableHead>
+                  <TableHead className="text-xs text-right">Receipt</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -378,11 +380,24 @@ const Transactions = () => {
                           : "-"}
                       </TableCell>
                       <TableCell className="text-xs">{transaction.mode || "-"}</TableCell>
+                      <TableCell className="text-right">
+                        {transaction.status === "paid" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-[11px] font-medium text-primary hover:bg-primary/10"
+                            onClick={() => openDocument('fee-receipt', transaction.id, false)}
+                            title="Official Printable Receipt"
+                          >
+                            <Receipt className="h-3 w-3 mr-1" /> Slip
+                          </Button>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-gray-500 py-8">
+                    <TableCell colSpan={8} className="text-center text-gray-500 py-8">
                       {filters.search
                         ? "No transactions found matching your search"
                         : "No transactions found"}

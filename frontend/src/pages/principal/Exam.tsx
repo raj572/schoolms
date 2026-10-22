@@ -36,13 +36,16 @@ import {
   Loader2,
   Clock,
   BookOpen,
-  MapPin
+  MapPin,
+  Printer,
+  GraduationCap
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Heading from "@/components/common/Heading";
 import { useAuthStore } from "@/store/useAuthStore";
 import { getAllExams as getAllExamsService, getExamSchedules, getExamStats, createExam as createExamService, getStudentResults, getExamResults, getClasses, generateReportCard, type Exam as ExamType, type ExamSchedule } from "@/services/examApiService";
 import { useToast } from "@/hooks/use-toast";
+import { openDocument } from "@/lib/documentUtils";
 import { ExamScheduleDialog } from "@/components/principal/ExamScheduleDialog";
 import { MarksEntryDialog } from "@/components/principal/MarksEntryDialog";
 import { StudentWiseMarksEntry } from "@/components/principal/StudentWiseMarksEntry";
@@ -297,10 +300,10 @@ export const Exam = () => {
     }
 
     try {
-      // For now, just show a message - full report card generation would need student selection
+      openDocument('marksheet', null, false);
       toast({
-        title: "Info",
-        description: "Report card generation feature - Select a student to generate their report card",
+        title: "Official Marksheet",
+        description: "Opening official marksheet and report card template...",
       });
     } catch (error) {
       console.error("Error generating report card:", error);
@@ -359,11 +362,19 @@ export const Exam = () => {
       <div className="flex justify-between items-center mb-8">
           <Heading title="Exams Management" description="Schedule exams, manage results, and generate reports" />
 
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" onClick={() => openDocument('admit-card', null, false)}>
+                  <Printer className="mr-2 h-4 w-4" />
+                  Admit Cards
+                </Button>
+                <Button variant="outline" onClick={() => openDocument('marksheet', null, false)}>
+                  <GraduationCap className="mr-2 h-4 w-4" />
+                  Report Cards
+                </Button>
                 <Button variant="outline" onClick={handleExportResults}>
-              <Download className="mr-2 h-4 w-4" />
-              Export Results
-            </Button>
+                  <Download className="mr-2 h-4 w-4" />
+                  Export Results
+                </Button>
                 <Button onClick={() => setIsExamDialogOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
                   Schedule Exam

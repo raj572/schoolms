@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Plus, Eye, Edit, Trash2 } from "lucide-react";
+import { Search, Plus, Eye, Edit, Trash2, FileText } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Link, useNavigate } from "react-router-dom";
 import Heading from "@/components/common/Heading";
 import { StudentForm, useUsersStore } from "@/store/useUsersStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { openDocument } from "@/lib/documentUtils";
 
 
 const StudentList = () => {
@@ -154,6 +155,14 @@ const StudentList = () => {
                               <Button 
                                 variant="ghost" 
                                 size="sm"
+                                onClick={() => openDocument('id-card', student.id, false)}
+                                title="Print Student ID Card"
+                              >
+                                <FileText className="h-4 w-4 text-primary" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
                                 onClick={() => navigate(`/principal/students/details/${student.id}`)}
                                 title="Edit Student"
                               >
@@ -213,6 +222,14 @@ const StudentList = () => {
                           title="View Details"
                         >
                           <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => openDocument('id-card', student.id, false)}
+                          title="Print Student ID Card"
+                        >
+                          <FileText className="h-4 w-4 text-primary" />
                         </Button>
                         <Button 
                           variant="ghost" 

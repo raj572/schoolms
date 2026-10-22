@@ -164,9 +164,11 @@ export const roleMenus: RoleMenus = {
       title: "Communication",
       icon: MessageSquare,
       href: "/principal/communication",
-      
-       
-    
+    },
+    {
+      title: "Documents",
+      icon: FileText,
+      href: "/principal/documents",
     },
     {
       title: "Reports",
@@ -480,6 +482,11 @@ export const roleMenus: RoleMenus = {
       title: "Payments",
       icon: Wallet,
       href: "/administrator/payments",
+    },
+    {
+      title: "Documents",
+      icon: FileText,
+      href: "/administrator/documents",
     },
   ],
   super_admin: [

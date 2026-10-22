@@ -6,9 +6,10 @@ import {
 } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Printer, ExternalLink } from "lucide-react";
 import { exportToCsv } from "@/lib/exportUtils";
 import { useToast } from "@/hooks/use-toast";
+import { openDocument } from "@/lib/documentUtils";
 
 export default function ParentPaymentReceipts() {
   const { toast } = useToast();
@@ -43,17 +44,10 @@ export default function ParentPaymentReceipts() {
   ];
 
   const handleDownloadSingle = (receipt: typeof receipts[0]) => {
-    exportToCsv(`receipt_${receipt.receiptNo}.csv`, [receipt], [
-      { header: "Receipt No", key: "receiptNo" },
-      { header: "Student Name", key: "studentName" },
-      { header: "Class", key: "class" },
-      { header: "Date", key: "date" },
-      { header: "Amount", key: "amount" },
-      { header: "Mode", key: "mode" },
-    ]);
+    openDocument('fee-receipt', receipt.id, true);
     toast({
-      title: "Receipt Downloaded",
-      description: `Receipt ${receipt.receiptNo} generated successfully.`,
+      title: "Generating Official Receipt",
+      description: `Downloading fee receipt PDF for ${receipt.receiptNo}...`,
     });
   };
 
@@ -115,15 +109,25 @@ export default function ParentPaymentReceipts() {
                   <TableCell className="text-xs font-semibold text-foreground">{r.amount}</TableCell>
                   <TableCell className="text-xs text-muted-foreground">{r.mode}</TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleDownloadSingle(r)}
-                      className="gap-1"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
-                    </Button>
+                    <div className="flex justify-end gap-1.5">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => openDocument('fee-receipt', r.id, false)}
+                        className="h-8 text-xs text-primary"
+                        title="View printable receipt"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5 mr-1" /> View
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDownloadSingle(r)}
+                        className="h-8 text-xs gap-1"
+                      >
+                        <Download className="h-3.5 w-3.5" /> PDF
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

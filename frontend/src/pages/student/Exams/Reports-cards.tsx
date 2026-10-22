@@ -2,9 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Award, Download } from "lucide-react";
+import { Award, Download, Printer, ExternalLink } from "lucide-react";
 import { exportToCsv } from "@/lib/exportUtils";
 import { toast } from "sonner";
+import { openDocument } from "@/lib/documentUtils";
 
 export default function ReportCard() {
   const student = {
@@ -110,10 +111,14 @@ export default function ReportCard() {
             </div>
           </div>
 
-          <div className="pt-4 flex justify-end">
-            <Button onClick={handleDownload}>
+          <div className="pt-4 flex flex-wrap justify-end gap-2">
+            <Button variant="outline" onClick={() => openDocument('marksheet', null, false)}>
+              <Printer className="h-4 w-4 mr-2" />
+              Preview / Print Marksheet
+            </Button>
+            <Button variant="default" onClick={() => openDocument('marksheet', null, true)}>
               <Download className="h-4 w-4 mr-2" />
-              Download Report
+              Official Marksheet (PDF)
             </Button>
           </div>
         </CardContent>

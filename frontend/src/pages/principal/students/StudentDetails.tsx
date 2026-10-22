@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Edit, Phone, Mail, MapPin, Calendar, User, GraduationCap, Heart, Users, UserCheck, Loader2 } from "lucide-react";
+import { ArrowLeft, Edit, Phone, Mail, MapPin, Calendar, User, GraduationCap, Heart, Users, UserCheck, Loader2, FileText, Download, Printer, ExternalLink, Award, CreditCard, Receipt, FileCheck, ClipboardCheck } from "lucide-react";
 import Heading from "@/components/common/Heading";
 import { axiosInstance } from "@/lib/axios";
 import { toast } from "sonner";
 import { StudentForm } from "@/store/useUsersStore";
+import { openDocument } from "@/lib/documentUtils";
 
 interface StudentDetailsData extends StudentForm {
   monthlyPayments?: unknown[];
@@ -165,11 +166,12 @@ const StudentDetails = () => {
         {/* Detailed Information Tabs */}
         <Tabs defaultValue="personal" className="w-full">
           <div className="overflow-x-auto pb-2">
-            <TabsList className="flex min-w-max w-full grid-cols-4 bg-muted/60 p-1">
+            <TabsList className="flex min-w-max w-full bg-muted/60 p-1">
               <TabsTrigger value="personal">Personal</TabsTrigger>
               <TabsTrigger value="academic">Academic</TabsTrigger>
               <TabsTrigger value="parent">Parent/Guardian</TabsTrigger>
               <TabsTrigger value="attendance">Attendance</TabsTrigger>
+              <TabsTrigger value="documents" className="font-semibold text-primary">Official Documents</TabsTrigger>
             </TabsList>
           </div>
 
@@ -309,6 +311,146 @@ const StudentDetails = () => {
                   <UserCheck className="h-4 w-4 mr-2" />
                   View Attendance Records & Analytics
                 </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="documents" className="space-y-4">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex text-lg items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <span>Official Operational Documents & Certificates</span>
+                  </div>
+                  <Badge variant="outline" className="text-xs">Student ID: {student.id}</Badge>
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Directly generate, view, print, or download official verification certificates and academic slips pre-filled for {student.candidate_name}.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* ID Card */}
+                  <div className="p-4 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors flex flex-col justify-between space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <CreditCard className="h-5 w-5 text-primary" />
+                        <Badge variant="secondary" className="text-[10px]">CR-80 Badge</Badge>
+                      </div>
+                      <h4 className="font-semibold text-sm">Student ID Card</h4>
+                      <p className="text-xs text-muted-foreground mt-1">Official vertical badge with photo box, validity, and emergency contacts.</p>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => openDocument('id-card', student.id, false)}>
+                        <ExternalLink className="h-3.5 w-3.5 mr-1" /> View
+                      </Button>
+                      <Button size="sm" variant="default" className="w-full text-xs" onClick={() => openDocument('id-card', student.id, true)}>
+                        <Download className="h-3.5 w-3.5 mr-1" /> PDF
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Admission Receipt */}
+                  <div className="p-4 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors flex flex-col justify-between space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <FileCheck className="h-5 w-5 text-emerald-600" />
+                        <Badge variant="secondary" className="text-[10px]">Enrollment</Badge>
+                      </div>
+                      <h4 className="font-semibold text-sm">Admission Receipt</h4>
+                      <p className="text-xs text-muted-foreground mt-1">Enrollment confirmation with admission number and breakdown of initial fees.</p>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => openDocument('admission-receipt', student.id, false)}>
+                        <ExternalLink className="h-3.5 w-3.5 mr-1" /> View
+                      </Button>
+                      <Button size="sm" variant="default" className="w-full text-xs" onClick={() => openDocument('admission-receipt', student.id, true)}>
+                        <Download className="h-3.5 w-3.5 mr-1" /> PDF
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Marksheet */}
+                  <div className="p-4 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors flex flex-col justify-between space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <GraduationCap className="h-5 w-5 text-blue-600" />
+                        <Badge variant="secondary" className="text-[10px]">Report Card</Badge>
+                      </div>
+                      <h4 className="font-semibold text-sm">Academic Marksheet</h4>
+                      <p className="text-xs text-muted-foreground mt-1">Official term report card with grades, overall percentage, and teacher remarks.</p>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => openDocument('marksheet', student.id, false)}>
+                        <ExternalLink className="h-3.5 w-3.5 mr-1" /> View
+                      </Button>
+                      <Button size="sm" variant="default" className="w-full text-xs" onClick={() => openDocument('marksheet', student.id, true)}>
+                        <Download className="h-3.5 w-3.5 mr-1" /> PDF
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Admit Card */}
+                  <div className="p-4 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors flex flex-col justify-between space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <ClipboardCheck className="h-5 w-5 text-amber-600" />
+                        <Badge variant="secondary" className="text-[10px]">Hall Ticket</Badge>
+                      </div>
+                      <h4 className="font-semibold text-sm">Exam Admit Card</h4>
+                      <p className="text-xs text-muted-foreground mt-1">Examination hall ticket with exam schedule timetable, room, and candidate rules.</p>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => openDocument('admit-card', student.id, false)}>
+                        <ExternalLink className="h-3.5 w-3.5 mr-1" /> View
+                      </Button>
+                      <Button size="sm" variant="default" className="w-full text-xs" onClick={() => openDocument('admit-card', student.id, true)}>
+                        <Download className="h-3.5 w-3.5 mr-1" /> PDF
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Transfer Certificate */}
+                  <div className="p-4 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors flex flex-col justify-between space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <FileText className="h-5 w-5 text-purple-600" />
+                        <Badge variant="secondary" className="text-[10px]">Statutory TC</Badge>
+                      </div>
+                      <h4 className="font-semibold text-sm">Transfer Certificate</h4>
+                      <p className="text-xs text-muted-foreground mt-1">Formal school leaving certificate with student record and clearance status.</p>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => openDocument('transfer-certificate', student.id, false)}>
+                        <ExternalLink className="h-3.5 w-3.5 mr-1" /> View
+                      </Button>
+                      <Button size="sm" variant="default" className="w-full text-xs" onClick={() => openDocument('transfer-certificate', student.id, true)}>
+                        <Download className="h-3.5 w-3.5 mr-1" /> PDF
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Bonafide Certificate */}
+                  <div className="p-4 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors flex flex-col justify-between space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <Award className="h-5 w-5 text-indigo-600" />
+                        <Badge variant="secondary" className="text-[10px]">Verification</Badge>
+                      </div>
+                      <h4 className="font-semibold text-sm">Bonafide Certificate</h4>
+                      <p className="text-xs text-muted-foreground mt-1">Official letterhead certificate certifying bonafide enrollment and good conduct.</p>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => openDocument('bonafide-certificate', student.id, false)}>
+                        <ExternalLink className="h-3.5 w-3.5 mr-1" /> View
+                      </Button>
+                      <Button size="sm" variant="default" className="w-full text-xs" onClick={() => openDocument('bonafide-certificate', student.id, true)}>
+                        <Download className="h-3.5 w-3.5 mr-1" /> PDF
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

@@ -195,7 +195,7 @@
 </head>
 <body>
 
-    @if(!($isPdf ?? false))
+    @if(!($isPdf ?? false) && !request()->has('embed'))
     <div class="action-bar">
         <div class="brand">LEARNAZ SCHOOL ERP • Examination Admit Card</div>
         <div class="btn-group">

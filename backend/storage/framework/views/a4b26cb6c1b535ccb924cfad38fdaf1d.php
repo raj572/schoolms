@@ -213,7 +213,7 @@
 </head>
 <body>
 
-    <?php if(!($isPdf ?? false)): ?>
+    <?php if(!($isPdf ?? false) && !request()->has('embed')): ?>
     <div class="action-bar">
         <div class="brand">LEARNAZ SCHOOL ERP • Student Report Card</div>
         <div class="btn-group">

@@ -32,6 +32,14 @@ import '../features/principal/presentation/screens/principal_settings_screen.dar
 import '../features/student/presentation/screens/student_shell_screen.dart';
 import '../features/super_admin/presentation/screens/super_admin_dashboard_screen.dart';
 import '../features/teacher/presentation/screens/teacher_workspace_screen.dart';
+import '../features/teacher/presentation/screens/teacher_profile_screen.dart';
+import '../features/teacher/presentation/screens/teacher_classes_screen.dart';
+import '../features/teacher/presentation/screens/teacher_attendance_screen.dart';
+import '../features/teacher/presentation/screens/teacher_syllabus_screen.dart';
+import '../features/teacher/presentation/screens/teacher_exam_screen.dart';
+import '../features/teacher/presentation/screens/teacher_assignments_screen.dart';
+import '../features/teacher/presentation/screens/teacher_reports_screen.dart';
+import '../features/teacher/presentation/screens/teacher_communication_screen.dart';
 import '../features/warden/presentation/screens/warden_dashboard_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -88,6 +96,54 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/teacher',
         builder: (context, state) => const TeacherWorkspaceScreen(),
+      ),
+      GoRoute(
+        path: '/teacher/dashboard',
+        builder: (context, state) => const TeacherWorkspaceScreen(),
+      ),
+      GoRoute(
+        path: '/teacher/my-profile',
+        builder: (context, state) => const TeacherProfileScreen(),
+      ),
+      GoRoute(
+        path: '/teacher/my-classes',
+        builder: (context, state) => const TeacherClassesScreen(),
+      ),
+      GoRoute(
+        path: '/teacher/attendance',
+        builder: (context, state) => const TeacherAttendanceScreen(),
+      ),
+      GoRoute(
+        path: '/teacher/attendance/records',
+        builder: (context, state) => const TeacherAttendanceScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/teacher/syllabus-completion',
+        builder: (context, state) => const TeacherSyllabusScreen(),
+      ),
+      GoRoute(
+        path: '/teacher/exam',
+        builder: (context, state) => const TeacherExamScreen(),
+      ),
+      GoRoute(
+        path: '/teacher/exam/schedule',
+        builder: (context, state) => const TeacherExamScreen(initialTab: 0),
+      ),
+      GoRoute(
+        path: '/teacher/exam/marks-entry',
+        builder: (context, state) => const TeacherExamScreen(initialTab: 1),
+      ),
+      GoRoute(
+        path: '/teacher/assignments',
+        builder: (context, state) => const TeacherAssignmentsScreen(),
+      ),
+      GoRoute(
+        path: '/teacher/reports',
+        builder: (context, state) => const TeacherReportsScreen(),
+      ),
+      GoRoute(
+        path: '/teacher/communication',
+        builder: (context, state) => const TeacherCommunicationScreen(),
       ),
       GoRoute(
         path: '/parent',

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/typography.dart';
 import '../../../../core/widgets/app_bar.dart';
 import '../../../../core/widgets/status_pill.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../widgets/teacher_navigation_drawer.dart';
 
 class TeacherWorkspaceScreen extends StatefulWidget {
   const TeacherWorkspaceScreen({super.key});
@@ -14,6 +16,8 @@ class TeacherWorkspaceScreen extends StatefulWidget {
 }
 
 class _TeacherWorkspaceScreenState extends State<TeacherWorkspaceScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   // Rapid Attendance state map studentId -> 'P' | 'T' | 'A'
   final Map<int, String> _attendanceMap = {
     1: 'P',
@@ -30,11 +34,14 @@ class _TeacherWorkspaceScreenState extends State<TeacherWorkspaceScreen> {
         final teacherName = user?.fullName.isNotEmpty == true ? user!.fullName : 'Dr. Aris Thorne';
 
         return Scaffold(
+          key: _scaffoldKey,
           backgroundColor: EduPulseColors.surface,
+          drawer: const TeacherNavigationDrawer(currentRoute: '/teacher'),
           appBar: EduPulseAppBar(
             title: 'Learnaz',
             subtitle: 'Faculty',
             switcherLabel: '$teacherName (Science Dept)',
+            onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
             onProfileTap: () => ref.read(authProvider.notifier).logout(),
           ),
           body: SingleChildScrollView(
@@ -47,17 +54,28 @@ class _TeacherWorkspaceScreenState extends State<TeacherWorkspaceScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const StatusPill(label: 'Educator Workspace', variant: PillVariant.info),
-                    Row(
-                      children: [
-                        const Icon(Icons.meeting_room_outlined, size: 14, color: EduPulseColors.textMuted),
-                        const SizedBox(width: 4),
-                        Text('Room 304 • Science Wing', style: EduPulseTypography.bodySm()),
-                        const SizedBox(width: 8),
-                        Text('Term 2 (2024–25)', style: EduPulseTypography.labelSm(color: EduPulseColors.primary)),
-                      ],
+                    OutlinedButton.icon(
+                      onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                      icon: const Icon(Icons.menu_open_rounded, size: 16),
+                      label: const Text('All Menus', style: TextStyle(fontSize: 12)),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        minimumSize: const Size(70, 28),
+                      ),
                     ),
                   ],
                 ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(Icons.meeting_room_outlined, size: 14, color: EduPulseColors.textMuted),
+                    const SizedBox(width: 4),
+                    Text('Room 304 • Science Wing', style: EduPulseTypography.bodySm()),
+                    const SizedBox(width: 8),
+                    Text('Term 2 (2024–25)', style: EduPulseTypography.labelSm(color: EduPulseColors.primary)),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 const SizedBox(height: 12),
 
                 // Greeting & Schedule Deck Counter
@@ -132,6 +150,84 @@ class _TeacherWorkspaceScreenState extends State<TeacherWorkspaceScreen> {
                           ],
                         ),
                       ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Faculty Modules Grid (Matching Web Sidebar Menus)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Faculty Modules', style: EduPulseTypography.headlineMd()),
+                    Text('8 Portals', style: EduPulseTypography.labelSm(color: EduPulseColors.textMuted)),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: 1.55,
+                  children: [
+                    _buildModuleCard(
+                      title: 'My Profile',
+                      subtitle: 'Credentials & info',
+                      icon: Icons.person_outline,
+                      color: const Color(0xFF059669),
+                      route: '/teacher/my-profile',
+                    ),
+                    _buildModuleCard(
+                      title: 'My Classes',
+                      subtitle: 'Periods & cohorts',
+                      icon: Icons.meeting_room_outlined,
+                      color: const Color(0xFF0284C7),
+                      route: '/teacher/my-classes',
+                    ),
+                    _buildModuleCard(
+                      title: 'Attendance',
+                      subtitle: 'Mark & records',
+                      icon: Icons.fact_check_outlined,
+                      color: const Color(0xFF10B981),
+                      route: '/teacher/attendance',
+                    ),
+                    _buildModuleCard(
+                      title: 'Syllabus',
+                      subtitle: 'Curriculum trackers',
+                      icon: Icons.auto_stories_outlined,
+                      color: const Color(0xFF7C3AED),
+                      route: '/teacher/syllabus-completion',
+                    ),
+                    _buildModuleCard(
+                      title: 'Exam',
+                      subtitle: 'Schedules & marks',
+                      icon: Icons.edit_calendar_outlined,
+                      color: const Color(0xFFD97706),
+                      route: '/teacher/exam',
+                    ),
+                    _buildModuleCard(
+                      title: 'Assignments',
+                      subtitle: 'Homework & tasks',
+                      icon: Icons.assignment_outlined,
+                      color: const Color(0xFFEA580C),
+                      route: '/teacher/assignments',
+                    ),
+                    _buildModuleCard(
+                      title: 'Reports',
+                      subtitle: 'Student analytics',
+                      icon: Icons.bar_chart_outlined,
+                      color: const Color(0xFF4F46E5),
+                      route: '/teacher/reports',
+                    ),
+                    _buildModuleCard(
+                      title: 'Communication',
+                      subtitle: 'Messages & notices',
+                      icon: Icons.campaign_outlined,
+                      color: const Color(0xFFEC4899),
+                      route: '/teacher/communication',
                     ),
                   ],
                 ),
@@ -523,6 +619,67 @@ class _TeacherWorkspaceScreenState extends State<TeacherWorkspaceScreen> {
               color: isSelected ? Colors.white : EduPulseColors.textMuted,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModuleCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required String route,
+  }) {
+    return InkWell(
+      onTap: () => context.go(route),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: EduPulseColors.surfaceCard,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: EduPulseColors.border),
+          boxShadow: const [
+            BoxShadow(
+              color: Color.fromRGBO(30, 41, 59, 0.03),
+              blurRadius: 4,
+              offset: Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, size: 18, color: color),
+                ),
+                const Spacer(),
+                const Icon(Icons.arrow_forward_ios, size: 11, color: EduPulseColors.textMuted),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: EduPulseTypography.labelMd(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              subtitle,
+              style: EduPulseTypography.bodySm(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
       ),
     );

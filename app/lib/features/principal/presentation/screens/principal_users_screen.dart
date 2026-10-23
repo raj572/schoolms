@@ -1,8 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/api/api_client.dart';
+import '../../../../core/api/api_constants.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/typography.dart';
 import '../../../../core/widgets/app_bar.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../widgets/principal_navigation_drawer.dart';
 
 class PrincipalUsersScreen extends ConsumerStatefulWidget {
@@ -22,6 +27,16 @@ class _PrincipalUsersScreenState extends ConsumerState<PrincipalUsersScreen> wit
   late TabController _tabController;
   String _roleFilter = 'all';
   String _searchQuery = '';
+
+  // Register Form State matching Web
+  final _registerFormKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
+  String? _selectedRole;
+  bool _obscurePassword = true;
+  bool _isSubmitting = false;
 
   final List<Map<String, dynamic>> _users = [
     {
@@ -75,12 +90,160 @@ class _PrincipalUsersScreenState extends ConsumerState<PrincipalUsersScreen> wit
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this, initialIndex: widget.initialTab);
+    _loadUsers();
+  }
+
+  @override
+  void didUpdateWidget(covariant PrincipalUsersScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialTab != widget.initialTab) {
+      _tabController.animateTo(widget.initialTab);
+    }
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _phoneController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadUsers() async {
+    final authState = ref.read(authProvider);
+    final schoolId = authState.user?.schoolId ?? 1;
+    try {
+      final res = await ApiClient().get(ApiConstants.getAllUsers(schoolId));
+      if (res.data != null && res.data['status'] == true && res.data['data'] != null) {
+        final List list = res.data['data'];
+        if (list.isNotEmpty && mounted) {
+          setState(() {
+            _users.clear();
+            for (final u in list) {
+              _users.add({
+                'id': u['id'] ?? 0,
+                'name': u['full_name'] ?? u['username'] ?? 'User',
+                'email': u['email'] ?? '',
+                'role': (u['role'] ?? 'Staff').toString().toUpperCase(),
+                'department': u['role'] ?? 'General',
+                'status': u['status'] ?? 'active',
+                'phone': u['phone'] ?? '+91 00000 00000',
+              });
+            }
+          });
+        }
+      }
+    } catch (_) {
+      // Fallback to initialized seed users
+    }
+  }
+
+  void _resetForm() {
+    _registerFormKey.currentState?.reset();
+    _usernameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+    _phoneController.clear();
+    setState(() {
+      _selectedRole = null;
+      _obscurePassword = true;
+    });
+  }
+
+  Future<void> _handleRegisterUser() async {
+    if (!_registerFormKey.currentState!.validate()) return;
+    if (_selectedRole == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a role for the user'),
+          backgroundColor: EduPulseColors.error,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final phone = _phoneController.text.trim();
+    final role = _selectedRole!;
+
+    final authState = ref.read(authProvider);
+    final schoolId = authState.user?.schoolId ?? 1;
+
+    try {
+      final response = await ApiClient().post(
+        ApiConstants.registerUser(schoolId),
+        data: {
+          'school_id': schoolId,
+          'full_name': username,
+          'username': username,
+          'email': email,
+          'password': password,
+          'phone': phone.isNotEmpty ? phone : null,
+          'role': role,
+        },
+      );
+
+      final data = response.data;
+      if (data != null && (data['status'] == true || response.statusCode == 200 || response.statusCode == 201)) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(data['message'] ?? 'User registered successfully!'),
+            backgroundColor: EduPulseColors.success,
+          ),
+        );
+
+        setState(() {
+          _users.insert(0, {
+            'id': DateTime.now().millisecondsSinceEpoch,
+            'name': username,
+            'email': email,
+            'role': role[0].toUpperCase() + role.substring(1),
+            'department': role[0].toUpperCase() + role.substring(1),
+            'status': 'active',
+            'phone': phone.isNotEmpty ? phone : '+91 98765 00000',
+          });
+        });
+        _resetForm();
+        _tabController.animateTo(0);
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(data?['message'] ?? 'Failed to register user'),
+            backgroundColor: EduPulseColors.error,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      if (!mounted) return;
+      final msg = e.response?.data?['message'] ??
+          (e.response?.data?['error'] is Map ? (e.response?.data?['error'] as Map).values.first.toString() : null) ??
+          e.message ??
+          'Failed to register user';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: EduPulseColors.error,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: EduPulseColors.error,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   @override
@@ -274,45 +437,224 @@ class _PrincipalUsersScreenState extends ConsumerState<PrincipalUsersScreen> wit
   Widget _buildRegisterTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: EduPulseColors.surfaceCard,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: EduPulseColors.border),
-        ),
+      child: Form(
+        key: _registerFormKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Register New Campus Staff', style: EduPulseTypography.headlineMd()),
-            const SizedBox(height: 14),
-            const TextField(decoration: InputDecoration(labelText: 'Full Name', hintText: 'e.g. Robert Langdon')),
-            const SizedBox(height: 12),
-            const TextField(decoration: InputDecoration(labelText: 'Email Address', hintText: 'robert.l@school.edu')),
-            const SizedBox(height: 12),
-            const TextField(decoration: InputDecoration(labelText: 'Phone Number', hintText: '+91 98765 00000')),
-            const SizedBox(height: 12),
-            const TextField(decoration: InputDecoration(labelText: 'Assigned Role', hintText: 'Teacher / Accountant / Librarian / Warden')),
-            const SizedBox(height: 12),
-            const TextField(decoration: InputDecoration(labelText: 'Department / Faculty', hintText: 'e.g. Humanities & Languages')),
-            const SizedBox(height: 18),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Staff credentials generated & invitation emailed!'), backgroundColor: EduPulseColors.success),
-                  );
-                },
-                icon: const Icon(Icons.person_add),
-                label: const Text('Create User Account'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2563EB),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+            // Top action bar matching web: "User Registration" + "Back to Dashboard"
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('User Registration', style: EduPulseTypography.headlineMd()),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Add a new user to the system',
+                        style: EduPulseTypography.bodySm(color: EduPulseColors.textMuted),
+                      ),
+                    ],
+                  ),
                 ),
+                OutlinedButton.icon(
+                  onPressed: () => context.go('/principal'),
+                  icon: const Icon(Icons.arrow_back, size: 14),
+                  label: const Text('Back to Dashboard', style: TextStyle(fontSize: 11)),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    minimumSize: const Size(0, 32),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+
+            // Card container: "Information" (matching Image 2)
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: EduPulseColors.surfaceCard,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: EduPulseColors.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Information',
+                    style: EduPulseTypography.labelLg().copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+
+                  // 1. Username
+                  Text(
+                    'Username',
+                    style: EduPulseTypography.labelSm(color: EduPulseColors.textHeadline),
+                  ),
+                  const SizedBox(height: 6),
+                  TextFormField(
+                    controller: _usernameController,
+                    decoration: const InputDecoration(
+                      hintText: 'principal@school.com',
+                    ),
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) return 'Username is required';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // 2. Email
+                  Text(
+                    'Email',
+                    style: EduPulseTypography.labelSm(color: EduPulseColors.textHeadline),
+                  ),
+                  const SizedBox(height: 6),
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      hintText: 'johndoe@gmail.com',
+                    ),
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) return 'Email is required';
+                      if (!v.contains('@') || !v.contains('.')) return 'Enter a valid email address';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // 3. Password
+                  Text(
+                    'Password',
+                    style: EduPulseTypography.labelSm(color: EduPulseColors.textHeadline),
+                  ),
+                  const SizedBox(height: 6),
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      hintText: '••••••••',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          size: 18,
+                          color: EduPulseColors.textMuted,
+                        ),
+                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      ),
+                    ),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Password is required';
+                      if (v.length < 6) return 'Password must be at least 6 characters long';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Password must be at least 6 characters long',
+                    style: EduPulseTypography.bodySm(color: EduPulseColors.textMuted).copyWith(fontSize: 11),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // 4. Role Dropdown
+                  Text(
+                    'Role',
+                    style: EduPulseTypography.labelSm(color: EduPulseColors.textHeadline),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: EduPulseColors.surfaceCard,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: EduPulseColors.border),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: _selectedRole,
+                        hint: const Text(
+                          'Select Role',
+                          style: TextStyle(color: EduPulseColors.textPlaceholder, fontSize: 14),
+                        ),
+                        icon: const Icon(Icons.keyboard_arrow_down, size: 20, color: EduPulseColors.textMuted),
+                        items: const [
+                          DropdownMenuItem(value: 'principal', child: Text('Principal')),
+                          DropdownMenuItem(value: 'accountant', child: Text('Accountant')),
+                          DropdownMenuItem(value: 'librarian', child: Text('Librarian')),
+                          DropdownMenuItem(value: 'administrator', child: Text('Administrator')),
+                        ],
+                        onChanged: (val) {
+                          if (val != null) setState(() => _selectedRole = val);
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // 5. Phone Number
+                  Text(
+                    'Phone Number',
+                    style: EduPulseTypography.labelSm(color: EduPulseColors.textHeadline),
+                  ),
+                  const SizedBox(height: 6),
+                  TextFormField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      hintText: '9894223678',
+                    ),
+                  ),
+                ],
               ),
             ),
+            const SizedBox(height: 20),
+
+            // Bottom Actions: Cancel & Register User (matching web)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  onPressed: _isSubmitting
+                      ? null
+                      : () {
+                          _resetForm();
+                          _tabController.animateTo(0);
+                        },
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    side: const BorderSide(color: EduPulseColors.border),
+                  ),
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton.icon(
+                  onPressed: _isSubmitting ? null : _handleRegisterUser,
+                  icon: _isSubmitting
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Icon(Icons.save_outlined, size: 18),
+                  label: Text(_isSubmitting ? 'Registering...' : 'Register User'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2563EB),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
           ],
         ),
       ),

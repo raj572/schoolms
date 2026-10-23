@@ -62,7 +62,7 @@ class EduPulseTheme {
           backgroundColor: EduPulseColors.primary,
           foregroundColor: EduPulseColors.onPrimary,
           elevation: 0,
-          minimumSize: const Size(double.infinity, 48),
+          minimumSize: const Size(0, 48),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -79,7 +79,7 @@ class EduPulseTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: EduPulseColors.textHeadline,
           side: const BorderSide(color: EduPulseColors.border, width: 1.5),
-          minimumSize: const Size(double.infinity, 48),
+          minimumSize: const Size(0, 48),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

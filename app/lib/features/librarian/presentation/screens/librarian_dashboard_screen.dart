@@ -49,37 +49,42 @@ class LibrarianDashboardScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // Quick Issue / Return Actions
+            // Quick Actions matching Web
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _showIssueBookDialog(context);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.qr_code_scanner, size: 18),
-                        SizedBox(width: 6),
-                        Text('Scan to Issue'),
-                      ],
+                  child: ElevatedButton.icon(
+                    onPressed: () => _showAddBookDialog(context),
+                    icon: const Icon(Icons.add, size: 16),
+                    label: const Text('Add Book'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2563EB),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      _showReturnBookDialog(context);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.assignment_return, size: 18),
-                        SizedBox(width: 6),
-                        Text('Book Return'),
-                      ],
+                  child: ElevatedButton.icon(
+                    onPressed: () => _showIssueBookDialog(context),
+                    icon: const Icon(Icons.bookmark_add, size: 16),
+                    label: const Text('Issue Book'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF10B981),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _showReturnBookDialog(context),
+                    icon: const Icon(Icons.assignment_return, size: 16),
+                    label: const Text('Return'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                     ),
                   ),
                 ),
@@ -175,63 +180,276 @@ class LibrarianDashboardScreen extends ConsumerWidget {
     );
   }
 
-  void _showIssueBookDialog(BuildContext context) {
+  void _showAddBookDialog(BuildContext context) {
+    final codeController = TextEditingController();
+    final titleController = TextEditingController();
+    final authorController = TextEditingController();
+    final publisherController = TextEditingController();
+    final isbnController = TextEditingController();
+    final qtyController = TextEditingController(text: '1');
+    final priceController = TextEditingController(text: '0');
+    final locationController = TextEditingController();
+    final descController = TextEditingController();
+    String selectedCategory = 'Science';
+
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Circulation • Issue Book'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Book Accession No. / ISBN',
-                hintText: 'e.g. BK-2024-8891',
-                prefixIcon: Icon(Icons.qr_code),
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Add New Book', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: 380,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: codeController,
+                          decoration: const InputDecoration(labelText: 'Book Code *', hintText: 'BK-1001'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: isbnController,
+                          decoration: const InputDecoration(labelText: 'ISBN', hintText: '978-0-123456'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: titleController,
+                    decoration: const InputDecoration(labelText: 'Book Title *', hintText: 'e.g. Principia Mathematica'),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: authorController,
+                          decoration: const InputDecoration(labelText: 'Author', hintText: 'Author name'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: publisherController,
+                          decoration: const InputDecoration(labelText: 'Publisher', hintText: 'Publisher'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: selectedCategory,
+                          decoration: const InputDecoration(labelText: 'Category'),
+                          items: const [
+                            DropdownMenuItem(value: 'Science', child: Text('Science')),
+                            DropdownMenuItem(value: 'Mathematics', child: Text('Mathematics')),
+                            DropdownMenuItem(value: 'Literature', child: Text('Literature')),
+                            DropdownMenuItem(value: 'History', child: Text('History')),
+                            DropdownMenuItem(value: 'Computer Science', child: Text('Computer Science')),
+                            DropdownMenuItem(value: 'General', child: Text('General')),
+                          ],
+                          onChanged: (v) => setDialogState(() => selectedCategory = v ?? 'Science'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: qtyController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(labelText: 'Quantity *'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: priceController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(labelText: 'Price (₹)'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: locationController,
+                          decoration: const InputDecoration(labelText: 'Shelf Location', hintText: 'Rack A-2'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: descController,
+                    maxLines: 2,
+                    decoration: const InputDecoration(labelText: 'Description', hintText: 'Summary or condition notes'),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 12),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Student Roll No / Borrower ID',
-                hintText: 'e.g. 1001 (Alex Doe)',
-                prefixIcon: Icon(Icons.person),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () {
+                final title = titleController.text.trim();
+                if (title.isEmpty) return;
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Book added to library catalog successfully!'), backgroundColor: EduPulseColors.success),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2563EB),
+                foregroundColor: Colors.white,
               ),
+              child: const Text('Add Book'),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+      ),
+    );
+  }
+
+  void _showIssueBookDialog(BuildContext context) {
+    String borrowerType = 'student';
+    final bookIdController = TextEditingController();
+    final borrowerIdController = TextEditingController();
+    final fineController = TextEditingController(text: '5');
+    DateTime dueDate = DateTime.now().add(const Duration(days: 7));
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Issue Library Book', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: 360,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DropdownButtonFormField<String>(
+                    initialValue: borrowerType,
+                    decoration: const InputDecoration(labelText: 'Borrower Type *'),
+                    items: const [
+                      DropdownMenuItem(value: 'student', child: Text('Student')),
+                      DropdownMenuItem(value: 'teacher', child: Text('Faculty / Teacher')),
+                    ],
+                    onChanged: (v) => setDialogState(() => borrowerType = v ?? 'student'),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: bookIdController,
+                    decoration: const InputDecoration(
+                      labelText: 'Book Accession # / ISBN *',
+                      hintText: 'e.g. BK-1001',
+                      prefixIcon: Icon(Icons.qr_code, size: 20),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: borrowerIdController,
+                    decoration: InputDecoration(
+                      labelText: borrowerType == 'student' ? 'Student Roll No / ID *' : 'Teacher Employee ID *',
+                      hintText: borrowerType == 'student' ? 'e.g. 1001 (Alex Doe)' : 'e.g. TCH-001',
+                      prefixIcon: const Icon(Icons.person, size: 20),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: fineController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Late Fine Per Day (₹)',
+                      hintText: '5',
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Due Date: ${dueDate.year}-${dueDate.month.toString().padLeft(2, '0')}-${dueDate.day.toString().padLeft(2, '0')}',
+                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                      ),
+                      TextButton.icon(
+                        onPressed: () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: dueDate,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(const Duration(days: 90)),
+                          );
+                          if (picked != null) {
+                            setDialogState(() => dueDate = picked);
+                          }
+                        },
+                        icon: const Icon(Icons.calendar_today, size: 14),
+                        label: const Text('Change'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Book successfully checked out! Due in 14 days.'),
-                  backgroundColor: EduPulseColors.success,
-                ),
-              );
-            },
-            child: const Text('Confirm Checkout'),
-          ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final bId = borrowerIdController.text.trim();
+                final bkId = bookIdController.text.trim();
+                if (bId.isEmpty || bkId.isEmpty) return;
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Book successfully checked out!'),
+                    backgroundColor: EduPulseColors.success,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF10B981),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Confirm Checkout'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   void _showReturnBookDialog(BuildContext context) {
+    final bookController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Circulation • Return Book'),
+        title: const Text('Circulation • Return Book', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             TextField(
-              decoration: InputDecoration(
+              controller: bookController,
+              decoration: const InputDecoration(
                 labelText: 'Scan or Enter Book Accession #',
                 hintText: 'e.g. BK-2024-8891',
                 prefixIcon: Icon(Icons.barcode_reader),

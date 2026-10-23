@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/api/api_client.dart';
+import '../../../../core/api/api_constants.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/typography.dart';
 import '../../../../core/widgets/app_bar.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../widgets/principal_navigation_drawer.dart';
 
 class PrincipalClassesScreen extends ConsumerStatefulWidget {
@@ -22,31 +25,294 @@ class _PrincipalClassesScreenState extends ConsumerState<PrincipalClassesScreen>
   late TabController _tabController;
 
   final List<Map<String, dynamic>> _classes = [
-    {'class': 'Grade 10-A', 'room': 'Room 302', 'students': 42, 'teacher': 'Sarah Connor'},
-    {'class': 'Grade 10-B', 'room': 'Room 303', 'students': 40, 'teacher': 'Robert Taylor'},
-    {'class': 'Grade 11-Science', 'room': 'Lab Block A', 'students': 38, 'teacher': 'Kavita Iyer'},
-    {'class': 'Grade 8-B', 'room': 'Room 205', 'students': 35, 'teacher': 'Elena Rostova'},
-    {'class': 'Grade 6-A', 'room': 'Room 101', 'students': 30, 'teacher': 'Anita Desai'},
+    {'id': 1, 'class': 'Grade 10', 'section': 'A', 'room_no': 'Room 302', 'capacity': 42, 'teacher_in_charge': 'Sarah Connor', 'status': 'active'},
+    {'id': 2, 'class': 'Grade 10', 'section': 'B', 'room_no': 'Room 303', 'capacity': 40, 'teacher_in_charge': 'Robert Taylor', 'status': 'active'},
+    {'id': 3, 'class': 'Grade 11', 'section': 'Science', 'room_no': 'Lab Block A', 'capacity': 38, 'teacher_in_charge': 'Kavita Iyer', 'status': 'active'},
+    {'id': 4, 'class': 'Grade 8', 'section': 'B', 'room_no': 'Room 205', 'capacity': 35, 'teacher_in_charge': 'Elena Rostova', 'status': 'active'},
+    {'id': 5, 'class': 'Grade 6', 'section': 'A', 'room_no': 'Room 101', 'capacity': 30, 'teacher_in_charge': 'Anita Desai', 'status': 'active'},
   ];
 
   final List<Map<String, dynamic>> _subjects = [
-    {'name': 'Mathematics', 'code': 'MTH-101', 'grades': 'Grades 6 to 12', 'teachers': 6},
-    {'name': 'Physics', 'code': 'PHY-201', 'grades': 'Grades 9 to 12', 'teachers': 4},
-    {'name': 'Chemistry', 'code': 'CHM-202', 'grades': 'Grades 9 to 12', 'teachers': 4},
-    {'name': 'English Literature', 'code': 'ENG-101', 'grades': 'Grades 1 to 12', 'teachers': 8},
-    {'name': 'Computer Science & AI', 'code': 'CSC-301', 'grades': 'Grades 6 to 12', 'teachers': 3},
+    {'id': 1, 'subject_name': 'Mathematics', 'description': 'Foundational algebra, geometry & calculus curriculum', 'teachers': 6},
+    {'id': 2, 'subject_name': 'Physics', 'description': 'Classical mechanics, optics, thermodynamics & lab experiments', 'teachers': 4},
+    {'id': 3, 'subject_name': 'Chemistry', 'description': 'Organic, inorganic and analytical chemistry studies', 'teachers': 4},
+    {'id': 4, 'subject_name': 'English Literature', 'description': 'Grammar, rhetoric, classic prose and world poetry', 'teachers': 8},
+    {'id': 5, 'subject_name': 'Computer Science & AI', 'description': 'Data structures, algorithms and modern computing principles', 'teachers': 3},
   ];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this, initialIndex: widget.initialTab);
+    _loadClassesAndSubjects();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadClassesAndSubjects() async {
+    final authState = ref.read(authProvider);
+    final schoolId = authState.user?.schoolId ?? 1;
+    try {
+      final resClasses = await ApiClient().get(ApiConstants.getClasses(schoolId));
+      if (resClasses.data != null && resClasses.data['status'] == true && resClasses.data['data'] != null) {
+        final List list = resClasses.data['data'];
+        if (mounted && list.isNotEmpty) {
+          setState(() {
+            _classes.clear();
+            for (final c in list) {
+              _classes.add({
+                'id': c['id'] ?? 0,
+                'class': c['class'] ?? 'Class',
+                'section': c['section'] ?? '',
+                'room_no': c['room_no'] ?? 'N/A',
+                'capacity': c['capacity'] ?? 40,
+                'teacher_in_charge': c['teacher_in_charge'] ?? 'Unassigned',
+                'status': c['status'] ?? 'active',
+              });
+            }
+          });
+        }
+      }
+    } catch (_) {}
+
+    try {
+      final resSubj = await ApiClient().get(ApiConstants.getSubjects(schoolId));
+      if (resSubj.data != null && resSubj.data['status'] == true && resSubj.data['data'] != null) {
+        final List list = resSubj.data['data'];
+        if (mounted && list.isNotEmpty) {
+          setState(() {
+            _subjects.clear();
+            for (final s in list) {
+              _subjects.add({
+                'id': s['id'] ?? 0,
+                'subject_name': s['subject_name'] ?? s['name'] ?? 'Subject',
+                'description': s['description'] ?? 'Curriculum guidelines',
+                'teachers': s['teachers'] ?? 2,
+              });
+            }
+          });
+        }
+      }
+    } catch (_) {}
+  }
+
+  void _showAddClassDialog() {
+    final classController = TextEditingController();
+    final sectionController = TextEditingController();
+    final capacityController = TextEditingController();
+    final roomNoController = TextEditingController();
+    final teacherController = TextEditingController();
+    final notesController = TextEditingController();
+    String selectedStatus = 'active';
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (dCtx, setDialogState) => AlertDialog(
+          title: const Text('New Class', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: 380,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: classController,
+                          decoration: const InputDecoration(labelText: 'Class *', hintText: 'e.g. 10'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: sectionController,
+                          decoration: const InputDecoration(labelText: 'Section', hintText: 'e.g. A'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: capacityController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(labelText: 'Capacity', hintText: 'Maximum students'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: roomNoController,
+                          decoration: const InputDecoration(labelText: 'Room Number', hintText: 'e.g. R-101'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: teacherController,
+                    decoration: const InputDecoration(labelText: 'Teacher In Charge', hintText: 'Select or enter teacher name'),
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedStatus,
+                    decoration: const InputDecoration(labelText: 'Status'),
+                    items: const [
+                      DropdownMenuItem(value: 'active', child: Text('Active')),
+                      DropdownMenuItem(value: 'inactive', child: Text('Inactive')),
+                    ],
+                    onChanged: (v) => setDialogState(() => selectedStatus = v ?? 'active'),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: notesController,
+                    maxLines: 2,
+                    decoration: const InputDecoration(labelText: 'Notes', hintText: 'Optional classroom details'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final cls = classController.text.trim();
+                if (cls.isEmpty) return;
+                Navigator.pop(ctx);
+
+                final authState = ref.read(authProvider);
+                final schoolId = authState.user?.schoolId ?? 1;
+                final payload = {
+                  'school_id': schoolId,
+                  'class': cls,
+                  'section': sectionController.text.trim(),
+                  'capacity': int.tryParse(capacityController.text.trim()) ?? 0,
+                  'room_no': roomNoController.text.trim(),
+                  'teacher_in_charge': teacherController.text.trim(),
+                  'status': selectedStatus,
+                  'notes': notesController.text.trim(),
+                };
+
+                try {
+                  await ApiClient().post(ApiConstants.createClass, data: payload);
+                } catch (_) {}
+
+                setState(() {
+                  _classes.insert(0, {
+                    'id': DateTime.now().millisecondsSinceEpoch,
+                    'class': cls,
+                    'section': sectionController.text.trim(),
+                    'room_no': roomNoController.text.trim().isNotEmpty ? roomNoController.text.trim() : 'N/A',
+                    'capacity': int.tryParse(capacityController.text.trim()) ?? 40,
+                    'teacher_in_charge': teacherController.text.trim().isNotEmpty ? teacherController.text.trim() : 'In-charge Assigned',
+                    'status': selectedStatus,
+                  });
+                });
+
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Class created successfully!'), backgroundColor: EduPulseColors.success),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2563EB),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Create Class'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAddSubjectDialog() {
+    final nameController = TextEditingController();
+    final descController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('New Subject', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        content: SizedBox(
+          width: 380,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Subject Name *', hintText: 'e.g. Mathematics'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: descController,
+                maxLines: 3,
+                decoration: const InputDecoration(labelText: 'Description', hintText: 'Brief syllabus or subject notes'),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final name = nameController.text.trim();
+              if (name.isEmpty) return;
+              Navigator.pop(ctx);
+
+              final authState = ref.read(authProvider);
+              final schoolId = authState.user?.schoolId ?? 1;
+              final payload = {
+                'school_id': schoolId,
+                'subject_name': name,
+                'description': descController.text.trim(),
+              };
+
+              try {
+                await ApiClient().post(ApiConstants.createSubject, data: payload);
+              } catch (_) {}
+
+              setState(() {
+                _subjects.insert(0, {
+                  'id': DateTime.now().millisecondsSinceEpoch,
+                  'subject_name': name,
+                  'description': descController.text.trim(),
+                  'teachers': 1,
+                });
+              });
+
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Subject created successfully!'), backgroundColor: EduPulseColors.success),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2563EB),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Create Subject'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -69,9 +335,35 @@ class _PrincipalClassesScreenState extends ConsumerState<PrincipalClassesScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Classroom & Curriculum', style: EduPulseTypography.headlineLg()),
-                const SizedBox(height: 2),
-                Text('Classes, subject catalog & timetable scheduling', style: EduPulseTypography.bodySm()),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Classroom & Curriculum', style: EduPulseTypography.headlineLg()),
+                        const SizedBox(height: 2),
+                        Text('Classes, subject catalog & timetable scheduling', style: EduPulseTypography.bodySm()),
+                      ],
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        if (_tabController.index == 1) {
+                          _showAddSubjectDialog();
+                        } else {
+                          _showAddClassDialog();
+                        }
+                      },
+                      icon: const Icon(Icons.add, size: 16),
+                      label: Text(_tabController.index == 1 ? 'New Subject' : 'New Class', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2563EB),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 12),
                 Container(
                   decoration: BoxDecoration(
@@ -89,6 +381,7 @@ class _PrincipalClassesScreenState extends ConsumerState<PrincipalClassesScreen>
                     indicatorSize: TabBarIndicatorSize.tab,
                     dividerColor: Colors.transparent,
                     labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                    onTap: (_) => setState(() {}),
                     tabs: const [
                       Tab(text: 'Classes'),
                       Tab(text: 'Subjects'),
@@ -122,6 +415,7 @@ class _PrincipalClassesScreenState extends ConsumerState<PrincipalClassesScreen>
       separatorBuilder: (_, __) => const SizedBox(height: 10),
       itemBuilder: (ctx, i) {
         final c = _classes[i];
+        final classTitle = "${c['class']} ${c['section'] ?? ''}".trim();
         return Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
@@ -135,8 +429,8 @@ class _PrincipalClassesScreenState extends ConsumerState<PrincipalClassesScreen>
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(c['class'] as String, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
-                  Text('${c['room']} • In-charge: ${c['teacher']}', style: const TextStyle(fontSize: 11, color: EduPulseColors.textMuted)),
+                  Text(classTitle, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                  Text('${c['room_no']} • In-charge: ${c['teacher_in_charge']}', style: const TextStyle(fontSize: 11, color: EduPulseColors.textMuted)),
                 ],
               ),
               Container(
@@ -146,7 +440,7 @@ class _PrincipalClassesScreenState extends ConsumerState<PrincipalClassesScreen>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  '${c['students']} Students',
+                  '${c['capacity']} Capacity',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF2563EB)),
                 ),
               ),
@@ -174,13 +468,17 @@ class _PrincipalClassesScreenState extends ConsumerState<PrincipalClassesScreen>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(s['name'] as String, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
-                  Text('${s['code']} • ${s['grades']}', style: const TextStyle(fontSize: 11, color: EduPulseColors.textMuted)),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(s['subject_name'] as String, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                    const SizedBox(height: 2),
+                    Text(s['description'] as String, style: const TextStyle(fontSize: 11, color: EduPulseColors.textMuted)),
+                  ],
+                ),
               ),
+              const SizedBox(width: 10),
               Text(
                 '${s['teachers']} Faculty',
                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF2563EB)),

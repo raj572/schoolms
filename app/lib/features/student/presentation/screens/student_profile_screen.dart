@@ -7,17 +7,23 @@ import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../controllers/student_controller.dart';
 import '../widgets/student_navigation_drawer.dart';
 
-class StudentProfileScreen extends ConsumerWidget {
+class StudentProfileScreen extends ConsumerStatefulWidget {
   const StudentProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  ConsumerState<StudentProfileScreen> createState() => _StudentProfileScreenState();
+}
+
+class _StudentProfileScreenState extends ConsumerState<StudentProfileScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
     final user = ref.watch(authProvider).user;
     final profileAsync = ref.watch(studentProfileProvider);
 
     return Scaffold(
-      key: scaffoldKey,
+      key: _scaffoldKey,
       backgroundColor: EduPulseColors.surface,
       drawer: const StudentNavigationDrawer(currentRoute: '/student/profile'),
       appBar: EduPulseAppBar(
@@ -25,7 +31,7 @@ class StudentProfileScreen extends ConsumerWidget {
         subtitle: 'Profile',
         switcherLabel: 'Student Record & Settings',
         showBackButton: true,
-        onMenuTap: () => scaffoldKey.currentState?.openDrawer(),
+        onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

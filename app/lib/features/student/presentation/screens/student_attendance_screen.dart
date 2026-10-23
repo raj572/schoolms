@@ -9,23 +9,29 @@ import '../../../../core/widgets/status_pill.dart';
 import '../controllers/student_controller.dart';
 import '../widgets/student_navigation_drawer.dart';
 
-class StudentAttendanceScreen extends ConsumerWidget {
+class StudentAttendanceScreen extends ConsumerStatefulWidget {
   const StudentAttendanceScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  ConsumerState<StudentAttendanceScreen> createState() => _StudentAttendanceScreenState();
+}
+
+class _StudentAttendanceScreenState extends ConsumerState<StudentAttendanceScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
     final attendanceAsync = ref.watch(studentAttendanceProvider);
 
     return Scaffold(
-      key: scaffoldKey,
+      key: _scaffoldKey,
       backgroundColor: EduPulseColors.surface,
       drawer: const StudentNavigationDrawer(currentRoute: '/student/attendance'),
       appBar: EduPulseAppBar(
         title: 'Learnaz',
         subtitle: 'Attendance',
         switcherLabel: 'Academic Record',
-        onMenuTap: () => scaffoldKey.currentState?.openDrawer(),
+        onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

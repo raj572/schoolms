@@ -58,6 +58,20 @@ class ApiConstants {
 
   // Principal Endpoints
   static String principalDashboard(int schoolId) => '/principal/dashboard/$schoolId';
+  static String registerUser(int schoolId) => '/principal/user/register/$schoolId';
+  static String getAllUsers(int schoolId) => '/principal/user/getall/$schoolId';
+  static String registerStudent(int schoolId) => '/principal/student/register-student/$schoolId';
+  static String getAllStudents(int schoolId) => '/principal/student/get-all/$schoolId';
+  static String registerTeacher(int schoolId) => '/principal/teacher/register/$schoolId';
+  static String getAllTeachers(int schoolId) => '/principal/teacher/get-all/$schoolId';
+  static String getClasses(int schoolId) => '/principal/class/get-all/$schoolId';
+  static const String createClass = '/principal/class/create';
+  static String updateClass(dynamic id) => '/principal/class/update/$id';
+  static String deleteClass(dynamic id) => '/principal/class/delete/$id';
+  static String getSubjects(int schoolId) => '/principal/subject/get-all/$schoolId';
+  static const String createSubject = '/principal/subject/create';
+  static String updateSubject(dynamic id) => '/principal/subject/update/$id';
+  static String deleteSubject(dynamic id) => '/principal/subject/delete/$id';
   static const String principalAttendanceAnalytics = '/principal/attendance/analytics';
 
   // Librarian Endpoints

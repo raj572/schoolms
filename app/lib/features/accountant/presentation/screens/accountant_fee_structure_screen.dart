@@ -261,47 +261,58 @@ class _AccountantFeeStructureScreenState extends ConsumerState<AccountantFeeStru
   }
 
   void _showAddStructureDialog(BuildContext context) {
+    final classController = TextEditingController();
+    final monthlyController = TextEditingController();
+    final admissionController = TextEditingController();
+    final registrationController = TextEditingController();
+    final otherController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Add Fee Structure'),
+        title: const Text('Add Fee Structure', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               TextField(
-                decoration: InputDecoration(
-                  labelText: 'Class / Grade Name',
+                controller: classController,
+                decoration: const InputDecoration(
+                  labelText: 'Class / Grade Name *',
                   hintText: 'e.g. Grade 11 - Arts',
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
-                decoration: InputDecoration(
-                  labelText: 'Monthly Tuition Fee (₹)',
+                controller: monthlyController,
+                decoration: const InputDecoration(
+                  labelText: 'Monthly Tuition Fee (₹) *',
                   hintText: '4500',
                 ),
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
-                decoration: InputDecoration(
+                controller: admissionController,
+                decoration: const InputDecoration(
                   labelText: 'Admission Fee (₹)',
                   hintText: '12000',
                 ),
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
-                decoration: InputDecoration(
+                controller: registrationController,
+                decoration: const InputDecoration(
                   labelText: 'Registration Fee (₹)',
                   hintText: '2500',
                 ),
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
-                decoration: InputDecoration(
+                controller: otherController,
+                decoration: const InputDecoration(
                   labelText: 'Other Charges (₹)',
                   hintText: '1000',
                 ),
@@ -314,7 +325,23 @@ class _AccountantFeeStructureScreenState extends ConsumerState<AccountantFeeStru
           TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
+              final className = classController.text.trim();
+              final monthly = int.tryParse(monthlyController.text.trim()) ?? 0;
+              if (className.isEmpty || monthly <= 0) return;
               Navigator.pop(ctx);
+
+              setState(() {
+                _structures.insert(0, {
+                  'id': DateTime.now().millisecondsSinceEpoch,
+                  'class': className,
+                  'monthly_fee': monthly,
+                  'admission_fee': int.tryParse(admissionController.text.trim()) ?? 0,
+                  'registration_fee': int.tryParse(registrationController.text.trim()) ?? 0,
+                  'other_fee': int.tryParse(otherController.text.trim()) ?? 0,
+                  'students_count': 0,
+                });
+              });
+
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('New fee structure created successfully!'),
@@ -322,6 +349,10 @@ class _AccountantFeeStructureScreenState extends ConsumerState<AccountantFeeStru
                 ),
               );
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF7C3AED),
+              foregroundColor: Colors.white,
+            ),
             child: const Text('Save Structure'),
           ),
         ],

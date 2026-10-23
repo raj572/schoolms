@@ -23,7 +23,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String _selectedRole = 'student';
   School? _selectedSchool;
   List<School> _schools = [];
-  bool _isLoadingSchools = false;
+  bool _isLoadingSchools = true;
   bool _obscurePassword = true;
 
   final List<Map<String, String>> _roles = [
@@ -66,7 +66,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _loadSchools() async {
-    if (mounted) setState(() => _isLoadingSchools = true);
     final schools = await AuthRepository().getSchools();
     if (!mounted) return;
     setState(() {
@@ -120,18 +119,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _passwordController.text = 'password';
     });
 
-    // Auto-scroll the pills bar so the selected role is in view
+    // Auto-scroll the pills bar so the selected role is in view (post frame to avoid layout conflicts)
     final index = _roles.indexWhere((r) => r['key'] == role);
-    if (index != -1 && _roleScrollController.hasClients) {
-      final target = (index * 120.0 - 60.0).clamp(
-        0.0,
-        _roleScrollController.position.maxScrollExtent,
-      );
-      _roleScrollController.animateTo(
-        target,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+    if (index != -1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_roleScrollController.hasClients) return;
+        final target = (index * 120.0 - 60.0).clamp(
+          0.0,
+          _roleScrollController.position.maxScrollExtent,
+        );
+        _roleScrollController.animateTo(
+          target,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      });
     }
   }
 
@@ -398,28 +400,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                               ),
                             )
-                          : DropdownButtonHideUnderline(
-                              child: DropdownButton<School>(
-                                isExpanded: true,
-                                value: _selectedSchool,
-                                hint: const Text('Select Institution'),
-                                items: (_schools.isNotEmpty ? _schools : [
-                                  const School(id: 1, name: 'Demo International School', code: 'DEMO001')
-                                ]).map((s) {
-                                  return DropdownMenuItem<School>(
-                                    value: s,
-                                    child: Text(
-                                      s.name,
-                                      style: EduPulseTypography.bodyMd(
-                                        color: EduPulseColors.textHeadline,
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (val) {
-                                  if (val != null) setState(() => _selectedSchool = val);
-                                },
-                              ),
+                          : Builder(
+                              builder: (context) {
+                                final Map<int, School> schoolMap = {};
+                                for (final s in _schools) {
+                                  schoolMap[s.id] = s;
+                                }
+                                final schoolList = schoolMap.isNotEmpty
+                                    ? schoolMap.values.toList()
+                                    : const [
+                                        School(id: 1, name: 'Demo International School', code: 'DEMO001')
+                                      ];
+                                final activeSchool = schoolList.contains(_selectedSchool)
+                                    ? _selectedSchool
+                                    : schoolList.first;
+
+                                return DropdownButtonHideUnderline(
+                                  child: DropdownButton<School>(
+                                    isExpanded: true,
+                                    value: activeSchool,
+                                    hint: const Text('Select Institution'),
+                                    items: schoolList.map((s) {
+                                      return DropdownMenuItem<School>(
+                                        value: s,
+                                        child: Text(
+                                          s.name,
+                                          style: EduPulseTypography.bodyMd(
+                                            color: EduPulseColors.textHeadline,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (val) {
+                                      if (val != null) setState(() => _selectedSchool = val);
+                                    },
+                                  ),
+                                );
+                              },
                             ),
                     ),
                     const SizedBox(height: 16),

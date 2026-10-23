@@ -13,26 +13,32 @@ import 'student_messages_screen.dart';
 import 'student_profile_screen.dart';
 import 'student_shell_screen.dart';
 
-class StudentDashboardScreen extends ConsumerWidget {
+class StudentDashboardScreen extends ConsumerStatefulWidget {
   const StudentDashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  ConsumerState<StudentDashboardScreen> createState() => _StudentDashboardScreenState();
+}
+
+class _StudentDashboardScreenState extends ConsumerState<StudentDashboardScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
     final user = ref.watch(authProvider).user;
     final dashboardAsync = ref.watch(studentDashboardProvider);
     final attendanceAsync = ref.watch(studentAttendanceProvider);
     final noticesAsync = ref.watch(studentNoticesProvider);
 
     return Scaffold(
-      key: scaffoldKey,
+      key: _scaffoldKey,
       backgroundColor: EduPulseColors.surface,
       drawer: const StudentNavigationDrawer(currentRoute: '/student/dashboard'),
       appBar: EduPulseAppBar(
         title: 'Learnaz',
         subtitle: 'Student Portal',
         switcherLabel: user != null ? '${user.fullName} (${user.email})' : 'Student (Learnaz)',
-        onMenuTap: () => scaffoldKey.currentState?.openDrawer(),
+        onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
         onProfileTap: () {
           _showProfileBottomSheet(context, ref, user);
         },
@@ -147,7 +153,7 @@ class StudentDashboardScreen extends ConsumerWidget {
                       Row(
                         children: [
                           OutlinedButton.icon(
-                            onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
                             icon: const Icon(Icons.menu_open_rounded, size: 16),
                             label: const Text('All Menus', style: TextStyle(fontSize: 11)),
                             style: OutlinedButton.styleFrom(

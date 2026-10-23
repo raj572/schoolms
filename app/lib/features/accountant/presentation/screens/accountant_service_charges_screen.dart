@@ -218,32 +218,104 @@ class _AccountantServiceChargesScreenState extends ConsumerState<AccountantServi
   }
 
   void _showAddServiceDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final chargeController = TextEditingController();
+    final stopageController = TextEditingController();
+    final descController = TextEditingController();
+    String selectedType = 'Transport';
+
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Add Service Charge'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            TextField(decoration: InputDecoration(labelText: 'Service Name', hintText: 'e.g. Swimming Coaching Fee')),
-            SizedBox(height: 10),
-            TextField(decoration: InputDecoration(labelText: 'Billing Cycle', hintText: 'Monthly / Quarterly / Annual')),
-            SizedBox(height: 10),
-            TextField(decoration: InputDecoration(labelText: 'Amount (₹)', hintText: '1500'), keyboardType: TextInputType.number),
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Add Service Charge', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: 360,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedType,
+                    decoration: const InputDecoration(labelText: 'Service Type *'),
+                    items: const [
+                      DropdownMenuItem(value: 'Transport', child: Text('Transport')),
+                      DropdownMenuItem(value: 'Hostel', child: Text('Hostel')),
+                      DropdownMenuItem(value: 'Library', child: Text('Library')),
+                      DropdownMenuItem(value: 'Sports', child: Text('Sports')),
+                      DropdownMenuItem(value: 'Examination', child: Text('Examination')),
+                      DropdownMenuItem(value: 'Lab', child: Text('Lab / Science')),
+                      DropdownMenuItem(value: 'Other', child: Text('Other')),
+                    ],
+                    onChanged: (v) => setDialogState(() => selectedType = v ?? 'Transport'),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: 'Service Name *', hintText: 'e.g. Route 4 - North Zone'),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: chargeController,
+                    decoration: const InputDecoration(labelText: 'Charge (₹) *', hintText: '1500'),
+                    keyboardType: TextInputType.number,
+                  ),
+                  if (selectedType == 'Transport') ...[
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: stopageController,
+                      decoration: const InputDecoration(labelText: 'Stoppage / Destination', hintText: 'e.g. Central Station'),
+                    ),
+                  ],
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: descController,
+                    maxLines: 2,
+                    decoration: const InputDecoration(labelText: 'Description', hintText: 'Service details and coverage'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () {
+                final name = nameController.text.trim();
+                final charge = double.tryParse(chargeController.text.trim()) ?? 0;
+                if (name.isEmpty || charge <= 0) return;
+                Navigator.pop(ctx);
+
+                setState(() {
+                  _services.insert(0, {
+                    'id': DateTime.now().millisecondsSinceEpoch,
+                    'name': name,
+                    'type': selectedType.toLowerCase(),
+                    'cycle': 'Monthly',
+                    'amount': charge.toInt(),
+                    'subscribers': 0,
+                    'status': 'active',
+                    'icon': selectedType == 'Transport'
+                        ? Icons.directions_bus
+                        : selectedType == 'Hostel'
+                            ? Icons.hotel
+                            : Icons.local_offer,
+                  });
+                });
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Service charge created successfully!'), backgroundColor: EduPulseColors.success),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0891B2),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Create Service'),
+            ),
           ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('New service charge created successfully!'), backgroundColor: EduPulseColors.success),
-              );
-            },
-            child: const Text('Create Service'),
-          ),
-        ],
       ),
     );
   }
